@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 
 # Global variables (**YOU** will likely need to change these for your setup)
-from globals import MODELS_DIR, CREDENTIALS_DIR, GCLOUD_API_KEY_FILENAME
+from src.globals import MODELS_DIR, CREDENTIALS_DIR, GCLOUD_API_KEY_FILENAME
 
 # Qwen2.5-VL-7B Instruct
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
@@ -21,10 +21,12 @@ class Qwen25VL:
         """
         Initializes model and processor from Hugging Face transformers library.
         """
+        print()
         self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
             "Qwen/Qwen2.5-VL-7B-Instruct", torch_dtype=torch.bfloat16, device_map="auto", 
             attn_implementation="flash_attention_2", cache_dir=MODELS_DIR
         )
+        print()
         self.processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 

@@ -2,9 +2,7 @@ from pathlib import Path
 from subprocess import CompletedProcess, CalledProcessError
 import subprocess, re
 
-REPO_DIR = Path(__file__).parent.parent
-DATA_DIR = REPO_DIR / 'data'
-ORIGINALS_DIR, CLIPS_DIR = DATA_DIR / 'originals', DATA_DIR / 'clips'
+from src.globals import ORIGINALS_DIR, CLIPS_DIR
 
 def cut_video(video_name: str, cuts: list[tuple[float|int, float|int]], overwrite=False) -> None:
     """

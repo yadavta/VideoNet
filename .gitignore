@@ -1,3 +1,4 @@
 data/clips/*
 data/originals/*
 *.pyc
+*.egg-info

@@ -1,10 +1,10 @@
-from models import Qwen25VL, Gemini
-from utils import cut_video, parse_segments, sanitize_segments
-from pathlib import Path
-from prompts import GEMINI_TEMPORAL_LOCALIZATION, QWEN_FALSE_POSITIVE_VERIFICATION
-from globals import REPO_DIR, ORIGINALS_DIR, CLIPS_DIR
-
 import os, argparse, logging
+from pathlib import Path
+
+from src.models import Qwen25VL, Gemini
+from src.utils import cut_video, parse_segments, sanitize_segments
+from src.globals import ORIGINALS_DIR, CLIPS_DIR
+from src.prompts import GEMINI_TEMPORAL_LOCALIZATION, QWEN_FALSE_POSITIVE_VERIFICATION
 
 logging.basicConfig(
     format="[%(asctime)s] %(levelname)s@%(name)s: %(message)s",
@@ -90,6 +90,7 @@ def main(video_name: str, overwrite=False, gem: Gemini | None = None, qwen: Qwen
         j += 1
 
     logger.info("Done :)")
+    print()
     return real_clip_paths
 
 if __name__ == '__main__':
@@ -99,7 +100,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print()
+    logger.info("Initializing Qwen on this device")
     qwen = Qwen25VL()
     gem = Gemini('thinking')
-    retval: list[Path] = main(args.video, args.overwrite, gem, qwen)
-    print(retval)
+    clips: list[Path] = main(args.video, args.overwrite, gem, qwen)
+
+    print("------------------------------------------------------------------------------------")
+    print("\t RESULTING CLIPS:\n")
+    for clip in clips:
+        print("\t", str(clip))
+    print("------------------------------------------------------------------------------------\n")
