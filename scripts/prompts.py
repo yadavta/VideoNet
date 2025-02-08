@@ -1,0 +1,2 @@
+GEMINI_TEMPORAL_LOCALIZATION="You have been given a video that shows multiple skateboarding tricks. Your job is to help segment the different tricks. Provide a list of the start and end times of each trick that is performed. You do not need to name the trick, focus on providing the start and stop times.\nFormat your response as a list of segments. Each segment should be denoted MM:SS-MM:SS."
+QWEN_FALSE_POSITIVE_VERIFICATION="Your job is to determine if a skateboarding trick is performed in the video clip. If one is performed, return YES. If one is not performed, return NO."

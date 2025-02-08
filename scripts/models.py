@@ -2,13 +2,19 @@
 Utilities for interacting with existing models: QWEN2.5-VL
 """
 # General/shared imports
+from pathlib import Path
 import torch
 
+# Global variables (**YOU** will likely need to change these for your setup)
+from globals import MODELS_DIR, CREDENTIALS_DIR, GCLOUD_API_KEY_FILENAME
+
 # Qwen2.5-VL-7B Instruct
-from transformers import Qwen2_5_VLForConditionalGeneration, AutoTokenizer, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
 
-MODELS_DIR = "/gscratch/raivn/tanush/models/"
+# Gemini
+import google.generativeai as genai     # note that we use the older google-generativeai SDK, not the newer google-genai one; see https://ai.google.dev/gemini-api/docs/migrate
+import mimetypes, time
 
 class Qwen25VL:
     def __init__(self):
@@ -46,7 +52,7 @@ class Qwen25VL:
         return output_text
 
 
-    def video_inference(self, text: str, video: str, is_path: bool = False, max_pixels: int = 360 * 420, fps: float = 1.0, max_tokens: int = 4096):
+    def video_inference(self, text: str, video: str, is_path: bool = False, max_pixels: int = 360 * 420, fps: float = 1.0, max_tokens: int = 4096) -> list[str]:
         """
         Model generation with text and video input.
 
@@ -66,7 +72,6 @@ class Qwen25VL:
         ]
 
         # Prepare inputs
-
         text_inputs = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         video_inputs: list[torch.Tensor]
         image_inputs, video_inputs = process_vision_info(messages)
@@ -97,7 +102,7 @@ class Qwen25VL:
 
         return output_text
     
-    def test(self, name: str, num: int, fps: int):
+    def second_pass(self, name: str, num: int, fps: int):
         prompt = 'Your job is to determine if a skateboarding trick is performed in the video clip. If one is performed, return YES. If one is not performed, return NO.'
         results = []
         for i in range(1, num + 1):
@@ -106,21 +111,126 @@ class Qwen25VL:
             results.append(res[0])
         return results
     
-    def bin_search(self, name: str, num: int, gt: list[bool]):
-        l, r, n = 2.0, 30.0, len(gt)
-        best = float('inf')
+    def bin_search(self, name: str, gt: list[bool]):
+        l, r, num = 2.0, 30.0, len(gt)
+        best_fps = float('inf')
+        best_acc = float('-inf')
         while l < r:
             m = l + (r - l) // 2
-            res = self.test(name, num, m)
+            res = self.second_pass(name, num, m)
             res = [True if r == 'YES' else False for r in res]
-            same = True
-            for i in range(n):
-                if gt[i] != res[i]:
-                    same = False
-                    break
-            if same:
+            curr_acc = 0
+            for i in range(num):
+                curr_acc += int(gt[i] == res[i])
+            if curr_acc >= best_acc:
+                best_acc = curr_acc
+                best_fps = min(best_fps, m)
                 r = m - 1
-                best = min(best, m)
             else:
                 l = m + 1
-        return best
+        return best_fps, best_acc
+    
+class Gemini:
+    # variables that *YOU* might need to change
+    _MODEL_INFO = {
+        "thinking": {"name": "gemini-2.0-flash-thinking-exp-01-21", "rpm": 10, "rpd": 1500},
+        "flash": {"name": "gemini-2.0-flash-exp", "rpm": 10, "rpd": 1500},
+        "flash-pro": {"name": "gemini-2.0-pro-exp-02-05", "rpm": 2, "rpd": 50},
+        "flash-lite": {"name": "gemini-2.0-flash-lite-preview-02-05", "rpm": 30, "rpd": 1500}
+    }
+
+    def __init__(self, model_id: str, sys_instr: str | None = None):
+        # get model info
+        if model_id not in Gemini._MODEL_INFO:
+            raise ValueError(f"`model_id` must be a key in the `{Gemini.__name__}._MODEL_INFO` map.")
+        name, rpm, rpd = [*Gemini._MODEL_INFO[model_id].values()]
+
+        # get api key
+        api_file = CREDENTIALS_DIR + GCLOUD_API_KEY_FILENAME
+        try:
+            with open(api_file, 'r') as f:
+                api_key = f.read().strip()
+        except Exception as e:
+            print("ERROR: unable to read Google GenAI API Key at ", api_file)
+            raise e
+
+        # set up a Gemini instance
+        genai.configure(api_key=api_key)
+        config = {
+            "temperature": 0,
+            "top_p": 0.95,
+            "top_k": 64,
+            "max_output_tokens": 65536,
+            "response_mime_type": "text/plain"
+        }
+        self.model = genai.GenerativeModel(
+            model_name = name,
+            generation_config = config,
+            system_instruction = sys_instr if sys_instr else "Be concise."
+        )
+
+    def upload_media(self, media: list[tuple[str | Path, str | None]]) -> list:
+        if not media:
+            return None
+
+        if not isinstance(media, list):
+            raise TypeError("`media` must be a list.")
+
+        media_sanitized: list[tuple[str, str | None]] = []
+        for m in media:
+            if isinstance(m, tuple):
+                if len(m) != 2:
+                    raise ValueError("All tuples in `media` must have 2 elements.")
+                local_path, mime_type = m
+                if not isinstance(mime_type, str) and isinstance(mime_type, None):
+                    raise TypeError("`media` must be a list of tuples where the second element is always a string (or None).")
+                if mime_type and mime_type not in mimetypes.types_map.values():
+                    raise ValueError("The second element of every tuple in `media` -- which itself is a list -- must be a valid MIME type (or None).")
+            elif isinstance(m, str):
+                local_path, mime_type = m, None
+            elif isinstance(m, Path):
+                local_path, mime_type = str(m), None
+            else:
+                raise TypeError("Elements of `media` must be tuples or strings.")
+        
+            if not isinstance(local_path, Path) and not isinstance(local_path, str):
+                raise TypeError("`media` must be a list of tuples where the first element is always a Path-like object OR a string.")
+            if not Path(local_path).exists():
+                raise FileNotFoundError(f"`media` included a path to the following file, but no such file exists: {local_path}")
+
+            media_sanitized.append((str(local_path), mime_type))
+
+        files = [genai.upload_file(local_path, mime_type=mime_type) for local_path, mime_type in media_sanitized]
+
+        print("\n\tMedia files have been uploaded to Gemini. \n\tCurrently waiting for them to be processed...", end="")
+        # code from Google AI Studio demo
+        for name in (file.name for file in files):
+            file = genai.get_file(name)
+            i = 0
+            while file.state.name == 'PROCESSING' and i < 4:
+                print(".", end="", flush=True)
+                time.sleep(5)
+                file = genai.get_file(name)
+                i += 1
+            if file.state.name != 'ACTIVE':
+                raise Exception(f"File {file.name} failed to process")
+        print("\n\tAll files are now ready!")
+        print()
+
+        return files
+
+    def inference(self, prompt, media: list[tuple[Path | str, str | None] | Path | str]):
+        # to avoid annoying warning message: https://github.com/grpc/grpc/issues/38490#issuecomment-2604775087
+        # prompt = "You have been given a video that shows multiple skateboarding tricks. Your job is to help segment the different tricks. Provide a list of the start and end times of each trick that is performed. You do not need to name the trick, focus on providing the start and stop times.\n\nFormat your response as a list of segments. Each segment should be denoted MM:SS-MM:SS."
+        try:
+            files = self.upload_media(media)
+        except Exception as e:
+            print("ERROR: unable to upload the provided media files to Gemini.")
+            raise e
+        
+        chat_session = self.model.start_chat(
+            history = [ {'role': "user", 'parts': files} ]
+        )
+        response = chat_session.send_message(prompt)
+        
+        return response.text
