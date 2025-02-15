@@ -1,6 +1,6 @@
 from pathlib import Path
 from subprocess import CompletedProcess, CalledProcessError
-import subprocess, re
+import subprocess, re, json, cv2, numpy as np
 
 from src.globals import ORIGINALS_DIR, CLIPS_DIR
 
@@ -111,3 +111,43 @@ def verify_directory(dir: str | Path) -> str | None:
         return f'The provided directory {dir} must be a string or a Path object.'
     if not Path(dir).is_dir():
         return f'The provided directory {dir} is not a directory.'
+
+def extract_bboxs_qwen(s: str) -> list[tuple[str, list[int]]] | None:
+    """
+    Given a Python string containing a list of bounding boxes in JSON format as returned by Qwen2.5-VL, 
+    returns a list of the bounding boxes with their labels. If Qwen found no bounding boxes, returns None.
+
+    Assumes prompt given to Qwen ended with 'Report the bbox coordinates in JSON format.' or a similar instruction.
+    It is critical that Qwen is instructed to return 'bbox coordinates in JSON format' -- the rest of the prompt can be tinkered with.
+
+    EXAMPLE INPUTS:
+
+    '```json\n[\n\t{"bbox_2d": [1356, 714, 1559, 1198], "label": "children skipping rope"},\n\t{"bbox_2d": [1059, 726, 1191, 966], "label": "children skipping rope"}\n]\n```'
+    """
+    if len(s) < 7 or s[:7] != '```json' or s[-3:] != '```':
+        return None
+    s = s[7:-3]
+    s.replace('\n', '').replace('\t', '').strip()
+    data = json.loads(s)
+    bboxs: list[tuple[str, list[int]]] = [(item['label'], item['bbox_2d']) for item in data]
+    return bboxs
+
+def draw_bboxs(image: str, out: str, bboxs: list[tuple[str, list[int] | tuple[int]]],
+               color: cv2.typing.Scalar = (0, 255, 0), thickness: int = 5, font: int = cv2.FONT_HERSHEY_COMPLEX) -> None:
+    """
+    Given an `image` and a list of bounding boxes with labels, saves a copy of the image with the bounding boxes drawn on it
+    at `out`. Both `image` and `out` should be strings representing local file paths.
+    """
+    image, out = Path(image), Path(out)
+    if not image.exists() or not image.is_file():
+        raise Exception(f'Could not find a file at specified `image` location: {image}')
+    
+    image = cv2.imread(image)
+    for label, bbox in bboxs:
+        x1, y1, x2, y2 = bbox
+        cv2.rectangle(image, (x1,y1), (x2,y2), color, thickness)
+        font = cv2.FONT_HERSHEY_DUPLEX
+        cv2.putText(image, label, (x1, y1-10), font, 0.5, color, 2)
+    
+    cv2.imwrite(out, image)
+    print(f"Saved image with bounding box overlay to {out}")

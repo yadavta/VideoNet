@@ -53,6 +53,48 @@ class Qwen25VL:
 
         return output_text
 
+    def images_inference(self, text: str, images: list[str], are_paths: list[bool] | None, max_tokens: int = 256) -> list[str]:
+        """
+        Model generation with text and image input.
+
+        `images` is a list of image URLs or paths. For each image in `images`, its corresponding entry in `are_paths`
+        should be True if the image is provided as a local path. Please use absolute paths and avoid relative paths.
+        """
+        # input validation
+        if are_paths and len(are_paths) != len(images):
+            raise Exception('If `are_paths` is provided, its must have exactly as many entries as `images`.')
+    
+        # preprocessing
+        if not are_paths:
+            are_paths = [False] * len(images)
+        for idx, is_path in enumerate(are_paths):
+            if is_path:
+                images[idx] = f"file://{images[idx]}"
+
+        # prepare model input
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    { "type": "text", "text": text}
+                ]
+            }
+        ]
+        for image in images:
+            messages[0]["content"].insert(-1, {"type": "image", "image": image})
+        
+        text_inputs = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        image_inputs, video_inputs = process_vision_info(messages)
+        inputs = self.processor(text=[text_inputs], images=image_inputs, videos=video_inputs, padding=True, return_tensors="pt")
+        inputs = inputs.to(self.device)
+
+        # inference
+        generated_ids = self.model.generate(**inputs, max_new_tokens = max_tokens)
+        
+        # postprocessing
+        generated_ids_trimmed = [out_ids[len(in_ids) : ] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)]
+        output_text = self.processor.batch_decode(generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        return output_text
 
     def video_inference(self, text: str, video: str, is_path: bool = False, max_pixels: int = 360 * 420, fps: float = 1.0, max_tokens: int = 4096) -> list[str]:
         """
