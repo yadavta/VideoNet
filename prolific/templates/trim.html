@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://vjs.zencdn.net/8.20.0/video-js.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='videojs-trimmer.css') }}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <script src="https://vjs.zencdn.net/8.20.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-offset@2.1.3/dist/videojs-offset.min.js"></script>
+    <script src="{{ url_for('static', filename='videojs-trimmer.js') }}"></script>
+    
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="main-container">
+
+        <h1 class="top-txt" id="trim-hdr">Ensure the clip contains the entirety of the first trick by adjusting the trim as needed.</h1>
+
+        <p class="hint-txt">The clip is denoted by the yellow bar; its start and end times are denoted by the cyan markers.</p>
+
+        <!-- <h3 class="hint-hdr">The trimming of the clip does NOT need to be perfect.</h3> -->
+
+        <!-- <p class="hint-txt">
+            Remember, it's OK to have extra time on either end of the clip, as long as no other skateboarding trick occurs in that extra time. If the clip we provide already contains the entirety of the trick, feel free to leave it as-is.
+        </p> -->
+
+        <video id="my-video" class="video-js cushion" controls muted preload="auto"data-setup="{}">
+            <source src="static/{{clip_url}}" type="video/mp4" />
+            <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a
+                web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+        </video>
+
+        <!-- <p class="under-video-txt">
+            Adjusting the trimming (the yellow bar) by moving the cyan will also move the underlying video (the white bar).
+        </p> -->
+
+        <div>
+            <div class="binary-btns under-video">
+                <button class="small-btn tool-btn" id="move-start-btn" onclick="moveStart()">
+                    Move clip's <strong>start</strong> to current position in video
+                </button>
+                <button class="small-btn tool-btn" id="move-end-btn" onclick="moveEnd()">
+                    Move clip's <strong>end</strong> to current position in video
+                </button>
+            </div>
+        </div>
+
+        <hr class="end-video-btm">
+
+        <div>
+            <div class="binary-btn-with-q">
+                <div><p class="q-txt">Done trimming?</p></div>
+                <button class="big-btn yes-btn" onclick="yesBtnClick()">Yes, <br/> the clip is ready!</button>
+                <button class="big-btn no-btn" onclick="skipClip()">Nevermind, <br/>there is no trick.</button>        
+            </div>
+        </div>
+
+        <hr class="end-video-btm">
+
+        <div hidden id="confirm-div">
+            <p class="para-txt center-txt">The trimming you suggested is displayed below. Please watch it carefully.</p>
+            <p class="para-txt center-txt">If you are happy with the trimming, press the blue "confirm clip" button.</p>
+            <p class="para-txt center-txt">Otherwise, scroll up and change the clip's trimming, then <br> re-click the green "yes" button to update the preview below.</p>
+
+            <video id="confirm-video" class="video-js cushion" controls muted preload="auto" data-setup="{}">
+                <source src="static/{{clip_url}}" type="video/mp4" />
+            </video>
+
+            <div class="binary-btns">
+                <button class="big-btn act-btn" onclick="confirmClip()">Confirm Clip</button>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        let s;
+        let e;
+
+        const player = videojs('my-video', {
+            controls: true,
+            autoplay: false,
+            responsive: true,
+            playbackRates: [0.25, 0.5, 1, 1.5, 2],
+        });
+        player.muted(true);
+        player.controlBar.volumePanel.hide();
+        
+        trimmer = player.trimmer();
+        trimmer.startTime = {{trimmer_start}}
+        trimmer.endTime = {{trimmer_end}}
+        console.log(trimmer.endTime)
+
+        // VSCode linter may flag this but it's valid Jinja syntax
+        {% if clip_type == 'remaining' -%}
+        player.offset({
+            start: {{prev_end_rel}},
+            restart_beginning: true
+        })
+        {%- endif %}
+
+        const confirmPlayer = videojs('confirm-video', {
+            controls: true,
+            autoplay: true,
+            responseive: true,
+            playbackRates: [0.25, 0.5, 1, 1.5, 2],
+        })
+        confirmPlayer.muted(true);
+        confirmPlayer.controlBar.volumePanel.hide();
+        
+        function moveStart() {
+            tmp = player.currentTime()
+            if (tmp < 0 || tmp > player.duration()) {
+                // defensive programming; this branch should never be entered
+                alert('Invalid start time specified!')
+                return
+            }
+            if (tmp > trimmer.endTime) {
+                // alert('Warning: specified start time is after the current end time; automatically readjusting the end time to fix this')
+                trimmer.endTime = tmp
+            }
+            trimmer.startTime = tmp
+            trimmer.updateTrimmer();
+        }
+
+        function moveEnd() {
+            tmp = player.currentTime()
+            if (tmp < 0 || tmp > player.duration()) {
+                // defensive programming; this branch should never be entered
+                alert('Invalid end time specified!')
+                return
+            }
+            if (tmp < trimmer.startTime) {
+                // alert('Warning: specified end time is before the current start time; automatically readjusting the start time to fix this')
+                trimmer.startTime = tmp
+            }
+            trimmer.endTime = tmp
+            trimmer.updateTrimmer()
+        }
+
+        function yesBtnClick() {
+            s = trimmer.startTime
+            e = trimmer.endTime
+            confirmPlayer.offset({
+                start: s,
+                end: e,
+                restart_beginning: true
+            })
+            const elem = document.getElementById('confirm-div')
+            elem.removeAttribute('hidden')
+            elem.scrollIntoView({ behavior: "smooth" })
+        }
+
+        const data = new FormData()
+        data.append('user_id', '{{user_id}}')
+        data.append('study_id', '{{study_id}}')
+        data.append('session_id', '{{session_id}}')
+        data.append('video_id', '{{video_id}}')
+        data.append('clip_id', '{{clip_id}}')
+
+        function skipClip() {
+            data.append('endpoint', 'skip')
+            fetch('/process-trim', {
+                method: 'POST',
+                body: data
+            }).then(res => {
+                if (res.redirected) window.location.href = res.url;
+            }).catch(err => { 
+                alert('An error occured while processing your trimming.\n Error:', err);
+            });
+        }
+
+        function confirmClip() {
+            if (trimmer.startTime != s || trimmer.endTime != e) {
+                alert("Before confirming the clip, please press the green 'yes' button to preview your updated clip.")
+            }
+
+            data.append('endpoint', 'confirm')
+            data.append('ui_start', s)
+            data.append('ui_end', e)
+            data.append('count', '{{count}}')
+            data.append('url_type', '{{url_type}}')
+            data.append('prev_end_abs', '{{prev_end_abs}}')
+            data.append('prev_end_rel', '{{prev_end_rel}}')
+
+            fetch('{{ url_for("process_trim") }}', {
+                method: 'POST',
+                body: data
+            }).then(res => {
+                if (res.redirected) window.location.href = res.url;
+            }).catch(err => {
+                alert('An error occured while processing your trimming.\n Error:', err);
+            });
+        }
+    </script>
+</body>
+
+</html>

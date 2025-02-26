@@ -1,0 +1,91 @@
+/* SOURCE: https://cdn.jsdelivr.net/gh/Teyuto/videojs-trimmer@main/src/videojs-trimmer.css */
+/* SOURCE: https://github.com/Teyuto/videojs-trimmer/blob/509c78d2f4f3073d898342829991986d817ccc75/src/videojs-trimmer.css */
+.vjs-trimmer {
+  position: absolute;
+  height: 5px;
+  bottom: 0;
+  background: rgba(0, 255, 0, 0.5); /* Parte selezionata più visibile */
+  z-index: 10;
+}
+
+.video-js-trimmer .vjs-time-tooltip{
+  display: none !important;
+}
+.vjs-trimmer-handle.start::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent cyan;
+}
+.vjs-trimmer-handle.end::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent cyan transparent transparent;
+}
+
+.vjs-trimmer-handle.start{
+  margin-left: -5px;
+}
+
+/* .vjs-trimmer-bar {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-color: rgba(166, 12, 12, 0.3);
+} */
+
+.vjs-trimmer {
+  position: absolute;
+  bottom: 30px;
+  height: 100%;
+  background-color: rgba(222, 222, 45, 0.6);
+  /* background-color: rgba(255, 255, 255, 0.5); */
+}
+
+.vjs-trimmer-handle {
+  position: absolute;
+  bottom: 37px;
+  width: 5px;
+  height: 15px;
+  background-color: cyan;
+  cursor: ew-resize;
+}
+
+.vjs-time-markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.vjs-time-marker {
+  position: absolute;
+  bottom: 60px;
+  height: 100%;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.vjs-time-label {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2px 4px;
+  border-radius: 2px;
+  white-space: nowrap;
+}

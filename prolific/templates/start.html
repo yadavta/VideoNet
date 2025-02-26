@@ -1,0 +1,45 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://vjs.zencdn.net/8.20.0/video-js.css" rel="stylesheet">
+    <link href="vendor/videojs-trimmer.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    
+    <script src="https://vjs.zencdn.net/8.20.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-offset@2.1.3/dist/videojs-offset.min.js"></script>
+    <script src="vendor/videojs-trimmer.js"></script>
+    
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <h1 class="top-txt top-txt-instr">Welcome to an Ai2 Prolific Survey!</h1>
+        <p class="para-txt">We are a team of researchers working on improving the usefuless of AI models on video inputs.</p>
+        <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>skateboarding actions</b>.</p>
+        <p class="para-txt">We have sourced videos from YouTube and used existing AI models to identify potential clips.</p>
+        <p class="para-txt">You will help us <b>verify</b> the <b>trimming</b> of these clips. In particular, you will help ensure that:</p>
+        <ul>
+            <li class="para-txt">Each clip contains exactly one skateboarding action.</li>
+            <li class="para-txt">The start and end times of each clip do not cut off parts of the skateboarding action.</li>
+            <li class="para-txt">Each clip is not significantly longer than it needs to be.</li>
+        </ul>
+        <p class="para-txt">Note that the trimmings do not need to be perfect &mdash; it's ok for a clip to be a second or two longer than it needs to be.</p>
+        <p class="action-txt"><b>Once you are ready to start, click the button below.</b></p>
+        
+        <form action="{{ url_for('show_dashboard') }}" method="POST">
+            <input type="hidden" name="user_id" value="{{user_id}}">
+            <input type="hidden" name="study_id" value="{{study_id}}">
+            <input type="hidden" name="session_id" value="{{session_id}}">
+            <input type="hidden" name="start" value="start">
+            <div class="binary-btns">
+                <button type="submit" class="big-btn yes-btn">Begin Survey</button>
+            </div>
+        </form>
+    </div>
+</body>
