@@ -1,3 +1,4 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,16 +19,11 @@
 
 <body>
     <div class="main-container">
+        <p class="progress-txt">You have <b>{{vids_left}}</b> out of {{total}} videos remaining.</p>
 
         <h1 class="top-txt" id="trim-hdr">Ensure the clip contains the entirety of the first trick by adjusting the trim as needed.</h1>
 
         <p class="hint-txt">The clip is denoted by the yellow bar; its start and end times are denoted by the cyan markers.</p>
-
-        <!-- <h3 class="hint-hdr">The trimming of the clip does NOT need to be perfect.</h3> -->
-
-        <!-- <p class="hint-txt">
-            Remember, it's OK to have extra time on either end of the clip, as long as no other skateboarding trick occurs in that extra time. If the clip we provide already contains the entirety of the trick, feel free to leave it as-is.
-        </p> -->
 
         <video id="my-video" class="video-js cushion" controls muted preload="auto"data-setup="{}">
             <source src="static/{{clip_url}}" type="video/mp4" />
@@ -36,10 +32,6 @@
                 web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
             </p>
         </video>
-
-        <!-- <p class="under-video-txt">
-            Adjusting the trimming (the yellow bar) by moving the cyan will also move the underlying video (the white bar).
-        </p> -->
 
         <div>
             <div class="binary-btns under-video">
@@ -153,6 +145,7 @@
                 end: e,
                 restart_beginning: true
             })
+            confirmPlayer.currentTime(0)
             const elem = document.getElementById('confirm-div')
             elem.removeAttribute('hidden')
             elem.scrollIntoView({ behavior: "smooth" })
@@ -164,6 +157,8 @@
         data.append('session_id', '{{session_id}}')
         data.append('video_id', '{{video_id}}')
         data.append('clip_id', '{{clip_id}}')
+        data.append('vids_left', '{{vids_left}}')
+        data.append('total', '{{total}}')
 
         function skipClip() {
             data.append('endpoint', 'skip')

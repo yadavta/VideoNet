@@ -59,6 +59,15 @@ html {
     margin-bottom: 1.5rem;
 }
 
+.progress-txt {
+    font-size: smaller;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: -1rem;
+    margin-bottom: -1rem;
+    font-style: italic;
+}
+
 .q-txt {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;

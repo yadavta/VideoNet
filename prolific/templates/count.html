@@ -1,3 +1,4 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,6 +16,7 @@
 
 <body>
     <div class="main-container">
+        <p class="progress-txt">You have <b>{{vids_left}}</b> of {{total}} clips remaining.</p>
 
         <h1 class="top-txt">How many skateboarding tricks are <br/> performed in the video below?</h1>
 
@@ -45,6 +47,8 @@
             <input type="hidden" name="clip_exact_url" value="{{clip_exact_url}}">
             <input type="hidden" name="prev_end_abs" value="{{prev_end_abs}}">
             <input type="hidden" name="prev_end_rel" value="{{new_start}}">
+            <input type="hidden" name="vids_left" value="{{vids_left}}">
+            <input type="hidden" name="total" value="{{total}}">
 
             <div class="binary-btns">
                 <button class="big-btn no-btn" type="submit" name="counted" value="0">0</button>
@@ -72,6 +76,8 @@
             restart_beginning: true
         })
         {%- endif %}
+
+        console.log("{{total}}")
     </script>
 </body>
 

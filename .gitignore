@@ -3,3 +3,4 @@ data/originals/*
 *.pyc
 *.egg-info
 tmp/
+*.DS_Store

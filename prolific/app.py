@@ -46,6 +46,13 @@ def show_start():
     """
     Renders landing page for a Prolific user if given a URL with the required params (PROLIFIC_PID, STUDY_ID, SESSION_ID). Otherwise renders an error message.
     """
+    # Ensure that we have tasks remaining
+    work_available = utils.has_unassigned_tasks(get_db())
+    if isinstance(work_available, str):
+        return work_available
+    if not work_available:
+        return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
+
     # https://researcher-help.prolific.com/en/article/866615
     user_id: str | None = request.args.get('PROLIFIC_PID')
     study_id: str | None = request.args.get('STUDY_ID')
@@ -65,66 +72,61 @@ def show_dashboard():
     # Get args
     args = request.form if request.method == 'POST' else request.args
     user_id, study_id, session_id = args.get('user_id'), args.get('study_id'), args.get('session_id')
-    start = args.get('start', None)
+    start, total = args.get('start', None), args.get('total', type=int)
     if not user_id or not study_id or not session_id:
         return 'An error occured.'
-
+    
+    # Assign videos if user just began the survey
     if start:
-        # user just began survey, so we must assign them videos
         assigned: list[int] | str
-        total: int
         assigned, total = assign_videos(get_db(), user_id)
         if isinstance(assigned, str):
             # no videos available, render error message
             return assigned
-        else:
-            video_id: int | str = get_next_video_id(get_db(), user_id)
-            if isinstance(video_id, str):
-                # no videos left, user has finished study
-                kwargs = {'completion_code': PROLIFIC_COMPLETION_CODE}
-                return render_template('finish.html')
-            kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id,
-                      'videos_left': len(assigned), 'clips_left': total, 'next_video_id': video_id}
-            return render_template('dashboard.html', **kwargs)
-    else:
-        # user just finished a video (or got lost and returned to the dashboard)
-        remaining = remaining_videos(get_db(), user_id)
-        if isinstance(remaining, str):
-            return 'An error occured.'
-        elif remaining['nv'] == 0:
-            # no videos left, user has finished study
-            kwargs = {'completion_code': PROLIFIC_COMPLETION_CODE}
-            return render_template('finish.html')
-        else:
-            # give user next video to work on
-            video_id: int = get_next_video_id(get_db(), user_id)
-            if isinstance(video_id, str): return video_id
-            kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id,
-                      'videos_left': remaining['nv'], 'clips_left': remaining['nc'], 'next_video_id': video_id}
-            return render_template('dashboard.html', **kwargs)
+    
+    # Check if user is done with survey
+    remaining = remaining_videos(get_db(), user_id)
+    if isinstance(remaining, str):
+        return 'An error occured.'
+    elif remaining['nv'] == 0:
+        # no videos left, user has finished study
+        kwargs = {'completion_code': PROLIFIC_COMPLETION_CODE}
+        return render_template('finish.html')
+    
+    #  Get user started on the next video
+    print('t', total)
+    video_id: int | str = get_next_video_id(get_db(), user_id)
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id,
+              'video_id': video_id, 'clip_type': 'next', 'vids_left': remaining['nc'] + 1, 'total': total}
+    return redirect(url_for('show_count', **kwargs))
 
 @app.route('/count', methods=['POST', 'GET'])
 def show_count():
     args = request.form if request.method == 'POST' else request.args
-    user_id, study_id, session_id, video_id, clip_type = args.get('user_id'), args.get('study_id'), args.get('session_id'), args.get('video_id'), args.get('clip_type')
+    user_id, study_id, session_id, video_id = args.get('user_id'), args.get('study_id'), args.get('session_id'), args.get('video_id')
+    clip_type, vids_left, total = args.get('clip_type'), args.get('vids_left', type=int), args.get('total', type=int)
     if clip_type == 'next':
+        vids_left -= 1
         clip: dict | str = get_next_clip(get_db(), video_id)
         if isinstance(clip, str):
             # no more clips left to process
-            update_video_as_processed(get_db(), video_id)
+            print('v', video_id)
+            if update_video_as_processed(get_db(), video_id):
+                return 'An error occured while trying to mark a video as processed.'
             kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id}
             return redirect(url_for('show_dashboard', **kwargs))
         else:
             # serve next clip from this video
-            kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 
+            kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'vids_left': vids_left, 'total': total,
                   'clip_exact_url': clip['exact_url'], 'clip_id': clip['id'], 'clip_type': 'next', 'video_id': video_id}
             return render_template('count.html', **kwargs)
+    
     if clip_type == 'remaining':
         clip_id, prev_end_abs, prev_end_rel = args.get('clip_id'), args.get('prev_end_abs'), args.get('prev_end_rel')
         url: str | None = utils.get_exact_url(get_db(), clip_id)
         if url is None:
             return "An error occured while retrieving the URL of the clip."
-        kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'clip_exact_url': url,
+        kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'vids_left': vids_left, 'clip_exact_url': url,
                   'clip_type': 'remaining', 'clip_id': clip_id, 'new_start': prev_end_rel, 'prev_end_abs': prev_end_abs, 'video_id': video_id}
         return render_template('count.html', **kwargs)
 
@@ -134,8 +136,8 @@ def show_count():
 def process_count():
     args = request.form
     user_id, study_id, session_id, video_id = args.get('user_id'), args.get('study_id'), args.get('session_id'), args.get('video_id')
-    count, clip_id = args.get('counted', type=int), args.get('clip_id', type=int)
-    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'video_id': video_id}
+    count, clip_id, vids_left, total = args.get('counted', type=int), args.get('clip_id', type=int), args.get('vids_left', type=int), args.get('total', type=int)
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'video_id': video_id, 'vids_left': vids_left, 'total': total}
 
     if count == 0:
         if update_uclip_as_processed(get_db(), clip_id):
@@ -152,8 +154,9 @@ def show_trim():
     # ingest arguments
     args = request.form if request.method == 'POST' else request.args
     user_id, study_id, session_id, video_id, clip_id = args.get('user_id'), args.get('study_id'), args.get('session_id'), args.get('video_id'), args.get('clip_id')
-    count, clip_type = args.get('count'), args.get('clip_type')
+    count, clip_type, vids_left, total = args.get('count'), args.get('clip_type'), args.get('vids_left', type=int), args.get('total', type=int)
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'video_id': video_id, 'clip_id': clip_id, 'count': count, 'clip_type': clip_type}
+    kwargs.update({'vids_left': vids_left, 'total': total})
     
     # fetch url from database
     url: str | None = get_cushion_url(get_db(), clip_id) if clip_type == 'next' else get_exact_url(get_db(), clip_id)
@@ -179,7 +182,7 @@ def show_trim():
         kwargs.update({'prev_end_abs': prev_end_abs, 'prev_end_rel': prev_end_rel})
         trimmer_start = prev_end_rel
         trimmer_end = end
-    print(type(trimmer_start), type(trimmer_end))
+    print(trimmer_start, trimmer_end)
     kwargs.update({'trimmer_start': trimmer_start, 'trimmer_end': trimmer_end})
     
     # render trim page to user
@@ -189,8 +192,8 @@ def show_trim():
 def process_trim():
     args = request.form
     user_id, study_id, session_id, video_id = args.get('user_id'), args.get('study_id'), args.get('session_id'), args.get('video_id')
-    clip_id, endpoint = args.get('clip_id', type=int), args.get('endpoint')
-    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'video_id': video_id}
+    clip_id, endpoint, vids_left, total = args.get('clip_id', type=int), args.get('endpoint'), args.get('vids_left', type=int), args.get('total', type=int)
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'video_id': video_id, 'vids_left': vids_left, 'total': total}
     if endpoint == 'skip':
         if update_uclip_as_processed(get_db(), clip_id): return 'An error occured while marking the clip as processed.'
         kwargs['clip_type'] = 'next'

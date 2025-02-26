@@ -35,7 +35,7 @@ def assign_videos(c: Connection, user_id: str) -> tuple[list[int] | str, int]:
 
     Returns 2-tuple:
         0. subset as a list of video_ids (as integers). If there are no available videos, returns string of HTML informing Prolific user of such.
-        1. total number of unverified clips associated with assigned videos. If there are no available videos, returns 0.
+        1. total number of videos associated with assigned videos. If there are no available videos, returns 0.
     """
     available_videos: list[dict] | None = query_db(c, 'SELECT V.id, V.uclips_count FROM Videos as V WHERE V.status = 3 ORDER BY RANDOM() LIMIT 30;')
     if available_videos is None or len(available_videos) == 0:
@@ -44,22 +44,23 @@ def assign_videos(c: Connection, user_id: str) -> tuple[list[int] | str, int]:
     if assign_video(c, available_videos[0]['id'], user_id):
         return "<h1> Error </h1> <p> An unexpected issue occured on our end. We apologize for the inconvenience.", 0
     assigned: list[str] = [available_videos[0]['id']]
-    i, total = 0, available_videos[0]['uclips_count']
+    i, total_clips = 0, available_videos[0]['uclips_count']
 
     while True:
         i += 1
-        if i >= len(available_videos) or len(assigned) > 10 or total > 50:
+        if i >= len(available_videos) or len(assigned) > 10 or total_clips > 50:
             break
-        if total + available_videos[i]['uclips_count'] > 60:
+        if total_clips + available_videos[i]['uclips_count'] > 60:
             continue
         
         video_id = available_videos[i]['id']
         if assign_video(c, video_id, user_id):
             continue
         assigned.append(video_id)
-        total += available_videos[i]['uclips_count']
+        total_clips += available_videos[i]['uclips_count']
 
-    return assigned, total
+    total_videos = i
+    return assigned, total_clips
 
 def get_next_video_id(c: Connection, user_id: str) -> int | str:
     """
@@ -85,6 +86,8 @@ def update_uclip_as_processed(conn: Connection, clip_id: int) -> int:
 def update_video_as_processed(conn: Connection, video_id: int) -> int:
     """
     Updates row in Videos with primary key `video_id` so that its 'status' is set to 5.
+
+    Returns 1 upon failure, 0 upon success.
     """
     cursor = conn.execute('UPDATE Videos SET status = 5 WHERE id = ?;', (str(video_id),))
     failure = int(cursor.rowcount != 1)
@@ -146,3 +149,13 @@ def add_verified_clip(conn: Connection, start: float, end: float, clip_id: int, 
     failure = int(cursor.rowcount == 0)
     conn.commit()
     return failure
+
+def has_unassigned_tasks(c: Connection) -> str | bool:
+    """
+    Checks if any vidoes still need to be processed by Prolific workers.
+    """
+    result: dict | None = query_db(c, 'SELECT COUNT(*) as cnt FROM Videos WHERE status = 3;', one=True)
+    if not result:
+        return 'An error occured.'
+    
+    return result['cnt'] > 0
