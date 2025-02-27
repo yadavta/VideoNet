@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g, redirect, url_for
 from sqlite3 import Connection
+import utils
 
-import small_scale.utils as utils
 import sqlite3
 
 app = Flask(__name__)
@@ -65,10 +65,9 @@ def show_task():
 
     # assign completion token
     token: str = utils.assign_token(get_db(), user_id, study_id, session_id)
-    print('t', token)
+
     if token is False:
         return 'We were unable to assign your session a completion token. This likely means that your (user_id, study_id, session_id) combination provided by Prolific is not unique.'
-
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 
               'action_id': action_id, 'action_name': action_name}
     return render_template('start.html', **kwargs)
