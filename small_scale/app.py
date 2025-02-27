@@ -5,7 +5,7 @@ import utils
 import sqlite3
 
 app = Flask(__name__)
-DATABASE = 'data.db'
+DATABASE = 'persistent/data.db'
 
 # THE FOLLOWING **MUST** BE CHANGED FOR EACH PROLIFIC STUDY
 PROLIFIC_COMPLETION_CODE = "CHHXQERF"
