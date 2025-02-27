@@ -50,7 +50,7 @@ The SQLite file `data.db` contains three SQL tables: a `Videos` table for the or
 
 
 These can be created in SQLite with the following commands:
-```bash
+```sql
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE Videos(

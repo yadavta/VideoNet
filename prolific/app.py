@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from markupsafe import escape
 from sqlite3 import Connection
 
-import sqlite3, json
+import sqlite3
 
 app = Flask(__name__)
 DATABASE = 'data.db'
@@ -91,10 +91,9 @@ def show_dashboard():
     elif remaining['nv'] == 0:
         # no videos left, user has finished study
         kwargs = {'completion_code': PROLIFIC_COMPLETION_CODE}
-        return render_template('finish.html')
+        return render_template('finish.html', **kwargs)
     
     #  Get user started on the next video
-    print('t', total)
     video_id: int | str = get_next_video_id(get_db(), user_id)
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id,
               'video_id': video_id, 'clip_type': 'next', 'vids_left': remaining['nc'] + 1, 'total': total}
@@ -110,7 +109,6 @@ def show_count():
         clip: dict | str = get_next_clip(get_db(), video_id)
         if isinstance(clip, str):
             # no more clips left to process
-            print('v', video_id)
             if update_video_as_processed(get_db(), video_id):
                 return 'An error occured while trying to mark a video as processed.'
             kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id}
@@ -126,7 +124,7 @@ def show_count():
         url: str | None = utils.get_exact_url(get_db(), clip_id)
         if url is None:
             return "An error occured while retrieving the URL of the clip."
-        kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'vids_left': vids_left, 'clip_exact_url': url,
+        kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'vids_left': vids_left, 'total': total, 'clip_exact_url': url,
                   'clip_type': 'remaining', 'clip_id': clip_id, 'new_start': prev_end_rel, 'prev_end_abs': prev_end_abs, 'video_id': video_id}
         return render_template('count.html', **kwargs)
 
@@ -182,7 +180,6 @@ def show_trim():
         kwargs.update({'prev_end_abs': prev_end_abs, 'prev_end_rel': prev_end_rel})
         trimmer_start = prev_end_rel
         trimmer_end = end
-    print(trimmer_start, trimmer_end)
     kwargs.update({'trimmer_start': trimmer_start, 'trimmer_end': trimmer_end})
     
     # render trim page to user
@@ -221,7 +218,7 @@ def process_trim():
             if update_uclip_as_processed(get_db(), clip_id): return 'An error occured while marking the clip as processed.'
             kwargs['clip_type'] = 'next'
         else:
-            kwargs.update({'clip_type': 'remaining', 'clip_id': clip_id, 'prev_end_abs': real_end, 'prev_end_rel': real_end - start})
+            kwargs.update({'clip_type': 'remaining', 'clip_id': clip_id, 'prev_end_abs': real_end, 'prev_end_rel': max(real_end - start, 0)})
         
         return redirect(url_for('show_count', **kwargs))
     

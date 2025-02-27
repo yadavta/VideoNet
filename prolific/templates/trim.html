@@ -18,55 +18,57 @@
 </head>
 
 <body>
-    <div class="main-container">
-        <p class="progress-txt">You have <b>{{vids_left}}</b> out of {{total}} videos remaining.</p>
+    <div class="main-container-wide">
+        <p class="progress-txt">You have <b>{{vids_left}}</b> of {{total}} clips remaining.</p>
+        <h1 class="top-txt" id="trim-hdr">Ensure the clip contains the entirety of the {% if count == 2 or count == '2' %}first {% endif %}trick.</h1>
 
-        <h1 class="top-txt" id="trim-hdr">Ensure the clip contains the entirety of the first trick by adjusting the trim as needed.</h1>
+        <div class="videos">
+            <div class="flex-one-half">
+                <p class="hint-txt">First, adjust the trim as needed.</p> 
+                <p class="hint-txt">The clip is denoted by the yellow bar; <br>its start and end times are denoted by the cyan markers.<br></p>
+                <video id="my-video" class="video-js cushion" controls muted preload="auto"data-setup="{}">
+                    <source src="static/{{clip_url}}" type="video/mp4" />
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                    </p>
+                </video>
+                
+                <div>
+                    <div class="binary-btns under-video">
+                        <button class="small-btn tool-btn" id="move-start-btn" onclick="moveStart()">
+                            Move clip's <strong>start</strong> to current position in video
+                        </button>
+                        <button class="small-btn tool-btn" id="move-end-btn" onclick="moveEnd()">
+                            Move clip's <strong>end</strong> to current position in video
+                        </button>
+                    </div>
+                </div>    
 
-        <p class="hint-txt">The clip is denoted by the yellow bar; its start and end times are denoted by the cyan markers.</p>
+                <hr class="end-video-btm">
 
-        <video id="my-video" class="video-js cushion" controls muted preload="auto"data-setup="{}">
-            <source src="static/{{clip_url}}" type="video/mp4" />
-            <p class="vjs-no-js">
-                To view this video please enable JavaScript, and consider upgrading to a
-                web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-            </p>
-        </video>
-
-        <div>
-            <div class="binary-btns under-video">
-                <button class="small-btn tool-btn" id="move-start-btn" onclick="moveStart()">
-                    Move clip's <strong>start</strong> to current position in video
-                </button>
-                <button class="small-btn tool-btn" id="move-end-btn" onclick="moveEnd()">
-                    Move clip's <strong>end</strong> to current position in video
-                </button>
+                <div>
+                    <div class="binary-btn-with-q">
+                        <div><p class="q-txt">Done trimming?</p></div>
+                        <button class="big-btn yes-btn" onclick="yesBtnClick()">Yes</button>
+                        <button class="big-btn no-btn" onclick="skipClip()">There is no trick.</button>        
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <hr class="end-video-btm">
-
-        <div>
-            <div class="binary-btn-with-q">
-                <div><p class="q-txt">Done trimming?</p></div>
-                <button class="big-btn yes-btn" onclick="yesBtnClick()">Yes, <br/> the clip is ready!</button>
-                <button class="big-btn no-btn" onclick="skipClip()">Nevermind, <br/>there is no trick.</button>        
-            </div>
-        </div>
-
-        <hr class="end-video-btm">
-
-        <div hidden id="confirm-div">
-            <p class="para-txt center-txt">The trimming you suggested is displayed below. Please watch it carefully.</p>
-            <p class="para-txt center-txt">If you are happy with the trimming, press the blue "confirm clip" button.</p>
-            <p class="para-txt center-txt">Otherwise, scroll up and change the clip's trimming, then <br> re-click the green "yes" button to update the preview below.</p>
-
-            <video id="confirm-video" class="video-js cushion" controls muted preload="auto" data-setup="{}">
-                <source src="static/{{clip_url}}" type="video/mp4" />
-            </video>
-
-            <div class="binary-btns">
-                <button class="big-btn act-btn" onclick="confirmClip()">Confirm Clip</button>
+            <div class="flex-one-half">
+                <div hidden id="confirm-div">
+                    <p class="hint-txt center-txt">Second, confirm your trimming below.</p>
+                    <p class="hint-txt center-txt">If you are happy with the trimming, press the blue "confirm clip" button. Otherwise, change the clip's trimming on the left, then re-click the green "yes" button to update the preview below.</p>
+        
+                    <video id="confirm-video" class="video-js cushion" controls muted preload="auto" data-setup="{}">
+                        <source src="static/{{clip_url}}" type="video/mp4" />
+                    </video>
+        
+                    <div class="binary-btns">
+                        <button class="big-btn act-btn" onclick="confirmClip()">Confirm Clip</button>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -88,7 +90,6 @@
         trimmer = player.trimmer();
         trimmer.startTime = {{trimmer_start}}
         trimmer.endTime = {{trimmer_end}}
-        console.log(trimmer.endTime)
 
         // VSCode linter may flag this but it's valid Jinja syntax
         {% if clip_type == 'remaining' -%}
@@ -100,7 +101,7 @@
 
         const confirmPlayer = videojs('confirm-video', {
             controls: true,
-            autoplay: true,
+            autoplay: false,
             responseive: true,
             playbackRates: [0.25, 0.5, 1, 1.5, 2],
         })
