@@ -5,7 +5,7 @@ import utils
 import sqlite3, os
 
 app = Flask(__name__)
-DATABASE = os.environ.get('DATABASE', 'persistent/db')
+DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
 PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
 
 # **** BEGIN DATABASE ****
@@ -63,7 +63,7 @@ def show_task():
 
     # render webpage
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 
-              'action_id': action_id, 'action_name': action_name, 'domain_name': domain_name}
+              'action_id': action_id, 'action_name': action_name, 'domain_name': domain_name, 'domain_name_lowercase': domain_name.lower()}
     return render_template('start.html', **kwargs)
 
 @app.route('/process', methods=['POST'])

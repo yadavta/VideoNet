@@ -14,12 +14,13 @@
         <div id="instructions">
             <h1 class="top-txt">Welcome!</h1>
             <p class="para-txt">We are a team of researchers <b>evaluating</b> the ability of AI models to <b>recognize actions</b> in videos.</p>
-            <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>{{domain_name}} actions</b>.</p>
+            <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>{{domain_name_lowercase}} actions</b>.</p>
             <hr>
-            <p class="para-txt">You are provided with the name of a {{domain_name}} action.</p>
+            <p class="para-txt">You are provided with the name of a {{domain_name_lowercase}} action.</p>
             <p class="para-txt">Your job is to go on YouTube and find <b>6 videos</b> that include the specified action.</p>
             <p class="para-txt">For each video, you must identify a <b>segment</b> of the video <b>where the action occurs</b>.</p>
             <p class="para-txt">You will be asked to report the <b>start and end times</b> (in seconds) of each segment.</p>
+            <p class="para-txt">Ensure that each segment includes only <b>one instance</b> of the action.</p>
             <p class="para-txt">To summarize, you must find a total of 6 YouTube videos and 6 segments (one per YouTube video).</p>
             <hr>
         </div>
@@ -213,7 +214,7 @@
 <footer>
     <!-- <p>This research is being conducted by the University of Washington and the Allen Institute for Artificial Intelligence.</p> -->
     <div class="logos">
-        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo" src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://raivn.cs.washington.edu/" target="_self"> <img class="footer-logo" src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
         <a href="https://allenai.org/" target="_blank"><img class="footer-logo" src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
     </div>
 </footer>
