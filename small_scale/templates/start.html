@@ -14,11 +14,11 @@
         <div id="instructions">
             <h1 class="top-txt">Welcome!</h1>
             <p class="para-txt">We are a team of researchers <b>evaluating</b> the ability of AI models to <b>recognize actions</b> in videos.</p>
-            <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>skateboarding tricks</b>.</p>
+            <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>{{domain_name}} actions</b>.</p>
             <hr>
-            <p class="para-txt">You are provided with the name of a skateboarding action.</p>
-            <p class="para-txt">Your job is to go on YouTube and find <b>6 videos</b> that include the specified skateboarding action.</p>
-            <p class="para-txt">For each video, you must identify a <b>segment</b> of the video <b>where the skateboarding action occurs</b>.</p>
+            <p class="para-txt">You are provided with the name of a {{domain_name}} action.</p>
+            <p class="para-txt">Your job is to go on YouTube and find <b>6 videos</b> that include the specified action.</p>
+            <p class="para-txt">For each video, you must identify a <b>segment</b> of the video <b>where the action occurs</b>.</p>
             <p class="para-txt">You will be asked to report the <b>start and end times</b> (in seconds) of each segment.</p>
             <p class="para-txt">To summarize, you must find a total of 6 YouTube videos and 6 segments (one per YouTube video).</p>
             <hr>
@@ -26,6 +26,7 @@
 
         <div class="user-input">
             <form id="clipsForm" action="{{url_for('process_action')}}">
+                <p class="action-txt">Domain Name: <b>{{domain_name}}</b></p>
                 <p class="action-txt">Action Name: <b>{{action_name}}</b></p>
                 <table>
                     <thead>
@@ -72,9 +73,13 @@
         </div>
     </div>
 
+    <dialog id="redirectDialog">
+        <p class="dialog-txt">You have finished the task! Press the button below to earn Prolific credit for your work.</p>
+        <a id="redirectBtn" href="" target="_blank" class="dialog-btn">Mark as Completed on Prolific</a>
+    </dialog>
+
     <script>
         let scrolled = false;
-
         document.getElementById('validateBtn').addEventListener('click', () => {
             // hide messages immediately
             document.getElementById('errorMsg').hidden = true;
@@ -180,11 +185,10 @@
                 body: data
             }).then(res => {
                 if (res.ok) {
-                    res.text().then(html => {
-                        document.open();
-                        document.write(html);
-                        document.close();
-                    });
+                    res.text().then(url => {
+                        document.getElementById('redirectBtn').href = url;
+                        document.getElementById('redirectDialog').showModal();
+                    })
                 } else {
                     res.text().then(err => {
                         alert(err);
@@ -194,6 +198,14 @@
                 console.log("ERROR: ", err);
                 alert("An error occured while submitting your clips.")
             });
+        });
+
+        // make it impossible to close the Prolific redirect
+        const dialog = document.getElementById('redirectDialog')
+        dialog.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+            }
         })
     </script>
 </body>

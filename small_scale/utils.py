@@ -16,54 +16,59 @@ def query_db(conn: Connection, query, args=(), one=False) -> list[dict] | dict |
 
 def has_unassigned_tasks(c: Connection) -> bool | str:
     """
-    Returns True if Actions table has at least one row with a value of 1 in the 'status' column. Otherwise returns False.
+    Returns True if Actions table has at least one row with a value of 1 in the 'assigned' column. Otherwise returns False.
 
     If an issue occurs while executing the SQL query, a string error message is returned instead.
     """
-    result: dict[str, int] | None = query_db(c, 'SELECT COUNT(*) as cnt FROM Actions WHERE status = 1', one=True)
+    result: dict[str, int] | None = query_db(c, 'SELECT COUNT(*) as cnt FROM Actions WHERE assigned = 0', one=True)
     if not result:
         return 'An error occured while trying to check if we have any tasks left for you to do.'
     return result['cnt'] > 0
 
-def assign_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> str | bool:
+def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str] | str:
     """
-    Generates a random verification token for this Prolific session. 
-    
-    Returns it as a string upon success; returns the boolean False if a failure occured.
-    """
-    alphabet = string.ascii_letters + string.digits
-    token: str = "".join(secrets.choice(alphabet) for _ in range(16))
-    try:
-        cursor = conn.execute('INSERT INTO Sessions(token, user_id, study_id, session_id) VALUES (?, ?, ?, ?);', 
-                          (token, user_id, study_id, session_id))
-        r = cursor.rowcount
-        conn.commit()
-        return token if r == 1 else False
-    except Exception as e:
-        return False
-    
-def assign_action(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str] | str:
-    """
-    Assigns an action to the Prolific user with PID `user_id`.
+    1. If no existing token, assign action & token and return them to user
+    2. If token exists but has not been used, return existing action & token to user
+    3. If token exists and has already been used, return an error
 
-    Upon success, returns 2-tuple containing [0] primary key of that action (as an integer) in the Actions table and [1] action name.
-    
-    Upon a SQL failure, returns a string error message.
+    Upon case 1 or 2, returns 4-tuple of action id, action name, domain name, and token.
+    Upon case 3, returns string.
     """
     conn.execute('BEGIN TRANSACTION;')
-    available_actions: list[dict[str, int]] | None = query_db(conn, 'SELECT id, name FROM Actions WHERE status = 1 ORDER BY RANDOM() LIMIT 30;')
-    if not available_actions:
-        conn.execute('ROLLBACK;')
-        return 'An error occured while assigning you a task. Please reload this page and try again. If the issue persists, please exit the survey. Our apologies.'
-    for action in available_actions:
-        action_id, action_name = action['id'], action['name']
-        cursor = conn.execute('UPDATE Actions SET status = 2, user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND status = 1;', (user_id, study_id, session_id, action_id))
+    res = conn.execute('SELECT * FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ?;', (user_id, study_id, session_id)).fetchall()
+
+    if not res:
+        # CASE 1
+        error = 'An error occured while trying to assign you a task. Please reload this page and try again. If the issue persists, something is wrong on our end.'
+
+        # attempt to find an available task
+        actions = conn.execute('SELECT id, name, domain_name FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
+        if not actions: return error
+        action_id, action_name, domain_name = actions[0]['id'], actions[0]['name'], actions[0]['domain_name']
+
+        # found an available task; attempt to assign it
+        token = generate_token()
+        cursor = conn.execute('UPDATE Actions SET assigned = 1, token = ?, user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0;', (token, user_id, study_id, session_id, action_id))
         if cursor.rowcount == 1:
             conn.execute('COMMIT;')
-            return action_id, action_name
-    
-    conn.execute('ROLLBACK;')
-    return 'We were unable to assign you a task. Please reload this page and try again. If the issue persists, please exit the survey. Our apologies.'
+            return action_id, action_name, domain_name, token
+        
+        # unable to assign the task; rollback changes and return error
+        conn.execute('ROLLBACK;')
+        return error
+    elif int(res[0]['finished']) == 0:
+        # CASE 2
+        return int(res[0]['id']), res[0]['name'], res[0]['domain_name'], res[0]['token']
+    else:
+        # CASE 3
+        return 'You have already completed this Prolific task.'
+
+def generate_token() -> str:
+    """
+    Returns a randomized 16 character token.
+    """
+    alphabet = string.ascii_letters + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(16))
 
 def add_clips(conn: Connection, clips: list[tuple[str, float, float]], action_id: int) -> int:
     """
@@ -87,7 +92,7 @@ def verify_token(c: Connection, token: str, user_id: str, study_id: str, session
 
     Returns boolean indicating if this operation was successful.
     """
-    res: dict | None = query_db(c, 'SELECT token FROM Sessions WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id), one=True)
+    res: dict | None = query_db(c, 'SELECT token FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id), one=True)
     return True if res and res['token'] == token else False
 
 def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> bool:
@@ -97,7 +102,8 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
     Returns boolean indicating if this operation was successful.
     """
     try:
-        cursor = conn.execute('UPDATE Sessions SET finished = 1 WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id))
+        cursor = conn.execute('UPDATE Actions SET finished = 1 WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id))
+        print(cursor)
         r = cursor.rowcount
     except Exception as e:
         return False
@@ -107,4 +113,4 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
         return True
     else:
         conn.rollback()
-        return False
+        return False    

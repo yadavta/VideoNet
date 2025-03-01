@@ -1,43 +1,54 @@
+## Data Management
+
+`Domains` table schema:
+
+- `id`: primary key (unique identifier)
+- `name`: most common name of domain (unique)
+
 `Actions` table schema:
-    - `id`: primary key (unique identifier)
-    - `name`: most common name of the action
-    - `alt_names`: a comma-seperated string containing alternative names for the action
-    - `status`: an integer between 1 and 3 (inclusive) representing the status of data collection for this action:
-      - 1: awaiting assignment to a user
-      - 2: assigned to a user, waiting on the user to finish processing it
-      - 3: processed/done
-    - `user_id`: Prolific ID of user assigned to this action
-    - `study_id`: identifier for Prolific study through which this action was processed
-    - `session_id`: identifier for unique Prolific study through which this action was processed
+
+- `id`: primary key (unique identifier)
+- `name`: most common name of the action
+- `assigned`: boolean (stored as integer) representing if this session has been assigned to a Prolific user
+- `finished`: boolean (stored as integer) representing if this session has been "finished", that is if a Prolific completion code has been given out for it
+- `alt_names`: a comma-seperated string containing alternative names for the action
+- `domain_name`: foreign key reference to `Domains(name)`
+- `user_id`: Prolific ID of user assigned to this action
+- `study_id`: identifier for Prolific study through which this action was processed
+- `session_id`: identifier for unique Prolific study through which this action was processed
+- `token`: random 16-character token used to verify that Prolific submission is made by the same person who opened the task
 
 `Clips` table schema:
-    - `id`: primary key (unique identifier)
-    - `action_id`: foreign key reference to `Actions(id)`
-    - `yt_id`: YouTube ID of YouTube video containing action (will likely be extracted from `url` programmatically)
-    - `url`: YouTube URL of YouTube video containing action
-    - `start`: clip start time in seconds
-    - `end`: clip end time in seconds
 
-`Sessions` table schema:
-    - `id`: primary key (unique identifier)
-    - `token`: randomly generated "token" that verifies that user actually finished survey
-    - `user_id`: Prolific ID of user assigned to this action
-    - `study_id`: identifier for Prolific study through which this action was processed
-    - `session_id`: identifier for unique Prolific study through which this action was processed
-    - `finished`: boolean (stored as integer) representing if this session has been "finished", that is if a Prolific completion code has been given out for it
+- `id`: primary key (unique identifier)
+- `action_id`: foreign key reference to `Actions(id)`
+- `yt_id`: YouTube ID of YouTube video containing action (will likely be extracted from `url` programmatically)
+- `url`: YouTube URL of YouTube video containing action
+- `start`: clip start time in seconds
+- `end`: clip end time in seconds
   
 SQLite commands to create the tables:
 ```sql
 PRAGMA foreign_keys = ON;
 
+CREATE TABLE Domains(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    UNIQUE (name)
+);
+
 CREATE TABLE Actions(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    status INTEGER DEFAULT 1,
     name TEXT NOT NULL,
+    assigned INTEGER DEFAULT 0,
+    finished INTEGER DEFAULT 0,
     alt_names TEXT,
+    domain_name TEXT REFERENCES Domains(name) NOT NULL,
     user_id TEXT,
     study_id TEXT,
-    session_id TEXT
+    session_id TEXT,
+    token TEXT,
+    UNIQUE(user_id, study_id, session_id)
 );
 
 CREATE TABLE Clips(
@@ -48,21 +59,11 @@ CREATE TABLE Clips(
     start REAL NOT NULL,
     end REAL NOT NULL
 );
-
-CREATE TABLE Sessions(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    study_id TEXT NOT NULL,
-    session_id TEXT NOT NULL,
-    finished INTEGER DEFAULT 0,
-    UNIQUE(user_id, study_id, session_id)
-);
 ```
 
 To unassign all tasks for testing purposes:
 ```sql
-UPDATE Actions SET status = 1, user_id = NULL, study_id = NULL, session_id = NULL;
+UPDATE Actions SET user_id = NULL, study_id = NULL, session_id = NULL, finished = 0, assigned = 0;
 ```
 
 To add all skateboarding tasks for testing purposes:

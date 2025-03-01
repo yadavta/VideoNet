@@ -86,6 +86,10 @@ html {
     animation: slideInFade 0.5s ease-out forwards;
 }
 
+.dialog-txt {
+    margin: 0 auto 2.5rem;
+}
+
 .user-input {
     margin-top: 2rem;
 }
@@ -118,10 +122,14 @@ td:last-child{
 
 input[type=text] {
     width: 100%;
+    height: 2rem;
+    text-align: center;
 }
 
 input[type=number]{
     width: 5em;
+    height: 2em;
+    text-align: center;
 }
 
 button {
@@ -158,6 +166,26 @@ button:active {
 .yes-btn{
     background-color: #4CAF50;
     color: white;
+}
+
+.dialog-btn {
+    padding: 1rem;
+    border: 2px outset;
+    border-radius: 3px;
+    background-color: whitesmoke;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+dialog {
+    text-align: center;
+    padding: 3rem;
+}
+
+dialog::backdrop {
+    background-color: rgb(0, 0, 0, 0.7);
 }
 
 footer {

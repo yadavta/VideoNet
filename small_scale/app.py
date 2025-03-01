@@ -2,13 +2,11 @@ from flask import Flask, request, render_template, g, redirect, url_for
 from sqlite3 import Connection
 import utils
 
-import sqlite3
+import sqlite3, os
 
 app = Flask(__name__)
-DATABASE = 'persistent/data.db'
-
-# THE FOLLOWING **MUST** BE CHANGED FOR EACH PROLIFIC STUDY
-PROLIFIC_COMPLETION_CODE = "CHHXQERF"
+DATABASE = os.environ.get('DATABASE', 'persistent/db')
+PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
 
 # **** BEGIN DATABASE ****
 def get_db() -> Connection:
@@ -57,19 +55,15 @@ def show_task():
     session_id: str | None = request.args.get('SESSION_ID')
     if not user_id or not study_id or not session_id:
         return ERROR_MSG
+    
+    # get action and token
+    action_info: tuple[int, str, str, str] | str = utils.get_action_and_token(get_db(), user_id, study_id, session_id)
+    if isinstance(action_info, str): return action_info
+    action_id, action_name, domain_name, token = action_info
 
-    # assign SQL action
-    action_info: tuple[int, str] | str = utils.assign_action(get_db(), user_id, study_id, session_id)
-    if isinstance(action_info, str): return action_info     # check for SQL error
-    action_id, action_name = action_info
-
-    # assign completion token
-    token: str = utils.assign_token(get_db(), user_id, study_id, session_id)
-
-    if token is False:
-        return 'We were unable to assign your session a completion token. This likely means that your (user_id, study_id, session_id) combination provided by Prolific is not unique.'
+    # render webpage
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 
-              'action_id': action_id, 'action_name': action_name}
+              'action_id': action_id, 'action_name': action_name, 'domain_name': domain_name}
     return render_template('start.html', **kwargs)
 
 @app.route('/process', methods=['POST'])
@@ -109,6 +103,6 @@ def process_action():
     if not utils.use_token(get_db(), user_id, study_id, session_id):
         return 'An error occured while marking your survey as finished.', 400
     
-    return render_template('finish.html', completion_code=PROLIFIC_COMPLETION_CODE), 200
+    return f'https://app.prolific.com/submissions/complete?cc={PROLIFIC_COMPLETION_CODE}', 200
 
 # **** ENDOF PAGE SERVING ****
