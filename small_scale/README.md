@@ -26,6 +26,11 @@
 - `url`: YouTube URL of YouTube video containing action
 - `start`: clip start time in seconds
 - `end`: clip end time in seconds
+
+`Feedback` table schema:
+
+- `id`: primary key (unique identifier)
+- `thoughts`: the actual feedback
   
 SQLite commands to create the tables:
 ```sql
@@ -59,6 +64,11 @@ CREATE TABLE Clips(
     start REAL NOT NULL,
     end REAL NOT NULL
 );
+
+CREATE TABLE Feedback(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    thoughts TEXT NOT NULL
+)
 ```
 
 To unassign all tasks for testing purposes:

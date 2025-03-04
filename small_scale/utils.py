@@ -103,9 +103,8 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
     """
     try:
         cursor = conn.execute('UPDATE Actions SET finished = 1 WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id))
-        print(cursor)
         r = cursor.rowcount
-    except Exception as e:
+    except Exception:
         return False
 
     if r == 1:
@@ -113,4 +112,21 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
         return True
     else:
         conn.rollback()
-        return False    
+        return False
+    
+def add_feedback(conn: Connection, feedback: str) -> bool:
+    """
+    Logs user feedback.
+
+    Returns boolean indicating if operation was successful.
+    """
+    try:
+        cursor = conn.execute('INSERT INTO Feedback(thoughts) VALUES (?)', (feedback,))
+        if cursor.rowcount == 1:
+            conn.commit()
+            return True
+        else:
+            conn.rollback()
+            return False
+    except Exception:
+        return False

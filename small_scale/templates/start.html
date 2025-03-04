@@ -68,6 +68,8 @@
                 <p hidden id="confirmMsg" class="confirm-txt"></p>
 
                 <div id="submitDiv" hidden>
+                    <p class="para-txt center-txt">We are currently piloting this study interface. Please provide any feedback on it below.</p>
+                    <textarea type="text" class="feedback" name="feedback" id="feedback" rows="3" placeholder="Type your feedback here"></textarea>
                     <button id="submitBtn" type="submit" class="big-btn yes-btn">Submit</button>
                 </div>
                     
@@ -163,7 +165,7 @@
             // control reaching here indicates that form inputs are valid
             document.getElementById('errorMsg').hidden = true;
             document.getElementById('submitDiv').hidden = false;
-            document.getElementById('confirmMsg').textContent = 'Your inputs look good. Please press the green button below to submit your work.';
+            document.getElementById('confirmMsg').textContent = 'Your inputs look good. Please answer the question below and then press the green button.';
             document.getElementById('confirmMsg').hidden = false;
             if (!scrolled) {
                 document.getElementById('confirmMsg').scrollIntoView({behavior: "smooth"});
@@ -180,6 +182,7 @@
             data.set('user_id', '{{user_id}}')
             data.set('study_id', '{{study_id}}')
             data.set('session_id', '{{session_id}}')
+            data.set('feedback', document.getElementById('feedback').value)
 
             // submit POST request to backend to save clips to database
             fetch("{{url_for('process_action')}}", {

@@ -103,6 +103,10 @@ def process_action():
     if not utils.use_token(get_db(), user_id, study_id, session_id):
         return 'An error occured while marking your survey as finished.', 400
     
+    feedback = args.get('feedback')
+    if feedback and feedback != '':
+        utils.add_feedback(get_db(), feedback)
+    
     return f'https://app.prolific.com/submissions/complete?cc={PROLIFIC_COMPLETION_CODE}', 200
 
 # **** ENDOF PAGE SERVING ****

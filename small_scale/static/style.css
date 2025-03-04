@@ -126,6 +126,13 @@ input[type=text] {
     text-align: center;
 }
 
+textarea {
+    padding: 1rem;
+    width: 100%;
+    text-align: left;
+    font-size: large;
+}
+
 input[type=number]{
     width: 5em;
     height: 2em;
