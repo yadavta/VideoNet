@@ -81,9 +81,10 @@ def process_action():
 
     clips: list[tuple[str, float, float]] = []
     for i in range(1, 7):
-        url, start, end = args.get(f'url{i}', type=str), args.get(f'start{i}', type=float), args.get(f'end{i}', type=float)
+        url, start, end = args.get(f'url{i}', type=str), args.get(f'start{i}'), args.get(f'end{i}')
         if url is None or start is None or end is None:
             return f'An error occured while processing the clips you found. We could not locate the url, start, or end time for video #{i}.', 400
+        start, end = utils.convert_to_seconds(start), utils.convert_to_seconds(end)
         clips.append((url, start, end))
     
     action_id = args.get('action_id', type=int)

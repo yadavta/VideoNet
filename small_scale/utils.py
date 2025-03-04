@@ -130,3 +130,14 @@ def add_feedback(conn: Connection, feedback: str) -> bool:
             return False
     except Exception:
         return False
+
+def convert_to_seconds(time: str) -> float:
+    """
+    Given a timestamp in MM:SS or seconds format, converts it to seconds format and returns as a float.
+    """
+    time = time.strip()
+    if ':' not in time:
+        return float(time)
+    
+    min, sec = time.split(':')
+    return 60 * float(min) + float(sec)

@@ -73,7 +73,7 @@ CREATE TABLE Feedback(
 
 To unassign all tasks for testing purposes:
 ```sql
-UPDATE Actions SET user_id = NULL, study_id = NULL, session_id = NULL, finished = 0, assigned = 0;
+UPDATE Actions SET user_id = NULL, study_id = NULL, session_id = NULL, token = NULL, finished = 0, assigned = 0;
 ```
 
 To add all skateboarding tasks for testing purposes:

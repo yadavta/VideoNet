@@ -34,28 +34,40 @@
                     <thead>
                         <tr>
                             <th>YouTube URL</th>
-                            <th>Start Time (seconds)</th>
-                            <th>End Time (seconds)</th>
+                            <th>Start Time<br><span class="units">(MM:SS or seconds)</span></th>
+                            <th>End Time<br><span class="units">(MM:SS or seconds)</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input required type="text" name="url1"></td> <td><input required type="number" name="start1"></td> <td><input required type="number" name="end1"></td>
+                            <td><input required type="text" class="url" name="url1"></td>
+                            <td><input required type="text" class="time" name="start1"></td>
+                            <td><input required type="text" class="time" name="end1"></td>
                         </tr>
                         <tr>
-                            <td><input required type="text" name="url2"></td> <td><input required type="number" name="start2"></td> <td><input required type="number" name="end2"></td>
+                            <td><input required type="text" class="url" name="url2"></td>
+                            <td><input required type="text" class="time" name="start2"></td>
+                            <td><input required type="text" class="time" name="end2"></td>
                         </tr>
                         <tr>
-                            <td><input required type="text" name="url3"></td> <td><input required type="number" name="start3"></td> <td><input required type="number" name="end3"></td>
+                            <td><input required type="text" class="url" name="url3"></td>
+                            <td><input required type="text" class="time" name="start3"></td>
+                            <td><input required type="text" class="time" name="end3"></td>
                         </tr>
                         <tr>
-                            <td><input required type="text" name="url4"></td> <td><input required type="number" name="start4"></td> <td><input required type="number" name="end4"></td>
+                            <td><input required type="text" class="url" name="url4"></td>
+                            <td><input required type="text" class="time" name="start4"></td>
+                            <td><input required type="text" class="time" name="end4"></td>
                         </tr>
                         <tr>
-                            <td><input required type="text" name="url5"></td> <td><input required type="number" name="start5"></td> <td><input required type="number" name="end5"></td>
+                            <td><input required type="text" class="url" name="url5"></td>
+                            <td><input required type="text" class="time" name="start5"></td>
+                            <td><input required type="text" class="time" name="end5"></td>
                         </tr>
                         <tr>
-                            <td><input required type="text" name="url6"></td> <td><input required type="number" name="start6"></td> <td><input required type="number" name="end6"></td>
+                            <td><input required type="text" class="url" name="url6"></td>
+                            <td><input required type="text" class="time" name="start6"></td>
+                            <td><input required type="text" class="time" name="end6"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -133,12 +145,41 @@
                 }
             }
 
-            console.log(urls);
-
             // form validation: ensure provided start and end times are reasonable
             for (let i = 1; i <= 6 && error === ''; i++) {
-                let start = Number(data.get(`start${i}`));
-                let end = Number(data.get(`end${i}`));
+                // convert start and end times from text inputs to numbers
+                let start = data.get(`start${i}`);
+                let end = data.get(`end${i}`);
+                if (start.includes(':')) {
+                    const tmp = start.trim().split(":")
+                    if (tmp.length !== 2) {
+                        error = `ERROR: the start time for video #${i} must have the format MM:SS or the format SS where MM is minutes and SS is seconds. For example, 5:12 or 14:01 or 54 all work.`;
+                        break;
+                    }
+                    try {
+                        start = 60 * Number(tmp[0]) + Number(tmp[1])
+                    } catch {
+                        error = `ERROR: the start time for video #${i} must have the format MM:SS or the format SS where MM is minutes and SS is seconds. For example, 5:12 or 14:01 or 54 all work.`;
+                        break;
+                    }
+                    
+                } else start = Number(start);
+
+                if (end.includes(':')) {
+                    const tmp = end.trim().split(":")
+                    if (tmp.length !== 2) {
+                        error = `ERROR: the start end for video #${i} must have the format MM:SS or the format SS where MM is minutes and SS is seconds. For example, 5:12 or 14:01 or 54 all work.`;
+                        break;
+                    }
+                    try {
+                        end = 60 * Number(tmp[0]) + Number(tmp[1])
+                    } catch {
+                        error = `ERROR: the start time for video #${i} must have the format MM:SS or the format SS where MM is minutes and SS is seconds. For example, 5:12 or 14:01 or 54 all work.`;
+                        break;
+                    }
+                } else end = Number(end);
+
+                // validate start and end times
                 if (start < 0 || end < 0) {
                     error = `ERROR: the start and end times for video #${i} cannot be negative.`;
                     break;
