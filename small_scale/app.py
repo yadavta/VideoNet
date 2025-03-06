@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, g, redirect, url_for
 from sqlite3 import Connection
 import utils
 
-import sqlite3, os
+import sqlite3, os, uuid
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
@@ -50,9 +50,12 @@ def show_task():
         return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
 
     # Extract identifiers provided by Prolific; see https://researcher-help.prolific.com/en/article/866615
-    user_id: str | None = request.args.get('PROLIFIC_PID')
-    study_id: str | None = request.args.get('STUDY_ID')
-    session_id: str | None = request.args.get('SESSION_ID')
+    # user_id: str | None = request.args.get('PROLIFIC_PID')
+    # study_id: str | None = request.args.get('STUDY_ID')
+    # session_id: str | None = request.args.get('SESSION_ID')
+    user_id = uuid.uuid4()
+    study_id = "first"
+    session_id = uuid.uuid4()
     if not user_id or not study_id or not session_id:
         return ERROR_MSG
     
