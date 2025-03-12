@@ -1,0 +1,230 @@
+html {
+    background-color: #FFDAB9;
+}
+
+.intro-container {
+    max-width: 900px;
+    margin: 1rem auto;
+}
+
+.user-input {
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+.top-txt {
+    text-align: center;
+    /* font-family: 'Verdana', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 0rem;
+}
+
+.para-txt {
+    /* text-align: left; */
+    font-size: larger;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.center-txt {
+    text-align: center;
+}
+
+.action-txt {
+    text-align: center;
+    font-size: x-large;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-1px); }
+    20%, 40%, 60%, 80% { transform: translateX(1px); }
+}
+
+.error-txt {
+    text-align: center;
+    font-size: x-large;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 1.5rem;
+    color: #9B2226;
+}
+
+.error-txt:not([hidden]) {
+    animation: fadeIn 0.5s ease-in-out;
+    animation: shake 0.5s ease-in-out;
+}
+
+.attention-txt {
+    font-weight: bold;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-txt {
+    margin: 0 auto 2.5rem;
+}
+
+table {
+    width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+}
+
+th, td {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    border: 2px solid #803c00;
+}
+
+th {
+    padding: 1rem 0;
+}
+
+th:first-child {
+    font-size: x-large;
+}
+
+th:last-child {
+    font-size: larger;
+}
+
+td:first-child {
+    width: 79%;
+    padding: 1rem 0;
+}
+
+video {
+    max-height: 600px;
+}
+
+td:last-child {
+    width: 21%;
+    padding-left: 1%;
+    font-size: larger;
+}
+
+media-controller {
+    width: 90%;
+}
+
+media-chrome, media-controller {
+    background-color: transparent !important;
+}
+
+input[type="radio"] {
+    float: left;
+    clear: left;
+    margin-right: 1em;
+    transform: scale(1.5);
+}
+
+input[type="radio"] + label {
+    display: block;
+    text-align: left;
+}
+
+.l1 {
+    font-weight: bold;
+    color: #006400;
+}
+
+.l2 {
+    font-weight: bold;
+    color: #875C00;
+}
+
+.l3 {
+    font-weight: bold;
+    color: #990033;
+}
+
+button {
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 2rem auto 2rem auto;
+    display: block;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.big-btn {
+    padding: 1.5rem 3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 9px;
+}
+
+.bigg-btn {
+    padding: 2rem 4rem;
+    font-size: 2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 9px;
+}
+
+.yes-btn{
+    background-color: #4CAF50;
+    color: white;
+}
+
+.dialog-btn {
+    padding: 1rem;
+    border: 2px outset;
+    border-radius: 3px;
+    background-color: whitesmoke;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+dialog {
+    text-align: center;
+    padding: 3rem;
+}
+
+dialog::backdrop {
+    background-color: rgb(0, 0, 0, 0.7);
+}
+
+footer {
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 3rem;
+    margin-bottom: -0.5rem;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #FFD1AA;
+}
+
+.logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
+    margin-top: 3rem;
+}
+
+.footer-logo {
+    max-height: 40px;
+    width: auto;
+}
