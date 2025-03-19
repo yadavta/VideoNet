@@ -9,10 +9,11 @@
 
 - `id`: primary key (unique identifier)
 - `name`: most common name of the action
-- `assigned`: boolean (stored as integer) representing if this session has been assigned to a Prolific user
-- `finished`: boolean (stored as integer) representing if this session has been "finished", that is if a Prolific completion code has been given out for it
+- `assigned`: boolean (stored as integer) representing if this action has been assigned to a Prolific user
+- `finished`: boolean (stored as integer) representing if this action has been "finished", that is if a Prolific completion code has been given out for it
 - `alt_names`: a comma-seperated string containing alternative names for the action
 - `domain_name`: foreign key reference to `Domains(name)`
+- `subdomain`: optional action type (e.g., for Football this might be "Penalty" to indicate to Prolific user that the action is a penalty)
 - `user_id`: Prolific ID of user assigned to this action
 - `study_id`: identifier for Prolific study through which this action was processed
 - `session_id`: identifier for unique Prolific study through which this action was processed
@@ -49,11 +50,13 @@ CREATE TABLE Actions(
     finished INTEGER DEFAULT 0,
     alt_names TEXT,
     domain_name TEXT REFERENCES Domains(name) NOT NULL,
+    subdomain TEXT,
     user_id TEXT,
     study_id TEXT,
     session_id TEXT,
     token TEXT,
-    UNIQUE(user_id, study_id, session_id)
+    UNIQUE(user_id, study_id, session_id),
+    UNIQUE(name, domain_name)
 );
 
 CREATE TABLE Clips(
@@ -67,8 +70,11 @@ CREATE TABLE Clips(
 
 CREATE TABLE Feedback(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    thoughts TEXT NOT NULL
-)
+    thoughts TEXT NOT NULL,
+    user_id TEXT,
+    study_id TEXT,
+    session_id TEXT
+);
 ```
 
 To unassign all tasks for testing purposes:

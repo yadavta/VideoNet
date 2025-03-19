@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, g, redirect, url_for
 from sqlite3 import Connection
 import utils
 
-import sqlite3, os, uuid
+import sqlite3, os
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
@@ -57,20 +57,20 @@ def show_task():
         return ERROR_MSG
     
     # get action and token
-    action_info: tuple[int, str, str, str] | str = utils.get_action_and_token(get_db(), user_id, study_id, session_id)
+    action_info: tuple[int, str, str, str | None, str] | str = utils.get_action_and_token(get_db(), user_id, study_id, session_id)
     if isinstance(action_info, str): return action_info
-    action_id, action_name, domain_name, token = action_info
+    action_id, action_name, domain_name, subdomain, token = action_info
 
     # render webpage
-    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 'subdomain': subdomain,
               'action_id': action_id, 'action_name': action_name, 'domain_name': domain_name, 'domain_name_lowercase': domain_name.lower()}
     return render_template('start.html', **kwargs)
 
 @app.route('/process', methods=['POST'])
 def process_action():
     """
-    Adds the specified 6 clips to Clips database.
-    Assumes that `request.form` contains validated arguments ('url{i}', 'start{i}', and 'end{i}' times, where i=1..6).
+    Adds the specified 7 clips to Clips database.
+    Assumes that `request.form` contains validated arguments ('url{i}', 'start{i}', and 'end{i}' times, where i=1..7).
 
     Upon success, returns 200 status with HTML for survey finish page. Upon failure, returns non-200 code with a helpful error message in string form.
     """
@@ -80,7 +80,7 @@ def process_action():
         return 'An error occured while accessing the Prolific identifiers associated with you.', 400
 
     clips: list[tuple[str, float, float]] = []
-    for i in range(1, 7):
+    for i in range(1, 8):
         url, start, end = args.get(f'url{i}', type=str), args.get(f'start{i}'), args.get(f'end{i}')
         if url is None or start is None or end is None:
             return f'An error occured while processing the clips you found. We could not locate the url, start, or end time for video #{i}.', 400
@@ -106,7 +106,7 @@ def process_action():
     
     feedback = args.get('feedback')
     if feedback and feedback != '':
-        utils.add_feedback(get_db(), feedback)
+        utils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
     
     return f'https://app.prolific.com/submissions/complete?cc={PROLIFIC_COMPLETION_CODE}', 200
 

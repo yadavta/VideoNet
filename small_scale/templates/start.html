@@ -17,18 +17,22 @@
             <p class="para-txt">To this end, we are collecting <b>short clips</b> that contain <b>{{domain_name_lowercase}} actions</b>.</p>
             <hr>
             <p class="para-txt">You are provided with the name of a {{domain_name_lowercase}} action.</p>
-            <p class="para-txt">Your job is to go on YouTube and find <b>6 videos</b> that include the specified action.</p>
+            <p class="para-txt">Your job is to go on YouTube and find <b>7 videos</b> that include the specified action.</p>
             <p class="para-txt">For each video, you must identify a <b>segment</b> of the video <b>where the action occurs</b>.</p>
             <p class="para-txt">You will be asked to report the <b>start and end times</b> (in seconds) of each segment.</p>
             <p class="para-txt">Ensure that each segment includes only <b>one instance</b> of the action.</p>
-            <p class="para-txt">No more than 2 of the 6 YouTube videos you find may be from YouTube Shorts.</p>
-            <p class="para-txt">If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/tutorial.mp4" target="_blank">watch this tutorial</a>.</p>
+            <p class="para-txt">Ensure that there is <b>NOT large text</b> on the screen during your chosen segment.</p>
+            <p class="para-txt">No more than 3 of the 7 YouTube videos you find may be from YouTube Shorts.</p>
+            <p class="para-txt">Please include segments from the beginning, middle, and end of videos. Do NOT only include segments from the very start or very end of videos.</p>
+            <p class="para-txt">You may enter the segment start/end times as <b>seconds</b> or <b>timestamps</b>. For example, if the segment starts 2 minutes and 12 seconds into the video, you could enter it as "132" or "2:12". If you do the latter, please <b>remember the colon</b>.</p>
+            <p class="para-txt attention-txt">If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/tutorial.mp4" target="_blank">watch this tutorial</a>.</p>
             <hr>
         </div>
 
         <div class="user-input">
             <form id="clipsForm" action="{{url_for('process_action')}}">
                 <p class="action-txt">Domain Name: <b>{{domain_name}}</b></p>
+                {% if subdomain is not none %} <p class="action-txt">Action Type: <b>{{subdomain}}</b></p> {% endif %}
                 <p class="action-txt">Action Name: <b>{{action_name}}</b></p>
                 <table>
                     <thead>
@@ -69,6 +73,11 @@
                             <td><input required type="text" class="time" name="start6"></td>
                             <td><input required type="text" class="time" name="end6"></td>
                         </tr>
+                        <tr>
+                            <td><input required type="text" class="url" name="url7"></td>
+                            <td><input required type="text" class="time" name="start7"></td>
+                            <td><input required type="text" class="time" name="end7"></td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -95,6 +104,8 @@
     </dialog>
 
     <script>
+        NUM_CLIPS = 7;
+
         let scrolled = false;
         document.getElementById('validateBtn').addEventListener('click', () => {
             // hide messages immediately
@@ -111,7 +122,7 @@
             
             // form validation: ensure provided URLs are indeed YouTube URLs
             const urls = new Map();
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= NUM_CLIPS; i++) {
                 let url_string = data.get(`url${i}`);
                 try {
                     // ensure its a valid URL
@@ -146,7 +157,7 @@
             }
 
             // form validation: ensure provided start and end times are reasonable
-            for (let i = 1; i <= 6 && error === ''; i++) {
+            for (let i = 1; i <= NUM_CLIPS && error === ''; i++) {
                 // convert start and end times from text inputs to numbers
                 let start = data.get(`start${i}`);
                 let end = data.get(`end${i}`);
@@ -259,7 +270,7 @@
 <footer>
     <!-- <p>This research is being conducted by the University of Washington and the Allen Institute for Artificial Intelligence.</p> -->
     <div class="logos">
-        <a href="https://raivn.cs.washington.edu/" target="_self"> <img class="footer-logo" src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo" src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
         <a href="https://allenai.org/" target="_blank"><img class="footer-logo" src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
     </div>
 </footer>

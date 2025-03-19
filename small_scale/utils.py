@@ -31,7 +31,7 @@ def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_
     2. If token exists but has not been used, return existing action & token to user
     3. If token exists and has already been used, return an error
 
-    Upon case 1 or 2, returns 4-tuple of action id, action name, domain name, and token.
+    Upon case 1 or 2, returns 5-tuple of action id, action name, domain name, subdomain and token.
     Upon case 3, returns string.
     """
     conn.execute('BEGIN TRANSACTION;')
@@ -42,23 +42,23 @@ def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_
         error = 'An error occured while trying to assign you a task. Please reload this page and try again. If the issue persists, something is wrong on our end.'
 
         # attempt to find an available task
-        actions = conn.execute('SELECT id, name, domain_name FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
+        actions = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
         if not actions: return error
-        action_id, action_name, domain_name = actions[0]['id'], actions[0]['name'], actions[0]['domain_name']
+        action_id, action_name, domain_name, subdomain = actions[0]['id'], actions[0]['name'], actions[0]['domain_name'], actions[0]['subdomain']
 
         # found an available task; attempt to assign it
         token = generate_token()
         cursor = conn.execute('UPDATE Actions SET assigned = 1, token = ?, user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0;', (token, user_id, study_id, session_id, action_id))
         if cursor.rowcount == 1:
             conn.execute('COMMIT;')
-            return action_id, action_name, domain_name, token
+            return action_id, action_name, domain_name, subdomain, token
         
         # unable to assign the task; rollback changes and return error
         conn.execute('ROLLBACK;')
         return error
     elif int(res[0]['finished']) == 0:
         # CASE 2
-        return int(res[0]['id']), res[0]['name'], res[0]['domain_name'], res[0]['token']
+        return int(res[0]['id']), res[0]['name'], res[0]['domain_name'], res[0]['subdomain'], res[0]['token']
     else:
         # CASE 3
         return 'You have already completed this Prolific task.'
@@ -114,14 +114,14 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
         conn.rollback()
         return False
     
-def add_feedback(conn: Connection, feedback: str) -> bool:
+def add_feedback(conn: Connection, feedback: str, user_id: str, study_id: str, session_id: str) -> bool:
     """
     Logs user feedback.
 
     Returns boolean indicating if operation was successful.
     """
     try:
-        cursor = conn.execute('INSERT INTO Feedback(thoughts) VALUES (?)', (feedback,))
+        cursor = conn.execute('INSERT INTO Feedback(thoughts, user_id, study_id, session_id) VALUES (?)', (feedback, user_id, study_id, session_id))
         if cursor.rowcount == 1:
             conn.commit()
             return True
