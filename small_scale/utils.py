@@ -121,7 +121,7 @@ def add_feedback(conn: Connection, feedback: str, user_id: str, study_id: str, s
     Returns boolean indicating if operation was successful.
     """
     try:
-        cursor = conn.execute('INSERT INTO Feedback(thoughts, user_id, study_id, session_id) VALUES (?)', (feedback, user_id, study_id, session_id))
+        cursor = conn.execute('INSERT INTO Feedback(thoughts, user_id, study_id, session_id) VALUES (?, ?, ?, ?)', (feedback, user_id, study_id, session_id))
         if cursor.rowcount == 1:
             conn.commit()
             return True
