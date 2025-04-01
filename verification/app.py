@@ -42,10 +42,10 @@ def show_task():
     Note that the "landing page" contains the entirety of the task; this is the only page the Prolific user will interact with.
     """
     # Ensure that we have tasks remaining
-    # work_available = vutils.has_unassigned_tasks(get_db())
-    # if isinstance(work_available, str): return work_available   # check for SQL error
-    # if not work_available:
-    #     return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
+    work_available = vutils.has_unassigned_tasks(get_db())
+    if isinstance(work_available, str): return work_available   # check for SQL error
+    if not work_available:
+        return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
 
     # Extract identifiers provided by Prolific; see https://researcher-help.prolific.com/en/article/866615
     user_id: str | None = request.args.get('PROLIFIC_PID')
