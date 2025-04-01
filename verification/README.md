@@ -39,7 +39,16 @@ Note the existence of an `Assignments` table. In `small_scale`, we had a bijecti
 - `study_id`: identifier for Prolific study through which this annotation was generated
 - `session_id`: identifier for unique Prolific session through which this annotation was generated
 
+`Feedback` table schema:
+
+- `id`: primary key (unique identifier)
+- `thoughts`: the actual feedback
+- `user_id`: Prolific ID of user who provided this feedback
+- `study_id`: identifier for Prolific study through which this feedback was received
+- `session_id`: identifier of unique Prolific sesssion through which this feedback was given
+
 These tables can be created as follows.
+
 ```sql
 PRAGMA foreign_keys = ON;
 
@@ -79,4 +88,18 @@ CREATE TABLE Annotations(
     session_id TEXT NOT NULL,
     UNIQUE (clip_id, user_id, study_id)
 );
+
+CREATE TABLE Feedback(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    thoughts TEXT NOT NULL,
+    user_id TEXT,
+    study_id TEXT,
+    session_id TEXT
+);
+```
+
+Add some clips for testing purposes
+```sql
+INSERT INTO Actions('name', 'domain_name') VALUES ('Laser Flip', 'Skateboarding'), ('Kickflip', 'Skateboarding');
+INSERT INTO Clips('action_id', 'gcp_url') VALUES (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_good.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_3.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_poor.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_2.mp4'), (2, 'https://storage.googleapis.com/action-atlas/public/fs_flip_6.mp4');
 ```

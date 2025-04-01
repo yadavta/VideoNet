@@ -4,7 +4,6 @@ Utilities used by our web app.
 These are (mostly) for specific purposes but are located here to limit the length of `app.py`.
 """
 from sqlite3 import Connection
-import secrets, string
 
 NUM_ANNOTATORS_PER_CLIP = 3     # how many workers should verify each clip?
 
@@ -120,7 +119,6 @@ def mark_finished(conn: Connection, user_id: str, action_id: str) -> int:
     Assumes that this is only (successfully) called once per assigment.
     """
     conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-    print(action_id)
     res = conn.execute('SELECT finished FROM Actions WHERE id = ?', (action_id,)).fetchall()
     if len(res) != 1 :
         conn.execute('ROLLBACK;')
@@ -133,3 +131,20 @@ def mark_finished(conn: Connection, user_id: str, action_id: str) -> int:
         return 1
     conn.execute('COMMIT;')
     return 0
+
+def add_feedback(conn: Connection, feedback: str, user_id: str, study_id: str, session_id: str) -> bool:
+    """
+    Logs user feedback.
+
+    Returns boolean indicating if operation was successful.
+    """
+    try:
+        cursor = conn.execute('INSERT INTO Feedback(thoughts, user_id, study_id, session_id) VALUES (?, ?, ?, ?)', (feedback, user_id, study_id, session_id))
+        if cursor.rowcount == 1:
+            conn.commit()
+            return True
+        else:
+            conn.rollback()
+            return False
+    except Exception:
+        return False

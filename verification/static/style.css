@@ -224,3 +224,13 @@ footer {
     max-height: 40px;
     width: auto;
 }
+
+textarea {
+    padding: 1rem;
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    font-size: large;
+}

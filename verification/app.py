@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os
-import vutils as vutils
+import vutils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
@@ -98,5 +98,9 @@ def submit_annotations():
     
     if vutils.mark_finished(get_db(), user_id, action_id):
         return 'An error occured while marking your task as finished. Please try submitting again.', 400
+    
+    feedback = args.get('feedback')
+    if feedback and feedback != '':
+        vutils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
 
     return render_template('finish.html', completion_code=PROLIFIC_COMPLETION_CODE)
