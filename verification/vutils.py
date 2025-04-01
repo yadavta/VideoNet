@@ -49,7 +49,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
             
             # see if any of these 10 tasks work with our user (i.e., check for overlap)
             for a in actions:
-                overlap = conn.execute('SELECT * FROM Assignments WHERE action_id = ? AND user_id = ?', (a['id'], user_id)).fetchall()
+                overlap = conn.execute('SELECT * FROM Assignments WHERE action_id = ? AND user_id = ? AND study_id = ?', (a['id'], user_id, study_id)).fetchall()
                 if not overlap:
                     action_id, action_name, domain_name, subdomain, curr_assigned = a['id'], a['name'], a['domain_name'], a['subdomain'], a['assigned']
                     matched = True
@@ -92,36 +92,43 @@ def get_clips(c: Connection, action_id: str) -> list[tuple[int, str]] | str:
        return "An error occured while trying to fetch the clips associated with the action you were assigned. Please reload this page and try again. If the issue persists, please return the survey as something is wrong on our end." 
     return [(c['id'], c['url']) for c in res]
 
-def add_annotations(conn: Connection, clips: list[tuple[int, int]], user_id: str, study_id: str, session_id: str) -> int:
+def add_annotations(conn: Connection, clips: list[tuple[int, int]], action_id: str, user_id: str, study_id: str, session_id: str) -> int:
     """
     For each entry in `clips`, adds a row in the Annotations table to reflect that the Prolific submission uniquely identified by the provdied `user_id`, `study_id`, and `session_id`
     determined that the clip with primary key `clips[0]` in Clips for the action in Actions with primary key `action_id` should be classified as `clips[1]`.
 
-    Returns 0 on success, 1 on failure.
+    Returns 0 on success, 1 on failure, and -1 if annotations have been added already.
     """
     conn.execute('BEGIN TRANSACTION;')
     for clip in clips:
-        cursor = conn.execute('INSERT INTO Annotations(clip_id, classification, user_id, study_id, session_id) VALUES(?, ?, ?, ?, ?)',
-                           (clip[0], clip[1], user_id, study_id, session_id))
-        if cursor.rowcount != 1:
+        try:
+            cursor = conn.execute('INSERT INTO Annotations(clip_id, classification, action_id, user_id, study_id, session_id) VALUES(?, ?, ?, ?, ?, ?)',
+                           (clip[0], clip[1], action_id, user_id, study_id, session_id))
+            if cursor.rowcount != 1:
+                conn.execute('ROLLBACK;')
+                return 1
+        except Exception:
             conn.execute('ROLLBACK;')
-            return 1
+            return -1
     conn.execute('COMMIT;')
     return 0
 
 def mark_finished(conn: Connection, user_id: str, action_id: str) -> int:
     """
     Increments the `finished` counter for the specified action by specified user. Returns 0 on success, 1 on failure.
+    
+    Assumes that this is only (successfully) called once per assigment.
     """
     conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-    cursor = conn.execute('SELECT finished FROM Actions WHERE action_id = ?', (action_id,))
-    if cursor.rowcount != 1 :
+    print(action_id)
+    res = conn.execute('SELECT finished FROM Actions WHERE id = ?', (action_id,)).fetchall()
+    if len(res) != 1 :
         conn.execute('ROLLBACK;')
         return 1
-    curr_finished = cursor.fetchall()[0]['finished']
-    cursor1 = conn.execute('UPDATE Actions SET finished = ? WHERE action_id = ? ', (curr_finished + 1, action_id))
-    cursor2 = conn.execute('UPDATE Assignments SET completed = 1 WHERE user_id = ?, action_id = ?', (user_id, action_id))
-    if cursor.rowcount != 1:
+    curr_finished = res[0]['finished']
+    cursor1 = conn.execute('UPDATE Actions SET finished = ? WHERE id = ? ', (curr_finished + 1, action_id))
+    cursor2 = conn.execute('UPDATE Assignments SET completed = 1 WHERE user_id = ? AND action_id = ?', (user_id, action_id))
+    if cursor1.rowcount != 1 or cursor2.rowcount != 1:
         conn.execute('ROLLBACK;')
         return 1
     conn.execute('COMMIT;')

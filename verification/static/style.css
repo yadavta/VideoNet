@@ -97,16 +97,12 @@ th:last-child {
 }
 
 td:first-child {
-    width: 79%;
+    width: 77%;
     padding: 1rem 0;
 }
 
-video {
-    max-height: 600px;
-}
-
 td:last-child {
-    width: 21%;
+    width: 23%;
     padding-left: 1%;
     font-size: larger;
 }

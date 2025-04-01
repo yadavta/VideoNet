@@ -76,6 +76,7 @@ CREATE TABLE Annotations(
     action_id INTEGER REFERENCES Actions(id) NOT NULL,
     user_id TEXT NOT NULL,
     study_id TEXT NOT NULL,
-    session_id TEXT NOT NULL
+    session_id TEXT NOT NULL,
+    UNIQUE (clip_id, user_id, study_id)
 );
 ```

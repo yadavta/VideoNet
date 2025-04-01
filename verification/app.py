@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os
-import verification.vutils as vutils
+import vutils as vutils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
@@ -89,11 +89,14 @@ def submit_annotations():
             return 'An error occured while parsing your form data.', 400
         clips.append((clip_id, clip_annotation))
     
-    if vutils.add_annotations(get_db(), clips, user_id, study_id, session_id):
-        return 'An error occured while saving your annotations. Please try submitting again.', 400
-    
     action_id = args.get('action_id', type=int)
+    tmp = vutils.add_annotations(get_db(), clips, action_id, user_id, study_id, session_id)
+    if tmp == 1:
+        return 'An error occured while saving your annotations. Please try submitting again.', 400
+    elif tmp == -1:
+        return 'You have already submitted annotations for this clip. Please reach out to us on Prolific.', 400
+    
     if vutils.mark_finished(get_db(), user_id, action_id):
         return 'An error occured while marking your task as finished. Please try submitting again.', 400
 
-    return f'https://app.prolific.com/submissions/complete?cc={PROLIFIC_COMPLETION_CODE}', 200
+    return render_template('finish.html', completion_code=PROLIFIC_COMPLETION_CODE)

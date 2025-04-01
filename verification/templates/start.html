@@ -1,0 +1,138 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="intro-container">
+        <h1 class="top-txt" id="top">Welcome!</h1>
+        <p class="para-txt">You will be provided with <b>{{clips | length}}</b> clips of {{domain_name | lower}}.</p>
+        <p class="para-txt">Each clip is <i>supposed</i> to include a <b>{{action_name}}</b>, which is 
+                <b>{% if action_name is not none or action_name[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} 
+                {{subdomain or 'action'}} in {{domain_name | lower}}</b>.</p>
+        <p class="para-txt">We are almost 100% sure that a <b>majority</b> of the clips below include a {{action_name}}.
+            However, a <b>handful</b> of the clips may not include this action. Your job is to watch the clips closely
+            and identify which clips do NOT include the desired action. Please be advised that we do not expect you to
+            extensively research the action on your own (that would be quite time consuming). Instead, since most of the
+            clips are of the desired action, we expect you to use your pattern recognition skills to recognize the outliers.</p>
+        <p class="para-txt">If the clip contains the desired action and is well trimmed, select "<span class="l1">yes, and well-trimmed</span>".</p>
+        <p class="para-txt">If the clip contains the desired action but is poorly trimmed, select "<span class="l2">yes, but poorly-trimmed</span>".</p>
+        <p class="para-txt">If the clip does not contain the desired action, select "<span class="l3">no</span>".</p>
+        <p class="para-txt">Please use your best judgement when determing if a clip is "poorly trimmed". In particular, the following scenarios are considered "poorly trimmed": if the clip
+            does not contain the entirety of the desired action; if the clip contains {{domain_name | lower }} actions other than the desired action; if the clip has a noticeable
+            delay between the beginning of the clip and when the action starts; if the clip has a noticeable delay between when the action finishes and the ending of the clip.
+        </p>
+        <p class="para-txt">If you are unsure about if a clip contains the desired action, feel free to search Google or YouTube for more information about a {{action_name}}.</p>
+        <p class="para-txt attention-txt">If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/verification_tutorial.mp4" target="_blank">watch this tutorial</a>.</p>
+    </div>
+
+    <div class="user-input">
+        <form name="annotations" action="/submit" onsubmit="return validateForm()" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="study_id" value="{{ study_id }}">
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            <input type="hidden" name="action_id" value="{{ action_id }}">
+            <input type="hidden" name="clip_count" value="{{ clips | length }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Clip</th>
+                        <th>Does the clip contain <br> the desired action?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for clip in clips %}
+                    <tr>
+                        <td>
+                            <media-controller>
+                                <video
+                                    slot="media" muted
+                                    src="{{ clip[1] }}"
+                                    style="max-height:600px;"
+                                    id="video-{{loop.index}}">
+                                </video>
+                                
+                                <media-control-bar>
+                                    <media-play-button></media-play-button>
+                                    <media-time-display></media-time-display>
+                                    <media-time-range></media-time-range>
+                                    <media-mute-button></media-mute-button>
+                                    <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
+                                    <media-fullscreen-button id="btn-{{loop.index}}"></media-fullscreen-button>
+                                </media-control-bar>
+                            </media-controller>
+                        </td>
+                        <td>
+                            <input hidden type="text" name="c{{ loop.index }}-id" value="{{ clip[0] }}">
+                            <input type="radio" name="c{{ loop.index }}" id="c{{ loop.index }}-1" value="1"> <label for="c{{ loop.index }}-1" class="l1">Yes, and well-trimmed</label><br>
+                            <input type="radio" name="c{{ loop.index }}" id="c{{ loop.index }}-2" value="2"> <label for="c{{ loop.index }}-2" class="l2">Yes, but poorly-trimmed</label><br>
+                            <input type="radio"name="c{{ loop.index }}" id="c{{ loop.index }}-3" value="3"> <label for="c{{ loop.index }}-3" class="l3">No</label><br>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p hidden id="errorMsg" class="error-txt"></p>
+
+            <button type="submit" class="yes-btn bigg-btn">Submit</button>
+        </form>
+
+        <script>
+            function validateForm() {
+                error = document.getElementById('errorMsg');
+                error.hidden = true;
+                void error.offsetWidth; // force DOM update
+
+                form = document.forms['annotations']
+                for (let i = 1; i <= {{ clips | length}}; i++) {
+                    if (form[`c${i}`].value.length === 0) {
+                        error.textContent = `ERROR: you must select an option for clip #${i}`;
+                        error.hidden = false;
+                        return false;
+                    }
+                }
+                error.hidden = true;
+                return true;
+            }
+
+            for (let i = 1; i <= {{ clips | length}}; i++){
+                const fullScreen = document.getElementById(`btn-${i}`);
+                const video = document.getElementById(`video-${i}`);
+                fullScreen.addEventListener('click', () => {
+                    video.style.maxHeight = 'none';
+                    currentFullscreenVideo = video;
+                })
+            }
+
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE/Edge
+
+            function handleFullscreenChange() {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                    currentFullscreenVideo.style.maxHeight = '600px';
+                    currentFullscreenVideo = null;
+                }
+            }
+        </script>
+    </div>
+</body>
+
+<footer>
+    <div class="logos">
+        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo"
+                src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://allenai.org/" target="_blank"><img class="footer-logo"
+                src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
+    </div>
+</footer>
