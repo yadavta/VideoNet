@@ -18,6 +18,7 @@
 - `study_id`: identifier for Prolific study through which this action was processed
 - `session_id`: identifier for unique Prolific study through which this action was processed
 - `token`: random 16-character token used to verify that Prolific submission is made by the same person who opened the task
+- `timestamp`: 
 
 `Clips` table schema:
 
@@ -47,6 +48,7 @@ CREATE TABLE Actions(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     assigned INTEGER DEFAULT 0,
+    assigned_at TEXT,
     finished INTEGER DEFAULT 0,
     alt_names TEXT,
     domain_name TEXT REFERENCES Domains(name) NOT NULL,
@@ -79,7 +81,7 @@ CREATE TABLE Feedback(
 
 To unassign all tasks for testing purposes:
 ```sql
-UPDATE Actions SET user_id = NULL, study_id = NULL, session_id = NULL, token = NULL, finished = 0, assigned = 0;
+UPDATE Actions SET user_id = NULL, study_id = NULL, session_id = NULL, token = NULL, finished = 0, assigned = 0, assigned_at = NULL;
 ```
 
 To add all skateboarding tasks for testing purposes:

@@ -35,20 +35,20 @@ def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_
     Upon case 3, returns string.
     """
     conn.execute('BEGIN TRANSACTION;')
-    res = conn.execute('SELECT * FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ?;', (user_id, study_id, session_id)).fetchall()
+    res = conn.execute('SELECT * FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ?', (user_id, study_id, session_id)).fetchall()
 
     if not res:
         # CASE 1
         error = 'An error occured while trying to assign you a task. Please reload this page and try again. If the issue persists, something is wrong on our end.'
 
         # attempt to find an available task
-        actions = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
+        actions = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1').fetchall()
         if not actions: return error
         action_id, action_name, domain_name, subdomain = actions[0]['id'], actions[0]['name'], actions[0]['domain_name'], actions[0]['subdomain']
 
         # found an available task; attempt to assign it
         token = generate_token()
-        cursor = conn.execute('UPDATE Actions SET assigned = 1, token = ?, user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0;', (token, user_id, study_id, session_id, action_id))
+        cursor = conn.execute("UPDATE Actions SET assigned = 1, assigned_at = datetime('now'), token = ?, user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0", (token, user_id, study_id, session_id, action_id))
         if cursor.rowcount == 1:
             conn.execute('COMMIT;')
             return action_id, action_name, domain_name, subdomain, token
@@ -79,7 +79,7 @@ def add_clips(conn: Connection, clips: list[tuple[str, float, float]], action_id
     conn.execute('BEGIN TRANSACTION;')
     for i in range(len(clips)):
         url, start, end = clips[i]
-        cursor = conn.execute('INSERT INTO Clips(action_id, url, start, end) VALUES (?, ?, ?, ?);', (action_id, url, start, end))
+        cursor = conn.execute('INSERT INTO Clips(action_id, url, start, end) VALUES (?, ?, ?, ?)', (action_id, url, start, end))
         if cursor.rowcount != 1: 
             conn.execute('ROLLBACK;')
             return 1
@@ -92,7 +92,7 @@ def verify_token(c: Connection, token: str, user_id: str, study_id: str, session
 
     Returns boolean indicating if this operation was successful.
     """
-    res: dict | None = query_db(c, 'SELECT token FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id), one=True)
+    res: dict | None = query_db(c, 'SELECT token FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0', (user_id, study_id, session_id), one=True)
     return True if res and res['token'] == token else False
 
 def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> bool:
@@ -102,7 +102,7 @@ def use_token(conn: Connection, user_id: str, study_id: str, session_id: str) ->
     Returns boolean indicating if this operation was successful.
     """
     try:
-        cursor = conn.execute('UPDATE Actions SET finished = 1 WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0;', (user_id, study_id, session_id))
+        cursor = conn.execute('UPDATE Actions SET finished = 1 WHERE user_id = ? AND study_id = ? AND session_id = ? AND finished = 0', (user_id, study_id, session_id))
         r = cursor.rowcount
     except Exception:
         return False
