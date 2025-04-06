@@ -1,8 +1,7 @@
 #!/bin/bash
 
-if [ ! -f "persistent/data.db" ]; then
-    mkdir persistent
-    cd persistent
+if [ ! -f "/persistent/data.db" ]; then
+    cd /persistent
     touch data.db
     sqlite3 data.db << EOF
     PRAGMA foreign_keys = ON;
