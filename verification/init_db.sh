@@ -3,7 +3,6 @@
 if [ ! -f "persistent/data.db" ]; then
     mkdir persistent
     cd persistent
-    rm data.db
     touch data.db
     sqlite3 data.db << EOF
     PRAGMA foreign_keys = ON;
