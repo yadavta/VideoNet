@@ -16,7 +16,7 @@
 - `subdomain`: optional action type (e.g., for Football this might be "Penalty" to indicate to Prolific user that the action is a penalty)
 - `user_id`: Prolific ID of user assigned to this action
 - `study_id`: identifier for Prolific study through which this action was processed
-- `session_id`: identifier for unique Prolific study through which this action was processed
+- `session_id`: identifier for unique Prolific session through which this action was processed
 - `token`: random 16-character token used to verify that Prolific submission is made by the same person who opened the task
 - `timestamp`: 
 
@@ -33,6 +33,9 @@
 
 - `id`: primary key (unique identifier)
 - `thoughts`: the actual feedback
+- `user_id`: Prolific ID of user who provided this feedback
+- `study_id`: identifier for Prolific study through which this feedback was received
+- `session_id`: identifier of unique Prolific sesssion through which this feedback was given
   
 SQLite commands to create the tables:
 ```sql

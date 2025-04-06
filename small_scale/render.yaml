@@ -4,4 +4,9 @@ services:
     name: return-tasks
     runtime: python
     schedule: "0 * * * *"
-    startcommand: python return_tasks.py
+    startCommand: python return_tasks.py
+  - type: cron
+    name: hi-james
+    runtime: bash
+    schedule: "* * * * *"
+    startCommand: touch foo.txt

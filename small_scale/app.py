@@ -1,11 +1,11 @@
-from flask import Flask, request, render_template, g, redirect, url_for
+from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import utils
 
 import sqlite3, os
 
 app = Flask(__name__)
-DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
+DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
 PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
 
 # **** BEGIN DATABASE ****
