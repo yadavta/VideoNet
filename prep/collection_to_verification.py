@@ -23,8 +23,7 @@ parser.add_argument('-g', '--gcs', required=True, type=str, help='GCS folder whe
 parser.add_argument('-t', '--tmpdir', required=False, type=str, help='Directory where videos are staged for download, trim, upload. Results are stored here.')
 parser.add_argument('-y', '--overwrite', required=False, action='store_true', help='If trimmed clips already exists, chooses to overrwrite them instead of skipping them. Same goes for if converted videos already exist.')
 args = parser.parse_args()
-if args.gcs[-1] != '/':
-    args.gcs = f'{args.gcs}/'
+args.gcs = os.path.join(args.gcs, 'exact/')
 if args.gcs[:5] != 'gs://':
     print("ERROR: GCS bucket given via -g flag must begin with 'gs://'")
     exit()
@@ -58,13 +57,12 @@ pattern = r'(?:youtube\.com/(?:watch\?(?:.*?&)?v=|shorts/)|youtu\.be/)([a-zA-Z0-
 cursor.execute('SELECT id, url FROM Clips WHERE yt_id IS NULL')
 lack_yt_id = cursor.fetchall()
 for row in lack_yt_id:
-    match = re.search(pattern, row['url'])
+    match = re.search(pattern, row['url'].strip())
     if match:
         yt_id = match.group(1)
         cursor.execute('UPDATE Clips SET yt_id = ? WHERE id = ?', (yt_id, row['id']))
     else:
-        print(f"ERROR: Unable to extract YouTube ID for URL {row['url']} from row ID {row['id']}")
-        break
+        print(f"\tERROR: Unable to extract YouTube ID for URL {row['url']} from row ID {row['id']}")
 conn.commit()
 
 # Parse JSONL contents
@@ -72,7 +70,7 @@ with open(args.jsonl, 'r') as f:
     lines = [json.loads(l) for l in f]
 videos = lines
 num_vids = len(videos)
-urls = [v['url'] for v in videos]   # these are GCS paths, not web URLs
+urls = [v['video_path'] for v in videos]   # these are GCS paths, not web URLs
 tails = [v.split('/')[-1] for v in urls]
 yt_ids = [v.split('/')[-2] for v in urls]    # these are youtube ids, not the sql row ids
 exts = [t.split('.')[-1] for t in tails]
@@ -85,7 +83,8 @@ missing = [c['url'] for c in clips if c['yt_id'] not in ids_hash]
 if missing:
     print("\n\tERROR: the following YouTube URLs are missing from the GCS bucket [indicating a failure by yt_crawl]")
     print("\t", missing, '\n')
-    shutil.rmtree(tmp_dir)
+    if not args.tmpdir:
+        shutil.rmtree(tmp_dir)
     exit()
 
 # Download videos from GCS, skipping those that have already been downloaded
@@ -103,12 +102,12 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
     for _ in tqdm(concurrent.futures.as_completed(futures), total=num_vids, desc="    Downloading videos"):
         pass
 
-# # Ensure all videos are browser-compatible
+# Ensure all videos are browser-compatible
 err_str = []
 err_yts = []
 defacto_compatible = set(['mp4', 'webm'])
 acceptable_codecs = set(['h264', 'vp9', 'av1'])
-for i in tqdm(range(num_vids), desc="    Converting vidoes"):
+for i in tqdm(range(num_vids), desc="    Converting videos"):
     if exts[i] in defacto_compatible:
         continue
     
@@ -170,16 +169,33 @@ def trim_and_upload(clip_data) -> tuple[str | None, str | None, str | None, str 
         err = f"ERROR: unable to locate a video with MP4 or WEBM extension at {tmp_dir}/videos/{yt_id}"
         print(err)
         return None, None, err, yt_id
-        
     og_path = f"{tmp_dir}/videos/{yt_id}.{ext}"
+    
+    # ensure start point of trim is during video
+    length_cmd = ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', og_path]
+    res = subprocess.run(length_cmd, capture_output=True, text=True)
+    if res.returncode:
+        print(res.returncode)
+        err = f"ERROR: ffprobe could not determine duration of video with yt id {yt_id}"
+        # print(err)
+        return None, None, err, yt_id
+    duration = float(res.stdout.strip())
+    if start > duration:
+        err = f"ERROR: clip with UUID {unique} and yt id {yt_id} had duration {duration} but clip start time {start}"
+        print(err)
+        return None, None, err, yt_id
+    
+    # trim
     trimmed_path = f"{tmp_dir}/clips/{unique}.{ext}"
     trimmed_tail = f"{unique}.{ext}"
-    res = subprocess.run(['ffmpeg', '-loglevel', 'quiet', '-i', og_path, '-ss', str(start), '-to', str(end), trimmed_path, '-y'])
+    res = subprocess.run(['ffmpeg', '-loglevel', 'quiet', '-i', og_path, '-ss', str(start), '-to', str(end + 1), trimmed_path, '-y'])
     if res.returncode:
+        # trimming failure
         err = f"ERROR: ffmpeg trimming from {start} to {end + 1} failed for uuid {unique} and yt id {yt_id}"
         print(err)
         return None, None, err, yt_id
     else:
+        # upload
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(os.path.join(subbuckets, trimmed_tail))
@@ -240,7 +256,11 @@ if not Path(vdb_path).is_file():
     CREATE TABLE Clips(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         action_id INTEGER NOT NULL REFERENCES Actions(id),
-        gcp_url TEXT NOT NULL UNIQUE
+        gcp_url TEXT NOT NULL UNIQUE,
+        uuid TEXT NOT NULL UNIQUE,
+        yt_id TEXT NOT NULL,
+        start REAL NOT NULL,
+        end REAL NOT NULL
     );
 
     CREATE TABLE Annotations(
@@ -260,8 +280,7 @@ if not Path(vdb_path).is_file():
         user_id TEXT,
         study_id TEXT,
         session_id TEXT
-    );
-    """
+    );"""
     vconn = sqlite3.connect(vdb_path)
     vconn.row_factory = make_dicts
     vcursor = vconn.cursor()
@@ -302,13 +321,14 @@ else:
 for unique in uuids:
     if unique in already_added:
         continue
-    cursor.execute('SELECT action_id, yt_id FROM Clips WHERE uuid = ?', (unique,))
+    cursor.execute('SELECT action_id, yt_id, start, end FROM Clips WHERE uuid = ?', (unique,))
     res = cursor.fetchone()
     if res:
-        action_id = res['action_id']
+        action_id, yt_id, start, end = res['action_id'], res['yt_id'], res['start'], res['end']
         gcp_tail = new_tails[unique]
         gcp_url = 'https://storage.googleapis.com/' + os.path.join(gcs_without_prefix, gcp_tail)
-        vcursor.execute('INSERT INTO Clips (action_id, gcp_url) VALUES (?, ?)', (action_id, gcp_url))
+        vcursor.execute('INSERT INTO Clips (action_id, gcp_url, uuid, yt_id, start, end) VALUES (?, ?, ?, ?, ?, ?)', 
+                        (action_id, gcp_url, unique, yt_id, start, end))
     else:
         err = f"ERROR: no clip in {args.database} with UUID {unique}"
         err_str.append(err)

@@ -4,6 +4,8 @@ Given a list of 7 clips of an action proposed by Prolific users, ask another Pro
 
 ## Data Management
 
+**WARNING: ANY UPDATES TO THIS SECTION MUST BE REFLECTED IN `collection_to_verification.py` AS WELL.**
+
 Note the existence of an `Assignments` table. In `small_scale`, we had a bijection between actions and tasks, so we extended our `Actions` table to serve as an assignment tracker too. In this case, we want 3-5 assignments per action, so we need a seperate table to keep track of assignments/tasks.
 
 `Actions` table schema:
@@ -26,6 +28,10 @@ Note the existence of an `Assignments` table. In `small_scale`, we had a bijecti
 - `id`: primary key (unique identifier)
 - `action_id`: foreign key reference to `Actions(id)`
 - `gcp_url`: publicly-accessible URL of clip (likely hosted on Google Cloud)
+- `uuid`: unique identifier assigned to clip that stays with it across stages
+- `yt_id`: YouTube ID of YouTube video containing action
+- `start`: where the annotator from previous (collection) stage determined the clip starts
+- `end`:where the annotator from previous (collection) stage determined the clip ends
 
 `Annotations` table schema:
 - `id`: primary key (unique identifier)
@@ -53,7 +59,7 @@ These tables can be created as follows.
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE Actions(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     domain_name TEXT NOT NULL,
     assigned INTEGER DEFAULT 0,
@@ -75,11 +81,15 @@ CREATE TABLE Assignments(
 CREATE TABLE Clips(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     action_id INTEGER NOT NULL REFERENCES Actions(id),
-    gcp_url TEXT NOT NULL UNIQUE
+    gcp_url TEXT NOT NULL UNIQUE,
+    uuid TEXT NOT NULL UNIQUE,
+    yt_id TEXT NOT NULL,
+    start REAL NOT NULL,
+    end REAL NOT NULL
 );
 
 CREATE TABLE Annotations(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     clip_id INTEGER REFERENCES Clips(id) NOT NULL,
     classification INTEGER DEFAULT 0,
     action_id INTEGER REFERENCES Actions(id) NOT NULL,
