@@ -36,9 +36,9 @@ def show_error():
 def return_tasks():
     if request.args.get('animal') == 'beaver':
         subprocess.run(['python', '/opt/render/project/src/verification/return_tasks.py'])
-        return
+        return 'Returned (if applicable)', 200
     else:
-        return 404
+        return 'Wrong Password', 401
 
 @app.route('/task')
 def show_task():

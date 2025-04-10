@@ -16,8 +16,8 @@
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{clips | length}} clips</b> of <b>{{domain_name}}</b>.</p>
         <p class="para-txt">Each clip is <i>supposed</i> to include a <b>{{action_name}}</b>, which is 
-                <b>{% if subdomain is not none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} 
-                {{subdomain or 'action'}} in {{domain_name}}</b>.</p>
+                <b>{% if subdomain is not none or subdomain[0] in ['a', 'A', 'e', 'E','i', 'I', 'o', 'O', 'u', 'U'] %} an {% else %} a {% endif%} 
+                {{subdomain or 'action'}}</b> in <b>{{domain_name}}</b>.</p>
         <p class="para-txt">We are almost 100% sure that a <b>majority</b> of the clips below include a {{action_name}}.
             However, a <b>handful</b> of the clips may not include this action. Your job is to watch the clips closely
             and identify which clips do NOT include the desired action. Please be advised that we do not expect you to
