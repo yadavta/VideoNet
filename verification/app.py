@@ -111,4 +111,4 @@ def submit_annotations():
     if feedback and feedback != '':
         vutils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
 
-    return render_template('finish.html', completion_code=PROLIFIC_COMPLETION_CODE)
+    return render_template('finish.html', **kwargs)
