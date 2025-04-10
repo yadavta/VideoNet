@@ -16,8 +16,8 @@
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{clips | length}} clips</b> of <b>{{domain_name}}</b>.</p>
         <p class="para-txt">Each clip is <i>supposed</i> to include a <b>{{action_name}}</b>, which is 
-                <b>{% if subdomain is not none or subdomain[0] in ['a', 'A', 'e', 'E','i', 'I', 'o', 'O', 'u', 'U'] %} an {% else %} a {% endif%} 
-                {{subdomain or 'action'}}</b> in <b>{{domain_name}}</b>.</p>
+                {% if subdomain is none or subdomain[0] in ['a', 'A', 'e', 'E','i', 'I', 'o', 'O', 'u', 'U'] %} an {% else %} a {% endif%}
+                <b>{{subdomain or 'action'}}</b> in <b>{{domain_name}}</b>.</p>
         <p class="para-txt">We are almost 100% sure that a <b>majority</b> of the clips below include a {{action_name}}.
             However, a <b>handful</b> of the clips may not include this action. Your job is to watch the clips closely
             and identify which clips do NOT include the desired action. Please be advised that we do not expect you to
@@ -34,7 +34,7 @@
             <li class="para-txt">the clip has a noticeable delay between when the action finishes and the ending of the clip</li>
             <li class="para-txt">the clip contains text on-screen that identifies the action</li>
         </ul>
-        {% if domain == "American Football" and subdomain == "Penalty" %}
+        {% if domain_name == "American Football" and subdomain == "Penalty" %}
             <p class="para-txt">Additionally, for this action specifically, we want the clip to only include the football play. If the clip includes the referree announcing the penalty or the TV broadcast writing the name of the penalty on-screen, then please mark it as poorly trimmed.</p>
         {% endif %}
         <p class="para-txt">If you are unsure about if a clip contains the desired action, feel free to search Google or YouTube for more information about a {{action_name}}.</p>
