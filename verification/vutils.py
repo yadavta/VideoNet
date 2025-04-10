@@ -60,7 +60,8 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
 
             # found an available task; attempt to assign it
             cursor1 = conn.execute('UPDATE Actions SET assigned = ? WHERE id = ?', (int(curr_assigned) + 1, action_id))
-            cursor2 = conn.execute('INSERT INTO Assignments(action_id, user_id, study_id, session_id) VALUES (?, ?, ?, ?)', (action_id, user_id, study_id, session_id))
+            cursor2 = conn.execute("INSERT INTO Assignments(action_id, user_id, study_id, session_id, assigned_at) VALUES (?, ?, ?, ?, datetime('now'))", 
+                                   (action_id, user_id, study_id, session_id))
             if cursor1.rowcount == 1 and cursor2.rowcount == 1:
                 conn.execute('COMMIT')
                 return action_id, action_name, domain_name, subdomain
