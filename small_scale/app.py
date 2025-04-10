@@ -1,15 +1,13 @@
 from flask import Flask, request, render_template, g
-from sqlite3 import Connection
+import sqlite3, os, subprocess
 import utils
-
-import sqlite3, os
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
 PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
 
 # **** BEGIN DATABASE ****
-def get_db() -> Connection:
+def get_db() -> sqlite3.Connection:
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
@@ -33,6 +31,14 @@ ERROR_MSG = "<h1> This page is only accessible through Prolific. </h1> <p> If yo
 @app.route('/')
 def show_error():
     return ERROR_MSG
+
+@app.route('/return-tasks-ostrich')
+def return_tasks():
+    if request.args.get('animal') == 'beaver':
+        subprocess.run(['python', '/opt/render/project/src/small_scale/return_tasks.py'])
+        return 'Returned (if applicable)', 200
+    else:
+        return 'Wrong Password', 401
 
 @app.route('/task')
 def show_task():

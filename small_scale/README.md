@@ -10,6 +10,7 @@
 - `id`: primary key (unique identifier)
 - `name`: most common name of the action
 - `assigned`: boolean (stored as integer) representing if this action has been assigned to a Prolific user
+- `assigned_at`: time that Prolific user was assigned this task; used for returning tasks programmatically due to timeout
 - `finished`: boolean (stored as integer) representing if this action has been "finished", that is if a Prolific completion code has been given out for it
 - `alt_names`: a comma-seperated string containing alternative names for the action
 - `domain_name`: foreign key reference to `Domains(name)`
@@ -18,7 +19,6 @@
 - `study_id`: identifier for Prolific study through which this action was processed
 - `session_id`: identifier for unique Prolific session through which this action was processed
 - `token`: random 16-character token used to verify that Prolific submission is made by the same person who opened the task
-- `timestamp`: 
 
 `Clips` table schema:
 

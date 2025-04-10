@@ -6,7 +6,7 @@ We assume this subset of jobs were 'returned' by the Prolific user.
 import sqlite3, datetime, os
 
 if __name__ == '__main__':
-    DATABASE = os.environ.get('DATABASE', 'persistent/data.db')
+    DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
     conn = sqlite3.connect(DATABASE)
     cursor = conn.execute('''
                           UPDATE Actions 

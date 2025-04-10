@@ -16,7 +16,7 @@ def query_db(conn: Connection, query, args=(), one=False) -> list[dict] | dict |
 
 def has_unassigned_tasks(c: Connection) -> bool | str:
     """
-    Returns True if Actions table has at least one row with a value of 1 in the 'assigned' column. Otherwise returns False.
+    Returns True if Actions table has at least one row with a value of 0 in the 'assigned' column. Otherwise returns False.
 
     If an issue occurs while executing the SQL query, a string error message is returned instead.
     """
