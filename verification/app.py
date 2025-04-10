@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
-import sqlite3, os
+import sqlite3, os, subprocess
 import vutils
 
 app = Flask(__name__)
@@ -31,6 +31,13 @@ ERROR_MSG = "<h1> This page is only accessible through Prolific. </h1> <p> If yo
 @app.route('/')
 def show_error():
     return ERROR_MSG
+
+@app.route('/return-tasks-ostrich')
+def return_tasks():
+    if request.args.get('animal') == 'beaver':
+        subprocess.run(['python', 'return_tasks.py'])
+    else:
+        return 404
 
 @app.route('/task')
 def show_task():
