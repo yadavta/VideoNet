@@ -5,7 +5,7 @@ import vutils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
-PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
+PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE', 'CTDHGYQX')
 
 # **** BEGIN DATABASE ****
 def get_db() -> Connection:
@@ -111,4 +111,5 @@ def submit_annotations():
     if feedback and feedback != '':
         vutils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
 
+    kwargs = {'completion_code': PROLIFIC_COMPLETION_CODE}
     return render_template('finish.html', **kwargs)
