@@ -23,6 +23,7 @@ Note the existence of an `Assignments` table. In `small_scale`, we had a bijecti
 - `user_id`: Prolific ID of user who this assignment is for
 - `study_id`: identifier for the Prolific study this assignment is for
 - `session_id`: identifier for the unique Prolific session this assignment is for
+- `assigned_at`: timestamp of when this assignment was made
 
 `Clips` table schema:
 - `id`: primary key (unique identifier)
@@ -75,6 +76,7 @@ CREATE TABLE Assignments(
     user_id TEXT NOT NULL,
     study_id TEXT NOT NULL,
     session_id TEXT NOT NULL,
+    assigned_at TEXT NOT NULL,
     UNIQUE (action_id, user_id, study_id)
 );
 
