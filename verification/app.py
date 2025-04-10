@@ -35,7 +35,8 @@ def show_error():
 @app.route('/return-tasks-ostrich')
 def return_tasks():
     if request.args.get('animal') == 'beaver':
-        subprocess.run(['python', 'return_tasks.py'])
+        subprocess.run(['python', '/opt/render/project/src/verification/return_tasks.py'])
+        return
     else:
         return 404
 
