@@ -26,10 +26,17 @@
         <p class="para-txt">If the clip contains the desired action and is well trimmed, select "<span class="l1">yes, and well-trimmed</span>".</p>
         <p class="para-txt">If the clip contains the desired action but is poorly trimmed, select "<span class="l2">yes, but poorly-trimmed</span>".</p>
         <p class="para-txt">If the clip does not contain the desired action, select "<span class="l3">no</span>".</p>
-        <p class="para-txt">Please use your best judgement when determing if a clip is "poorly trimmed". In particular, the following scenarios are considered "poorly trimmed": if the clip
-            does not contain the entirety of the desired action; if the clip contains {{domain_name | lower }} actions other than the desired action; if the clip has a noticeable
-            delay between the beginning of the clip and when the action starts; if the clip has a noticeable delay between when the action finishes and the ending of the clip.
-        </p>
+        <p class="para-txt">Please use your best judgement when determing if a clip is "poorly trimmed". In particular, the following scenarios are considered "poorly trimmed": </p>
+        <ul>
+            <li class="para-txt">the clip does not contain the entirety of the desired action;</li>
+            <li class="para-txt">the clip contains {{domain_name}} actions other than the desired action</li>
+            <li class="para-txt">the clip has a noticeable delay between the beginning of the clip and when the action starts</li>
+            <li class="para-txt">the clip has a noticeable delay between when the action finishes and the ending of the clip</li>
+            <li class="para-txt">the clip contains text on-screen that identifies the action</li>
+        </ul>
+        {% if domain == "American Football" and subdomain == "Penalty" %}
+            <p class="para-txt">Additionally, for this action specifically, we want the clip to only include the football play. If the clip includes the referree announcing the penalty or the TV broadcast writing the name of the penalty on-screen, then please mark it as poorly trimmed.</p>
+        {% endif %}
         <p class="para-txt">If you are unsure about if a clip contains the desired action, feel free to search Google or YouTube for more information about a {{action_name}}.</p>
         <p class="para-txt attention-txt">If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/verification_tutorial.mp4" target="_blank">watch this tutorial</a>.</p>
     </div>
