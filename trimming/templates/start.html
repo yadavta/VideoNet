@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
 
+    <link href="https://vjs.zencdn.net/8.20.0/video-js.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='videojs-trimmer.css') }}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <script src="https://vjs.zencdn.net/8.20.0/video.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/videojs-offset@2.1.3/dist/videojs-offset.min.js"></script>
+    <script src="{{ url_for('static', filename='videojs-trimmer.js') }}"></script>
+
     <title>Ai2 Prolific Survey</title>
 </head>
 
@@ -65,23 +73,33 @@
             <media-controller>
                 <video slot="media" muted src="{{ c.exact_url }}" style="max-height:600px;" id="video-good-{{loop.index}}">
                 </video>
-
                 <media-control-bar>
                     <media-play-button></media-play-button>
+                    <media-mute-button></media-mute-button>
+                    <!-- <media-volume-range></media-volume-range> -->
                     <media-time-display></media-time-display>
                     <media-time-range></media-time-range>
-                    <media-mute-button></media-mute-button>
                     <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
                     <media-fullscreen-button id="btn-good-{{loop.index}}"></media-fullscreen-button>
                 </media-control-bar>
             </media-controller>
         </div>
         {% endfor %}
-        <hr>
     </div>
 
+    <hr class="section-marker">
+
     <div class="user-input">
-        <form name="annotations" action="/submit" onsubmit="return validateForm()" method="post">
+        <p class="para-txt center-txt">
+            The videos below contain <b>poorly trimmed</b> clips.
+        </p>
+        <p class="para-txt center-txt">
+            The clips are denoted by the yellow bar; their start and end times are denoted by the cyan markers
+        </p>
+        <p class="para-txt center-txt">
+            Please fix the trimmings. Once you are done processing a clip, you can preview your trimming with the blue button.
+        </p>
+        <div id="form">
             <input type="hidden" name="user_id" value="{{ user_id }}">
             <input type="hidden" name="study_id" value="{{ study_id }}">
             <input type="hidden" name="session_id" value="{{ session_id }}">
@@ -90,72 +108,62 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Clip</th>
-                        <th>Does the clip contain <br> the desired action?</th>
+                        <th>Original Clip</th>
+                        <th>Your New Trimming</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for clip in clips %}
+                    {% for c in bad_clips %}
                     <tr>
                         <td>
-                            <media-controller>
-                                <video
-                                    slot="media" muted
-                                    src="{{ clip[1] }}"
-                                    style="max-height:600px;"
-                                    id="video-{{loop.index}}"
-                                >
-                                </video>
-                                
-                                <media-control-bar>
-                                    <media-play-button></media-play-button>
-                                    <media-time-display></media-time-display>
-                                    <media-time-range></media-time-range>
-                                    <media-mute-button></media-mute-button>
-                                    <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
-                                    <media-fullscreen-button id="btn-{{loop.index}}"></media-fullscreen-button>
-                                </media-control-bar>
-                            </media-controller>
+                            <!-- cushioned video with trimming UI -->
+                            <video id="bad-video-{{loop.index}}" class="video-js cushion" controls muted preload="auto" data-setup="{}">
+                                <source src="{{ c.cushion_url }}" type="video/mp4" />
+                                <p class="vjs-no-js">
+                                    To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                </p>
+                            </video>
+
+                            <!-- buttons to help with trimming -->
+                            <div class="binary-btns">
+                                <button type="button" class="small-btn tool-btn" id="move-start-btn" onclick="moveStart({{loop.index}})">
+                                    Move clip's <strong>start</strong> to <br> current position in video
+                                </button>
+                                <button type="button" class="small-btn tool-btn" id="move-end-btn" onclick="moveEnd({{loop.index}})">
+                                    Move clip's <strong>end</strong> to <br> current position in video
+                                </button>
+                                <button type="button" class="act-btn big-btn" onclick="previewClip({{loop.index}})">Preview</button>
+                            </div>
                         </td>
                         <td>
-                            <input hidden type="text" name="c{{ loop.index }}-id" value="{{ clip[0] }}">
-                            <input type="radio" name="c{{ loop.index }}" id="c{{ loop.index }}-1" value="1"> <label for="c{{ loop.index }}-1" class="l1">Yes, and well-trimmed</label><br>
-                            <input type="radio" name="c{{ loop.index }}" id="c{{ loop.index }}-2" value="2"> <label for="c{{ loop.index }}-2" class="l2">Yes, but poorly-trimmed</label><br>
-                            <input type="radio"name="c{{ loop.index }}" id="c{{ loop.index }}-3" value="3"> <label for="c{{ loop.index }}-3" class="l3">No</label><br>
+                            <!-- result of user trimming -->
+                            <div hidden id="confirm-div-{{loop.index}}">
+                                <video id="confirm-video-{{loop.index}}" class="video-js cushion" controls muted preload="auto" data-setup="{}">
+                                    <source src="{{ c.cushion_url}}" type="video/mp4" />
+                                    <p class="vjs-no-js">
+                                        To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                                    </p>
+                                </video>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-
-            <p hidden id="errorMsg" class="error-txt"></p>
-
+            
             <div>
                 <p class="para-txt center-txt">We are currently piloting this study interface. Please provide any feedback on it below.</p>
                 <textarea type="text" class="feedback" name="feedback" id="feedback" rows="3" placeholder="Type your feedback here"></textarea>
             </div>
+            
+            <p hidden id="errorMsg" class="error-txt"></p>
 
-            <button type="submit" class="yes-btn bigg-btn">Submit</button>
-        </form>
+            <button onclick="validateAndSubmitForm()" class="yes-btn bigg-btn">Submit</button>
+        </div>
+    </div>
 
         <script>
-            function validateForm() {
-                error = document.getElementById('errorMsg');
-                error.hidden = true;
-                void error.offsetWidth; // force DOM update
-
-                form = document.forms['annotations']
-                for (let i = 1; i <= {{ clips | length}}; i++) {
-                    if (form[`c${i}`].value.length === 0) {
-                        error.textContent = `ERROR: you must select an option for clip #${i}`;
-                        error.hidden = false;
-                        return false;
-                    }
-                }
-                error.hidden = true;
-                return true;
-            }
-
+            // media-controller element (used only for well trimmed clips) has bug with full screen. code below fixes this.
             for (let i = 1; i <= {{ num_good }}; i++){
                 const fullScreen = document.getElementById(`btn-good-${i}`);
                 const video = document.getElementById(`video-good-${i}`);
@@ -164,28 +172,174 @@
                     currentFullscreenVideo = video;
                 })
             }
-            for (let i = 1; i <= {{ num_bad }}; i++){
-                const fullScreen = document.getElementById(`btn-bad-${i}`);
-                const video = document.getElementById(`video-bad-${i}`);
-                fullScreen.addEventListener('click', () => {
-                    video.style.maxHeight = 'none';
-                    currentFullscreenVideo = video;
-                })
-            }
-
             document.addEventListener('fullscreenchange', handleFullscreenChange);
             document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
             document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
             document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE/Edge
-
             function handleFullscreenChange() {
                 if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
                     currentFullscreenVideo.style.maxHeight = '600px';
                     currentFullscreenVideo = null;
                 }
             }
+
+            // instantiate videojs objects and trimmers for all the bad clips
+            let players = [];
+            let trimmers = [];
+            let starts = [];
+            let ends = [];
+            let badClips = {{ bad_clips | tojson | safe }};
+            console.log(badClips)
+            for (let i = 1; i <= {{ num_bad }}; i++) {
+                players.push(videojs(`bad-video-${i}`, {
+                    controls: true,
+                    autoplay: false,
+                    responsive: true,
+                    playbackRates: [0.25, 0.5, 1, 1.5, 2],
+                }));
+                players[i - 1].muted(true);
+                players[i - 1].controlBar.volumePanel.hide();
+                
+                trimmers.push(players[i - 1].trimmer());
+                let start = Math.min(0, badClips[i - 1]["cushion_start"] - badClips[i - 1]["og_start"]);
+                let end = trimmers[i - 1].startTime + badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"];
+                trimmers[i - 1].startTime = start;
+                trimmers[i - 1].endTime = end;
+                starts.push(start);
+                ends.push(end);
+            }
+
+            // instantiate videojs objects for the user clip previews
+            let previewPlayers = [];
+            for (let i = 1; i <= {{ num_bad }}; i++) {
+                previewPlayers.push(videojs(`confirm-video-${i}`, {
+                    controls: true,
+                    autoplay: false,
+                    responseive: true,
+                    playbackRates: [0.25, 0.5, 1, 1.5, 2],
+                }));
+                previewPlayers[i - 1].muted(true);
+                previewPlayers[i - 1].controlBar.volumePanel.hide();
+            }
+            
+            // set up the "move clip's start/end to current position in video" buttons
+            function moveStart(idx) {
+                let player = players[idx - 1];
+                let trimmer = trimmers[idx - 1];
+                let curr = player.currentTime();
+                if (curr < 0 || curr > player.duration()) {
+                    alert('Invalid start time specified!');
+                    return
+                }
+                if (curr > trimmer.endTime) {
+                    trimmer.endTime = curr;
+                }
+                trimmer.startTime = curr;
+                trimmer.updateTrimmer();
+            }
+
+            function moveEnd(idx) {
+                let player = players[idx - 1];
+                let trimmer = trimmers[idx - 1];
+                let curr = player.currentTime();
+                if (curr < 0 || curr > player.duration()) {
+                    alert('Invalid end time specified!')
+                    return
+                }
+                if (curr < trimmer.startTime) {
+                    trimmer.startTime = curr;
+                }
+                trimmer.endTime = curr;
+                trimmer.updateTrimmer();
+            }
+
+            // allow users to preview their trimming
+            function previewClip(idx) {
+                let s = trimmers[idx - 1].startTime
+                let e = trimmers[idx - 1].endTime
+                previewPlayers[idx - 1].offset({
+                    start: s,
+                    end: e,
+                    restart_beginning: true
+                });
+                starts[idx - 1] = s;
+                ends[idx - 1] = e;
+                previewPlayers[idx - 1].currentTime(0)
+                document.getElementById(`confirm-div-${idx}`).removeAttribute('hidden')
+            }
+
+            function validateAndSubmitForm() {
+                // hide error
+                const error = document.getElementById('errorMsg');
+                error.hidden = true;
+                void error.offsetWidth; // force DOM update
+
+                data = new FormData();
+                data.append('user_id', '{{user_id}}');
+                data.append('study_id', '{{study_id}}');
+                data.append('session_id', '{{study_id}}');
+                data.append('action_id', '{{action_id}}');
+                data.append('num_trims', {{num_bad}});
+                // for each poorly trimmed clip,
+                for (var i = 1; i <= {{num_bad}}; i++) {
+                    // check that the clip has been previewed
+                    if (document.getElementById(`confirm-div-${i}`).hidden) {
+                        error.textContent = `Error with Clip #${i}: you must preview your clip before submitting.`
+                        error.hidden = false;
+                        return;
+                    }
+
+                    let trimmer = trimmers[i - 1];
+                    let s = starts[i - 1];
+                    let e = ends[i - 1];
+                    // check that the user hasn't adjusted the trim since the last update
+                    if (trimmer.startTime != s || trimmer.endTime != e) {
+                        error.textContent = `Error with Clip #${i}: please press the blue 'preview' button to double-check your updated clip.`;
+                        error.hidden = false;
+                        return
+                    }
+
+                    // sanity check the start and end times
+                    if (s > e) {
+                        error.textContent = `Error with Clip #${i}: your chosen start time precedes your chosen end time.`;
+                        error.hidden = false;
+                        return
+                    }
+                    let duration = badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"]
+                    if (s < 0 || s > duration) {
+                        error.textContent = `Error with Clip #${i}: your chosen start time must be between 0 and the duration of the provided video.`;
+                        error.hidden = false;
+                        return
+                    }
+                    if (e < 0 || e > duration) {
+                        error.textContent = `Error with Clip #${i}: your chosen end time must be between 0 and the duration of the provided video.`;
+                        error.hidden = false;
+                        return
+                    }
+
+                    // package start and end times to send to backend
+                    data.append(`uuid${i}`, badClips[i - 1].uuid);
+                    data.append(`cushion_start${i}`, badClips[i - 1].cushion_start);
+                    data.append(`start${i}`, s);
+                    data.append(`end${i}`, e);
+                }
+
+                data.append('feedback', document.getElementById('feedback').value);
+                console.log(data);
+
+                fetch('{{ url_for("submit_trims") }}', {
+                    method: 'POST',
+                    body: data
+                }).then(async res => {
+                    content = await res.text();
+                    if (!res.ok) throw Error(content);
+                    else document.documentElement.innerHTML = content;
+                }).catch(err => {
+                    error.innerHTML = `The following error occured while processing your trimming. <br> <i style='font-size: large'>${err}</i>`;
+                    error.hidden = false;
+                });
+            }
         </script>
-    </div>
 </body>
 
 <footer>
