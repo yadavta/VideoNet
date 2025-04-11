@@ -1,6 +1,6 @@
 from pathlib import Path
-from subprocess import CompletedProcess, CalledProcessError
-import subprocess, re, json, cv2, numpy as np
+from subprocess import CompletedProcess
+import subprocess, re, json, cv2
 
 from src.globals import ORIGINALS_DIR, CLIPS_DIR
 
@@ -151,3 +151,11 @@ def draw_bboxs(image: str, out: str, bboxs: list[tuple[str, list[int] | tuple[in
     
     cv2.imwrite(out, image)
     print(f"Saved image with bounding box overlay to {out}")
+
+def extract_yt_id(url: str) -> str | None:
+    """
+    Given a YouTube URL, extracts the YouTube ID of the linked video and returns it as a string. If no ID is found, returns None.
+    """
+    regex = r"(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*[?&])?v=|shorts\/|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[?&]|$)"
+    match = re.search(regex, url)
+    return match.group(1) if match else None

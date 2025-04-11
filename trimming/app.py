@@ -4,8 +4,7 @@ import sqlite3, os, subprocess
 import tutils
 
 app = Flask(__name__)
-# DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
-DATABASE = 'data.db'
+DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
 PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
 
 # **** BEGIN DATABASE ****

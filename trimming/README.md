@@ -52,7 +52,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE Actions(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    domain_name TEXT NOT NULL
+    domain_name TEXT NOT NULL,
     assigned INTEGER DEFAULT 0,
     finished INTEGER DEFAULT 0,
     subdomain TEXT,

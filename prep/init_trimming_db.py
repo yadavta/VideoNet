@@ -14,7 +14,7 @@ schema = """PRAGMA foreign_keys = ON;
 CREATE TABLE Actions(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    domain_name TEXT NOT NULL
+    domain_name TEXT NOT NULL,
     assigned INTEGER DEFAULT 0,
     finished INTEGER DEFAULT 0,
     subdomain TEXT,
@@ -66,8 +66,10 @@ actions = vconn.execute('select * from actions').fetchall()
 # Add them to the trimming db
 sql = "INSERT INTO Actions (id, name, domain_name, subdomain) VALUES "
 for a in actions:
-    sql += f" ({a['id'], a['name'], a['domain_name'], a['subdomain']}),"
+    subdomain = a['subdomain'] if a['subdomain'] else 'NULL'
+    sql += f" {a['id'], a['name'], a['domain_name'], subdomain},"
 if sql[-1] == ',': sql = sql[:-1]
+print(sql)
 tconn = sqlite3.connect(tdb)
 tcursor = tconn.cursor()
 tcursor.execute(sql)

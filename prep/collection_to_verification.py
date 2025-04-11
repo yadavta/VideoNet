@@ -250,6 +250,7 @@ if not Path(vdb_path).is_file():
         user_id TEXT NOT NULL,
         study_id TEXT NOT NULL,
         session_id TEXT NOT NULL,
+        assigned_at TEXT NOT NULL,
         UNIQUE (action_id, user_id, study_id)
     );
 
@@ -289,7 +290,7 @@ if not Path(vdb_path).is_file():
         if statement.strip():
             vcursor.execute(statement)
 
-    # and copy over the actions table from the provided clip collection DB    
+    # and copy over the actions table from the provided clip collection DB
     cursor.execute('SELECT id, name, domain_name, subdomain FROM Actions')
     res = cursor.fetchall()
     values_strs = []
@@ -321,14 +322,14 @@ else:
 for unique in uuids:
     if unique in already_added:
         continue
-    cursor.execute('SELECT action_id, yt_id, start, end FROM Clips WHERE uuid = ?', (unique,))
+    cursor.execute('SELECT id, action_id, yt_id, start, end FROM Clips WHERE uuid = ?', (unique,))
     res = cursor.fetchone()
     if res:
-        action_id, yt_id, start, end = res['action_id'], res['yt_id'], res['start'], res['end']
+        id, action_id, yt_id, start, end = res['id'], res['action_id'], res['yt_id'], res['start'], res['end']
         gcp_tail = new_tails[unique]
         gcp_url = 'https://storage.googleapis.com/' + os.path.join(gcs_without_prefix, gcp_tail)
-        vcursor.execute('INSERT INTO Clips (action_id, gcp_url, uuid, yt_id, start, end) VALUES (?, ?, ?, ?, ?, ?)', 
-                        (action_id, gcp_url, unique, yt_id, start, end))
+        vcursor.execute('INSERT INTO Clips (id, action_id, gcp_url, uuid, yt_id, start, end) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+                        (id, action_id, gcp_url, unique, yt_id, start, end))
     else:
         err = f"ERROR: no clip in {args.database} with UUID {unique}"
         err_str.append(err)
