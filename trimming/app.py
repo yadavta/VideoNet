@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os, subprocess
-from trimming import tutils
+import tutils
 
 app = Flask(__name__)
 # DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
