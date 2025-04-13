@@ -1,0 +1,16 @@
+# Transcription module requirements
+openai-whisper==20240930
+openai>=1.59.6
+pandas>=1.5.0
+tqdm>=4.64.0
+torch>=2.0.0
+loguru>=0.7.0
+numpy>=1.24.0
+ffmpeg-python>=0.2.0
+pydub==0.25.1
+backoff>=2.2.1
+# Optional for parquet support
+pyarrow>=12.0.0
+fastparquet>=2023.0.0
+# For GCS support
+google-cloud-storage>=2.10.0

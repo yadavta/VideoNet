@@ -1,5 +1,5 @@
 from src.models import Qwen25VL
-from src.utils import extract_bboxs_qwen, draw_bboxs
+from src.utils.common import extract_bboxs_qwen, draw_bboxs
 
 # # @reza, change these and then re-run file
 # !!! NOTE: ONLY WORKS WITH JPG FILES !!!
