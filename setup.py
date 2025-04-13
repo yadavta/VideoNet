@@ -28,14 +28,5 @@ setup(
     author='Tanush Yadav',
     author_email='tanush@cs.washington.edu',
     packages=find_packages(),
-    extras_require={
-        'transcription': [
-            'openai==1.59.6',
-            'loguru',
-            'whisper',
-            'google-cloud-storage',
-            'gcsfs',
-            'pydub',
-        ],
-    },
+    extras_require=extras_require,
 )
