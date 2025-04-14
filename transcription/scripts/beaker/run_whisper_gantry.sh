@@ -34,6 +34,7 @@ SHARD_END=255 # inclusive
 NUM_SHARDS=${NUM_SHARDS:-256}
 FNAME='oe-training-yt-crawl-video-list-04-10-2025.jsonl'
 DATA_NAME='yt-crawl-04-10-2025'
+BATCH_SIZE=20
 #########
 PRIORITY=normal
 NUM_JOBS=$((SHARD_END - SHARD_START + 1)) # don't change this
