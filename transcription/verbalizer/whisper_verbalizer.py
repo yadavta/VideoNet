@@ -10,6 +10,7 @@ from loguru import logger
 
 from .base_verbalizer import Verbalizer
 
+WHISPER_CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "whisper")
 
 def parse_segments(segments: list[dict]):
     return [{k:v for k,v in seg.items() if k in ['id', 'start', 'end', 'text']} for seg in segments]
@@ -24,10 +25,11 @@ def get_duration(video_input: str) -> float:
 
 class WhisperAPI(Verbalizer):
 
-    def __init__(self, api_key=None, segment_length=30* 1000):
+    def __init__(self, api_key=None, segment_length=30* 1000, whisper_model='whisper-1'):
         from src.utils.openai_api import OpenaiAPI
         self.openai_api = OpenaiAPI(api_key)
         self.segment_length = segment_length
+        self.whisper_model = whisper_model
 
     def __call__(self, video_input: str) -> Dict:
         """
@@ -47,7 +49,7 @@ class WhisperAPI(Verbalizer):
                 
                 with open(temp_file.name, "rb") as audio_input:
                     try:
-                        transcription = self.openai_api.run_asr(audio_input)
+                        transcription = self.openai_api.run_asr(audio_input, model=self.whisper_model)
                     except Exception as e:
                         logger.error(e)
                         continue
@@ -83,8 +85,9 @@ class WhisperAPI(Verbalizer):
  
 class WhisperGPU(Verbalizer):
 
-    def __init__(self, whisper_model, device='cuda', download_root="$HOME/.cache/whisper"):
+    def __init__(self, whisper_model, device='cuda', download_root=WHISPER_CACHE_DIR):
         self.model = whisper.load_model(whisper_model, device=device, download_root=download_root)
+        print(f"Loaded Whisper model {whisper_model} from {download_root} on {device}")
         self.device = device
     
     def __call__(self, video_input: str) -> Dict:
