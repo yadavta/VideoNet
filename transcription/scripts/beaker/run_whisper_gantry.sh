@@ -1,8 +1,7 @@
-workspace=ai2/sg-train # Use your own workspace
+WORKSPACE=ai2/sg-train # Use your own workspace
 BEAKER_IMAGE='jamesp/videonet-whisper-transcription-cu_11.8_pytorch_2.5.1_transformers_4.49.0.dev0_flash-attn_2.6.3_vllm_0.7.3_awq'
 NUM_GPUS_PER_EVAL=1
 OUTPUT_DIR=/results
-BEAKER_IMAGE="whisper-gantry"
 
 
 # Included as reference to create beaker image
@@ -22,11 +21,17 @@ CLUSTERS=(
     ai2/saturn-cirrascale
 )
 
+# Set CLUSTER specific variables
+CLUSTER_SETTINGS=""
+for cluster in "${CLUSTERS[@]}"; do
+    CLUSTER_SETTINGS+="--cluster $cluster "
+done
+
 set -x
 ### Set the following variables ###
 SHARD_START=0
-SHARD_END=127
-NUM_SHARDS=${NUM_SHARDS:-512}
+SHARD_END=255 # inclusive
+NUM_SHARDS=${NUM_SHARDS:-256}
 FNAME='oe-training-yt-crawl-video-list-04-10-2025.jsonl'
 DATA_NAME='yt-crawl-04-10-2025'
 #########
@@ -42,9 +47,7 @@ gantry run \
     --name $BEAKER_NAME \
     --task-name $TASK_NAME \
     --workspace $WORKSPACE \
-    --description "run_whisper_gantry.sh; DATASET: ${DATASET}; \
-                   MODEL_NAME: ${MODEL_NAME}; \
-                   STORAGE: ${STORAGE}; \
+    --description "run_whisper_gantry.sh; DATA: ${DATA_NAME}; \
                    NUM_SHARDS: $NUM_SHARDS; SHARD_IDX: [$SHARD_START, $SHARD_END];" \
     --beaker-image $BEAKER_IMAGE \
     --env-secret OPENAI_API_KEY=OPENAI_API_KEY \
