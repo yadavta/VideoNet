@@ -16,14 +16,14 @@ pip install -r requirements.txt
 ```
 
 ### Usage
-In the `transcription` directory, you can use the `scripts/run_whisper.py` script to transcribe audio files.
+From root, run `transcription/scripts/run_whisper.py` script to transcribe audio files.
 To support distributed processing, the script accepts `--shard_index` and `--num_shards` arguments. These arguments are used to split the input data into smaller chunks for parallel processing.
 
 Example usage with local whisper model:
 ```bash
-python -m scripts.run_whisper \
+python -m transcription.scripts.run_whisper \
     --mode gpu \ 
-    --input_file data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
+    --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
     --shard_index 0 \
     --num_shards 256 \
     --output_dir /path/to/output \
@@ -35,7 +35,7 @@ Then, run the script with the `--mode api` argument:
 ```bash
 python -m scripts.run_whisper \
     --mode api \
-    --input_file data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
+    --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
     --shard_index 0 \
     --num_shards 256 \
     --output_dir /path/to/output \
@@ -106,7 +106,7 @@ You can also submit GPU-enabled array jobs using [beaker-gantry](https://github.
 
 2. Create a beaker experiment with the following command:
 ```
-bash scripts/beaker/run_whisper_gantry.sh
+bash transcription/scripts/beaker/run_whisper_gantry.sh
 ```
 
 3. Configuration options in the script:
