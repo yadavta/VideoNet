@@ -33,7 +33,7 @@ To use **OpenAI Whisper API**, make sure to set the `OPENAI_API_KEY` environment
 By default, we use the `whisper-1` model (TODO: add model params for api calls).
 Then, run the script with the `--mode api` argument:
 ```bash
-python -m scripts.run_whisper \
+python -m transcription.scripts.run_whisper \
     --mode api \
     --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
     --shard_index 0 \
