@@ -115,7 +115,22 @@ bash transcription/scripts/beaker/run_whisper_gantry.sh
    - DATA_NAME: Name to identify input data
    - FNAME: Name of input file
 
-4. After completion, retrieve results:
+4. (**Recommended**) After completion, you can use the [beaker-client](https://beaker-py.readthedocs.io/en/latest/installation.html) to retrieve results:
+```
+pip install beaker-py # if not already installed
+```
+
+Then run:
+```
+python transcription/scripts/beaker/get_results.py \
+    $EXP_NAME \
+    --output_dir /path/to/output
+```
+This will download results for the experiment from each **latest finished** (whether completed/preempted) job. This ensures that you get all the available results, even if some jobs were preempted. 
+
+- Using the beaker CLI (not recommended):
+This approach, while easy to use, downloads the result in the **latest** job,  and ignores the previous job with the sam job ID. So, it will download empty files for preempted jobs since the results are not available before the job has started. 
 ```
 beaker experiment results $EXP_NAME -o /path/to/output
 ```
+
