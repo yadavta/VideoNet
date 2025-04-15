@@ -58,11 +58,13 @@ def transcribe_whisper(
         assert uri.startswith('gs://'), 'Language check is only supported for gcs uris'
 
     if uri.startswith('gs://'):
-        bucket_name, blob_name = parse_gcs_url(uri)
-
+        
         # Check if the video is in English
         if check_if_en:
             json_path = datum['json_path']
+            if json_path is None:
+                logger.error(f"Metadata not found for {uri}. Skipping...")
+                return None
             bucket_json_name, blob_json_name = parse_gcs_url(json_path)
             content = download_blob_as_bytes(bucket_json_name, blob_json_name)
             if content is None:
@@ -76,7 +78,12 @@ def transcribe_whisper(
                 return None
  
         # Download the video file from GCS
-        content = download_blob_as_bytes(bucket_name, blob_name)
+        try:
+            bucket_name, blob_name = parse_gcs_url(uri)
+            content = download_blob_as_bytes(bucket_name, blob_name)
+        except Exception as e:
+            logger.error(f"Failed to download video {uri}: {e}")
+            return None
         if verbose:
             logger.info('Time took to load video: {} seconds'.format(time.time() - load_time))
 
