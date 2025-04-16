@@ -60,6 +60,7 @@ def show_task():
     action_info: tuple[int, str, str, str | None, str] | str = tutils.get_action(get_db(), user_id, study_id, session_id)
     if isinstance(action_info, str): return action_info
     action_id, action_name, domain_name, subdomain = action_info
+    if subdomain in set('NULL', 'Null', 'null'): subdomain = None
 
     # get clips
     clips: tuple[list[dict], list[dict]] | str = tutils.get_clips(get_db(), action_id)

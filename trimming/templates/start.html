@@ -29,7 +29,7 @@
             You are provided with <b>{{num_good + num_bad}}</b> clips of {{domain_name | lower}}.
         </p>
         <p class="para-txt">
-            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b>{{subdomain or 'action'}}</b> in <b>{{domain_name | lower}}</b>.
+            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b> {{subdomain or 'action'}} </b> in <b>{{domain_name | lower}}</b>.
         </p>
         <p class="para-txt">
             You will help us ensure that these clips are well-trimmed.
@@ -201,8 +201,8 @@
                 players[i - 1].controlBar.volumePanel.hide();
                 
                 trimmers.push(players[i - 1].trimmer());
-                let start = Math.min(0, badClips[i - 1]["cushion_start"] - badClips[i - 1]["og_start"]);
-                let end = trimmers[i - 1].startTime + badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"];
+                let start = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
+                let end = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
                 trimmers[i - 1].startTime = start;
                 trimmers[i - 1].endTime = end;
                 starts.push(start);
