@@ -209,6 +209,7 @@
                     trimmers.push(players[i - 1].trimmer());
                     let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
                     let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                    e = Math.min(e, players[i-1].duration());
                     trimmers[i - 1].startTime = s;
                     trimmers[i - 1].endTime = e;
                     trimmers[i - 1].updateTrimmer();
@@ -220,8 +221,9 @@
 
             function resetTrimmer() {
                 for (let i = 1; i < {{num_bad}}; i++) {
-                    trimmers[i - 1].endTime = 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start'];
-                    ends[i - 1] = 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start'];
+                    let tmp = Math.min(players[i-1].duration(), 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start']);
+                    trimmers[i - 1].endTime = tmp;
+                    ends[i - 1] = tmp;
                 }
             }
 
