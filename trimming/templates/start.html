@@ -189,13 +189,13 @@
                 }
             }
 
-            // instantiate videojs objects and trimmers for all the bad clips
             let players = [];
             let trimmers = [];
             let starts = [];
             let ends = [];
             let badClips = {{ bad_clips | tojson | safe }};
             window.addEventListener('DOMContentLoaded', function() {
+                // instantiate videojs objects and trimmers for all the bad clips
                 for (let i = 1; i <= {{ num_bad }}; i++) {
                     players.push(videojs(`bad-video-${i}`, {
                         controls: true,
@@ -216,6 +216,13 @@
                     starts.push(s);
                     ends.push(e);
                 }
+
+                // uncheck all boxes (neccessary to clear cache)
+                for (let i = 1; i <= {{ num_bad }}; i++) {
+                    document.getElementById(`onscreen-text-${i - 1}`).checked = false;
+                }
+                
+                // double-check that trimmer has been initialized correctly
                 resetTrimmer();
             });
 
