@@ -138,16 +138,8 @@ media-chrome, media-controller {
     background-color: transparent !important;
 }
 
-input[type="radio"] {
-    float: left;
-    clear: left;
-    margin-right: 1em;
-    transform: scale(1.5);
-}
-
-input[type="radio"] + label {
-    display: block;
-    text-align: left;
+input[type="checkpoint"] {
+    margin-top: 2rem;
 }
 
 .l1 {

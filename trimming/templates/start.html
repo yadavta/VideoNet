@@ -147,6 +147,7 @@
                                         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
                                     </p>
                                 </video>
+                                <br>
                                 <input type="checkbox" id="onscreen-text-{{loop.index}}">
                                 <label for="onscreen-text-{{loop.index}}">My updated clip still includes the text "{{action_name}}".</label>
                             </div>
@@ -193,8 +194,8 @@
             let trimmers = [];
             let starts = [];
             let ends = [];
+            let badClips = {{ bad_clips | tojson | safe }};
             window.addEventListener('DOMContentLoaded', function() {
-                let badClips = {{ bad_clips | tojson | safe }};
                 for (let i = 1; i <= {{ num_bad }}; i++) {
                     players.push(videojs(`bad-video-${i}`, {
                         controls: true,
