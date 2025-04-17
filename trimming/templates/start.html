@@ -201,13 +201,13 @@
                 players[i - 1].controlBar.volumePanel.hide();
                 
                 trimmers.push(players[i - 1].trimmer());
-                let start = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
-                let end = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];''
-                trimmers[i - 1].startTime = start;
-                trimmers[i - 1].endTime = end;
+                let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
+                let e = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                trimmers[i - 1].startTime = s;
+                trimmers[i - 1].endTime = e;
                 trimmers[i - 1].updateTrimmer();
-                starts.push(start);
-                ends.push(end);
+                starts.push(s);
+                ends.push(e);
             }
 
             // instantiate videojs objects for the user clip previews
