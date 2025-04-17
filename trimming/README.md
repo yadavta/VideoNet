@@ -103,3 +103,7 @@ To check for actions that have no poorly-trimed clips:
 ```sql
 SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 2);
 ```
+To check for clips that the annotators all disagreed on:
+```sql
+SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.votes='111';
+```

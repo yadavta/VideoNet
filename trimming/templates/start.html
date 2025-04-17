@@ -188,26 +188,35 @@
             let trimmers = [];
             let starts = [];
             let ends = [];
-            let badClips = {{ bad_clips | tojson | safe }};
-            console.log(badClips)
-            for (let i = 1; i <= {{ num_bad }}; i++) {
-                players.push(videojs(`bad-video-${i}`, {
-                    controls: true,
-                    autoplay: false,
-                    responsive: true,
-                    playbackRates: [0.25, 0.5, 1, 1.5, 2],
-                }));
-                players[i - 1].muted(true);
-                players[i - 1].controlBar.volumePanel.hide();
-                
-                trimmers.push(players[i - 1].trimmer());
-                let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
-                let e = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
-                trimmers[i - 1].startTime = s;
-                trimmers[i - 1].endTime = e;
-                trimmers[i - 1].updateTrimmer();
-                starts.push(s);
-                ends.push(e);
+            window.addEventListener('DOMContentLoaded', function() {
+                let badClips = {{ bad_clips | tojson | safe }};
+                for (let i = 1; i <= {{ num_bad }}; i++) {
+                    players.push(videojs(`bad-video-${i}`, {
+                        controls: true,
+                        autoplay: false,
+                        responsive: true,
+                        playbackRates: [0.25, 0.5, 1, 1.5, 2],
+                    }));
+                    players[i - 1].muted(true);
+                    players[i - 1].controlBar.volumePanel.hide();
+                    
+                    trimmers.push(players[i - 1].trimmer());
+                    let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
+                    let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                    trimmers[i - 1].startTime = s;
+                    trimmers[i - 1].endTime = e;
+                    trimmers[i - 1].updateTrimmer();
+                    starts.push(s);
+                    ends.push(e);
+                }
+                resetTrimmer()
+            });
+
+            function resetTrimmer() {
+                for (let i = 1; i < {{num_bad}}; i++) {
+                    trimmers[i - 1].endTime = 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start'];
+                    ends[i - 1] = 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start'];
+                }
             }
 
             // instantiate videojs objects for the user clip previews
