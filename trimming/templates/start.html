@@ -149,7 +149,7 @@
                                 </video>
                                 <br>
                                 <input type="checkbox" id="onscreen-text-{{loop.index}}">
-                                <label for="onscreen-text-{{loop.index}}">My updated clip still includes the text "{{action_name}}".</label>
+                                <label for="onscreen-text-{{loop.index}}">My updated clip contains the on-screen text "{{action_name}}"</label>
                             </div>
                         </td>
                     </tr>
@@ -194,45 +194,53 @@
             let starts = [];
             let ends = [];
             let badClips = {{ bad_clips | tojson | safe }};
-            window.addEventListener('DOMContentLoaded', function() {
-                // instantiate videojs objects and trimmers for all the bad clips
-                for (let i = 1; i <= {{ num_bad }}; i++) {
-                    players.push(videojs(`bad-video-${i}`, {
-                        controls: true,
-                        autoplay: false,
-                        responsive: true,
-                        playbackRates: [0.25, 0.5, 1, 1.5, 2],
-                    }));
-                    players[i - 1].muted(true);
-                    players[i - 1].controlBar.volumePanel.hide();
+
+            // instantiate videojs objects and trimmers for all the bad clips
+            for (let i = 1; i <= {{ num_bad }}; i++) {
+                players.push(videojs(`bad-video-${i}`, {
+                    controls: true,
+                    autoplay: false,
+                    responsive: true,
+                    playbackRates: [0.25, 0.5, 1, 1.5, 2],
+                }));
+                players[i - 1].muted(true);
+                players[i - 1].controlBar.volumePanel.hide();
                     
-                    trimmers.push(players[i - 1].trimmer());
-                    let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
-                    let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
-                    e = Math.min(e, players[i-1].duration());
-                    trimmers[i - 1].startTime = s;
-                    trimmers[i - 1].endTime = e;
-                    trimmers[i - 1].updateTrimmer();
-                    starts.push(s);
-                    ends.push(e);
-                }
+                trimmers.push(players[i - 1].trimmer());
+                let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
+                let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                trimmers[i - 1].startTime = s;
+                trimmers[i - 1].endTime = e;
+                trimmers[i - 1].updateTrimmer();
+                void document.getElementById(`bad-video-${i}`).offsetWidth;
+                starts.push(s);
+                ends.push(e);
+            }
 
-                // uncheck all boxes (neccessary to clear cache)
-                for (let i = 1; i <= {{ num_bad }}; i++) {
-                    document.getElementById(`onscreen-text-${i - 1}`).checked = false;
-                }
+            // uncheck all boxes (neccessary to clear cache)
+            for (let i = 1; i <= {{ num_bad }}; i++) {
+                document.getElementById(`onscreen-text-${i}`).checked = false;
+            }
                 
-                // double-check that trimmer has been initialized correctly
-                resetTrimmer();
-            });
-
+            // fix trimmer end time (this must be executed after waiting a bit otherwise the video player's duration hasn't loaded yet)
             function resetTrimmer() {
-                for (let i = 1; i < {{num_bad}}; i++) {
+                for (let i = 1; i <= {{num_bad}}; i++) {
                     let tmp = Math.min(players[i-1].duration(), 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start']);
                     trimmers[i - 1].endTime = tmp;
+                    trimmers[i-1].updateTrimmer()
                     ends[i - 1] = tmp;
+                    console.log(starts[i-1], ends[i-1]);
+                }
+                if (!sessionStorage.getItem('reloadedToFixTrimBar')) {
+                    for (let i = 1; i <= {{num_bad}}; i++) {
+                        players[i-1].play();
+                        players[i-1].pause();
+                    }
+                    sessionStorage.setItem('reloadedToFixTrimBar', 'true');
+                    window.location.reload();
                 }
             }
+            setTimeout(resetTrimmer, 200);
 
             // instantiate videojs objects for the user clip previews
             let previewPlayers = [];
@@ -349,8 +357,8 @@
                     data.append(`end${i}`, e);
 
                     // check for text on-screen
-                    let clipContainsText = document.getElementById(`onscreen-text-${i}`).checked;
-                    data.append(`checked${i}`, clipContainsText);
+                    let onscreenText = document.getElementById(`onscreen-text-${i}`);
+                    data.append(`checked${i}`, onscreenText.checked);
                 }
 
                 data.append('feedback', document.getElementById('feedback').value);

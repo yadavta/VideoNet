@@ -6,7 +6,6 @@ import tutils
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
 PROLIFIC_COMPLETION_CODE = os.environ.get('PROLIFIC_COMPLETION_CODE')
-
 # **** BEGIN DATABASE ****
 def get_db() -> Connection:
     db = getattr(g, '_database', None)
