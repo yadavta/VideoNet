@@ -79,7 +79,7 @@
                     <!-- <media-volume-range></media-volume-range> -->
                     <media-time-display></media-time-display>
                     <media-time-range></media-time-range>
-                    <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
+                    <media-playback-rate-button rates="0.25 0.5 1 1.5 2"></media-playback-rate-button>
                     <media-fullscreen-button id="btn-good-{{loop.index}}"></media-fullscreen-button>
                 </media-control-bar>
             </media-controller>
@@ -202,9 +202,10 @@
                 
                 trimmers.push(players[i - 1].trimmer());
                 let start = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
-                let end = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                let end = badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];''
                 trimmers[i - 1].startTime = start;
                 trimmers[i - 1].endTime = end;
+                trimmers[i - 1].updateTrimmer();
                 starts.push(start);
                 ends.push(end);
             }

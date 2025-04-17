@@ -4,7 +4,7 @@ Given a list of 7 clips collected by Prolific User A (via `small_scale`), k of w
 
 ## Data Management
 
-**WARNING: ANY UPDATES TO THIS SECTION MUST BE REFLECTED IN `verification_to_trimming.py` AS WELL.**
+**WARNING: ANY UPDATES TO THIS SECTION MUST BE REFLECTED IN `../prep/init_trimming_db.py` AS WELL.**
 
 Note that the `Actions` table is sourced directly from the previous (verification) stage. Meanwhile, the `Clips` table is a result of our preprocessing logic being applied to various tables from the previous stage (in particular, the `ratings` columns is based on the previous stage's `Annotations` table). The `Feedback` table is standard across all stages.
 
@@ -93,4 +93,13 @@ CREATE TABLE Feedback(
 For debugging purposes, you can clear all assignments as such:
 ```sql
 UPDATE Actions SET assigned=0, finished=0, user_id=NULL, study_id=NULL, session_id=NULL, assigned_at=NULL WHERE user_id='tantan';
+```
+
+To check for actions that have no well-trimmed clips:
+```sql
+SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 1);
+```
+To check for actions that have no poorly-trimed clips:
+```sql
+SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 2);
 ```
