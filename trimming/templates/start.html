@@ -207,7 +207,7 @@
                 players[i - 1].controlBar.volumePanel.hide();
                     
                 trimmers.push(players[i - 1].trimmer());
-                let s = badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"];
+                let s = Math.max(0, badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"]);
                 let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
                 trimmers[i - 1].startTime = s;
                 trimmers[i - 1].endTime = e;
@@ -221,26 +221,16 @@
             for (let i = 1; i <= {{ num_bad }}; i++) {
                 document.getElementById(`onscreen-text-${i}`).checked = false;
             }
-                
-            // fix trimmer end time (this must be executed after waiting a bit otherwise the video player's duration hasn't loaded yet)
-            function resetTrimmer() {
-                for (let i = 1; i <= {{num_bad}}; i++) {
-                    let tmp = Math.min(players[i-1].duration(), 1 + badClips[i - 1]['og_end'] - badClips[i - 1]['cushion_start']);
-                    trimmers[i - 1].endTime = tmp;
-                    trimmers[i-1].updateTrimmer()
-                    ends[i - 1] = tmp;
-                    console.log(starts[i-1], ends[i-1]);
-                }
-                if (!sessionStorage.getItem('reloadedToFixTrimBar')) {
-                    for (let i = 1; i <= {{num_bad}}; i++) {
-                        players[i-1].play();
-                        players[i-1].pause();
-                    }
-                    sessionStorage.setItem('reloadedToFixTrimBar', 'true');
-                    window.location.reload();
-                }
-            }
-            setTimeout(resetTrimmer, 200);
+
+            // fix trimmer end time once video duration metadata loads in
+            {% for i in range(num_bad) %}
+            players[{{ i }}].on('loadedmetadata', () => {
+                trimmers[{{i}}].endTime = Math.min(1 + badClips[{{i}}]['og_end'] - badClips[{{i}}]['cushion_start'], players[{{i}}].duration());
+                ends[{{i}}] = trimmers[{{i}}].endTime;
+                console.log(trimmers[{{i}}].endTime);
+                trimmers[{{i}}].updateTrimmer();
+            });
+            {% endfor %}
 
             // instantiate videojs objects for the user clip previews
             let previewPlayers = [];
