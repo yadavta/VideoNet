@@ -216,7 +216,7 @@
                     starts.push(s);
                     ends.push(e);
                 }
-                resetTrimmer()
+                resetTrimmer();
             });
 
             function resetTrimmer() {
@@ -282,8 +282,8 @@
                 });
                 starts[idx - 1] = s;
                 ends[idx - 1] = e;
-                previewPlayers[idx - 1].currentTime(0)
-                document.getElementById(`confirm-div-${idx}`).removeAttribute('hidden')
+                previewPlayers[idx - 1].currentTime(0);
+                document.getElementById(`confirm-div-${idx}`).removeAttribute('hidden');
             }
 
             function validateAndSubmitForm() {
@@ -323,7 +323,7 @@
                         error.hidden = false;
                         return
                     }
-                    let duration = badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"]
+                    let duration = players[i - 1].duration();
                     if (s < 0 || s > duration) {
                         error.textContent = `Error with Clip #${i}: your chosen start time must be between 0 and the duration of the provided video.`;
                         error.hidden = false;
