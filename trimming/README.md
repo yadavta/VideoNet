@@ -19,6 +19,7 @@ Note that the `Actions` table is sourced directly from the previous (verificatio
 - `study_id`: identifier for Prolific study through which this action was trimmed
 - `session_id`: identifier for unique Prolific session through which this action was trimmed
 - `assigned_at`: time that Prolific user was assigned this task; used for returning tasks due to timeout
+- `load`: integer representing how hefty the workload for this task is
 
 `Clips` table schema:
 - `id`: primary key (unique identifier)
@@ -61,6 +62,7 @@ CREATE TABLE Actions(
     study_id TEXT,
     session_id TEXT,
     assigned_at TEXT,
+    load INTEGER,
     UNIQUE (user_id, study_id, session_id),
     UNIQUE (name, domain_name)
 );
@@ -100,6 +102,14 @@ UPDATE Clips SET final_start=NULL, final_end=NULL, onscreen=NULL WHERE onscreen 
 
 ## Data Analysis
 
+### Workflow
+
+1. Check clips that all annotators disagreed on (i.e., with rating '-1') and manually assign them a rating.
+2. Ensure that there are no clips that have 0 well-trimmed clips.
+3. Set the `load` field of `Actions`.
+
+### Useful Commands
+
 To check for clips that the annotators all disagreed on:
 ```sql
 SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.rating='-1';
@@ -120,4 +130,26 @@ NOT EXISTS (SELECT 1 FROM Clips c2 WHERE c2.action_id = a.id AND c2.rating = 2) 
 To mark the actions with no poorly-trimmed clips as already processed so no Prolific users are assigned it:
 ```sql
 UPDATE Actions SET assigned = 1, finished = 1 WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = Actions.id AND c.rating = 2);
+```
+
+To set the `load` field of the `Actions` table based on the number of poorly-trimmed clips a Prolific user must trim.
+```sql
+UPDATE Actions SET load = 0;
+
+UPDATE Actions
+SET load = (
+    CASE
+        WHEN clip_count BETWEEN 1 AND 2 THEN 1
+        WHEN clip_count BETWEEN 3 AND 4 THEN 2
+        WHEN clip_count BETWEEN 5 AND 6 THEN 3
+        ELSE 0
+    END
+)
+FROM (
+    SELECT action_id, COUNT(*) as clip_count
+    FROM Clips
+    WHERE rating = 2
+    GROUP BY action_id
+) AS counts
+WHERE Actions.id = counts.action_id;
 ```

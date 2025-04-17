@@ -42,7 +42,7 @@ def return_tasks():
 @app.route('/task')
 def show_task():
     """
-    Renders landing page for a Prolific user if given a URL with the required params (PROLIFIC_PID, STUDY_ID, SESSION_ID). 
+    Renders landing page for a Prolific user if given a URL with the required params (PROLIFIC_PID, STUDY_ID, SESSION_ID).
     
     Otherwise renders an error message.
     
@@ -54,9 +54,12 @@ def show_task():
     session_id: str | None = request.args.get('SESSION_ID')
     if not user_id or not study_id or not session_id:
         return ERROR_MSG
+    load: int | None = request.args.get('LOAD', type=int)
+    if not load:
+        return '<h1>The Prolific URL is configured incorrectly.</h1> Please message us on Prolific.'
     
     # get action
-    action_info: tuple[int, str, str, str | None, str] | str = tutils.get_action(get_db(), user_id, study_id, session_id)
+    action_info: tuple[int, str, str, str | None, str] | str = tutils.get_action(get_db(), user_id, study_id, session_id, load)
     if isinstance(action_info, str): return action_info
     action_id, action_name, domain_name, subdomain = action_info
     if subdomain in set(['NULL', 'Null', 'null']): subdomain = None

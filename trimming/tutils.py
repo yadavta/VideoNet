@@ -13,7 +13,7 @@ def query_db(conn: Connection, query, args=(), one=False) -> list[dict] | dict |
     rows = cursor.fetchall()
     return rows if not one else (rows[0] if rows else None)
 
-def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str] | str:
+def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, load: int) -> tuple[int, str, str, str] | str:
     """
     1. If no existing assignment, assign action and return it to user
     2. If assigment exists but has not been completed, return existing action to user
@@ -30,7 +30,8 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
         try:
             # find available task from DB
             conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-            action = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
+            action = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
+                                  (load,)).fetchall()
             if not action: 
                 conn.execute('ROLLBACK;')
                 return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
