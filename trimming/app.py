@@ -90,7 +90,7 @@ def submit_trims():
     for i in range(1, num_trims + 1):
         unique = args.get(f'uuid{i}')
         cushion_start, start, end = args.get(f'cushion_start{i}', type=float), args.get(f'start{i}', type=float), args.get(f'end{i}', type=float)
-        onscreen: str = args.get(f'onscreen{i}', type=str)
+        onscreen: str = args.get(f'checked{i}', type=str)
         if unique is None or cushion_start is None or start is None or end is None or onscreen is None:
             return 'An error occured while parsing your submission.', 400
         onscreen: int = int(onscreen.lower() == 'true')
