@@ -138,7 +138,7 @@ media-chrome, media-controller {
     background-color: transparent !important;
 }
 
-input[type="checkpoint"] {
+input[type="checkbox"] {
     margin-top: 2rem;
 }
 
