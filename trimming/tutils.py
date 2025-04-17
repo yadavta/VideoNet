@@ -79,17 +79,17 @@ def get_clips(conn: Connection, action_id: str) -> tuple[list[dict], list[dict]]
         return "Sorry, we don't have any clips for this action. Please return the survey and message us that this error occured. We apologize for the inconvenience."
     return good_clips, bad_clips
 
-def add_trimmings(conn: Connection, trims: list[tuple[str, float, float]]) -> int:
+def add_trimmings(conn: Connection, trims: list[tuple[str, float, float, int]]) -> int:
     """
-    Receives a list of trimmings denoted as 3 tuples with the uuid, user-designated start time, and user-designated end time.
+    Receives a list of trimmings denoted as 4 tuples with the uuid, user-designated start time, user-designated end time, and if action name appears on-screen.
     Updates Clips table to reflect these trimmings. 
     Returns 0 on success, 1 on failure.
     """
     try:
         cursor = conn.execute('BEGIN IMMEDIATE TRANSACTION;')
         for t in trims:
-            cursor.execute("UPDATE Clips SET final_start = ?, final_end = ? WHERE uuid = ?", 
-                           (t[1], t[2], t[0]))
+            cursor.execute("UPDATE Clips SET final_start = ?, final_end = ?, onscreen = ? WHERE uuid = ?", 
+                           (t[1], t[2], t[3], t[0]))
             if cursor.rowcount != 1:
                 raise Exception
         conn.commit()

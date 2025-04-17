@@ -57,6 +57,9 @@
         <p class="para-txt">
             Your job is two-fold: first, you will watch the {{num_good}} well-trimmed {% if num_good == 1 %} clip {% else %} clips {% endif %} to get a sense of what a {{action_name}} in {{domain_name | lower}} looks like; then, you will watch the {{num_bad}} poorly-trimmed {% if num_bad == 1 %} clip {% else %} clips {% endif %} and adjust {% if num_bad == 1%} its trimming {% else %} their trimmings {% endif %} so that {% if num_bad == 1 %} it {% else %} they {% endif %} become well-trimmed.
         </p>
+        <p class="para-txt">
+            Lastly, we want to ensure that none of the clips contain any text on-screen that writes out "{{action_name}}". If such text is in the original poorly-trimmed clip, please try to trim it out. If your updated trimming still includes the text, please indicate so using the provided checkbox.
+        </p>
         <!-- <p class="para-txt attention-txt">
             If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/trimming_tutorial.mp4" target="_blank">watch this tutorial</a>.
         </p> -->
@@ -144,6 +147,8 @@
                                         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
                                     </p>
                                 </video>
+                                <input type="checkbox" id="onscreen-text-{{loop.index}}">
+                                <label for="onscreen-text-{{loop.index}}">My updated clip still includes the text "{{action_name}}".</label>
                             </div>
                         </td>
                     </tr>
@@ -332,6 +337,10 @@
                     data.append(`cushion_start${i}`, badClips[i - 1].cushion_start);
                     data.append(`start${i}`, s);
                     data.append(`end${i}`, e);
+
+                    // check for text on-screen
+                    let clipContainsText = document.getElementById(`onscreen-text-${i}`).checked;
+                    data.append(`checked${i}`, clipContainsText);
                 }
 
                 data.append('feedback', document.getElementById('feedback').value);

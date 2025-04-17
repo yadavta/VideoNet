@@ -35,6 +35,7 @@ Note that the `Actions` table is sourced directly from the previous (verificatio
 - `final_end`: where the annotator from this stage thinks the clip should end; will be null if `updated` is False (0)
 - `votes`: three character string. All characters are integers. First character is how many "yes, and well-trimed" votes this clip got in the previous stage; second character is how many "yes, but poorly-trimmed" votes it got; third character is "no" votes.
 - `rating`: 1, 2, or 3. Based on user annotations from verification stage, this is set to 1 if we believe it is a well-trimmed clip, 2 if we believe it is a poorly-trimmed clip, and 3 if we believe it is the clip of another action.
+- `onscreen`: boolean (stored as integer) denoting if the action name appears as on-screen text.
 
 `Feedback` table schema:
 
@@ -78,7 +79,8 @@ CREATE TABLE Clips(
     final_start REAL,
     final_end REAL,
     votes TEXT NOT NULL,
-    rating INTEGER
+    rating INTEGER,
+    onscreen INTEGER
 );
 
 CREATE TABLE Feedback(
@@ -95,6 +97,12 @@ For debugging purposes, you can clear all assignments as such:
 UPDATE Actions SET assigned=0, finished=0, user_id=NULL, study_id=NULL, session_id=NULL, assigned_at=NULL WHERE user_id='tantan';
 ```
 
+## Data Analysis
+
+To check for clips that the annotators all disagreed on:
+```sql
+SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.rating='-1';
+```
 To check for actions that have no well-trimmed clips:
 ```sql
 SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 1);
@@ -102,8 +110,4 @@ SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action
 To check for actions that have no poorly-trimed clips:
 ```sql
 SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 2);
-```
-To check for clips that the annotators all disagreed on:
-```sql
-SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.votes='111';
 ```

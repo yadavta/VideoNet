@@ -90,10 +90,12 @@ def submit_trims():
     for i in range(1, num_trims + 1):
         unique = args.get(f'uuid{i}')
         cushion_start, start, end = args.get(f'cushion_start{i}', type=float), args.get(f'start{i}', type=float), args.get(f'end{i}', type=float)
-        if unique is None or cushion_start is None or start is None or end is None:
+        onscreen: str = args.get(f'onscreen{i}', type=str)
+        if unique is None or cushion_start is None or start is None or end is None or onscreen is None:
             return 'An error occured while parsing your submission.', 400
+        onscreen: int = int(onscreen.lower() == 'true')
         final_start, final_end = cushion_start + start, cushion_start + end
-        trims.append((unique, final_start, final_end))
+        trims.append((unique, final_start, final_end, onscreen))
     
     if tutils.add_trimmings(get_db(), trims):
         return 'An error occured while saving your annotations. Please try submitting again. If the issue persists, reach out to us on Prolific.', 500
