@@ -95,6 +95,7 @@ CREATE TABLE Feedback(
 For debugging purposes, you can clear all assignments as such:
 ```sql
 UPDATE Actions SET assigned=0, finished=0, user_id=NULL, study_id=NULL, session_id=NULL, assigned_at=NULL WHERE user_id='tantan';
+UPDATE Clips SET final_start=NULL, final_end=NULL, onscreen=NULL WHERE onscreen IS NOT NULL;
 ```
 
 ## Data Analysis
@@ -103,11 +104,20 @@ To check for clips that the annotators all disagreed on:
 ```sql
 SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.rating='-1';
 ```
+
 To check for actions that have no well-trimmed clips:
 ```sql
 SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 1);
 ```
-To check for actions that have no poorly-trimed clips:
+
+To check for actions that have no poorly-trimed clips (and also how many well-trimmed clips they have):
 ```sql
-SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 2);
+SELECT a.*, COUNT(CASE WHEN c.rating = 1 THEN c.id ELSE NULL END) AS num_good_clips 
+FROM Actions a LEFT JOIN Clips c ON a.id = c.action_id WHERE 
+NOT EXISTS (SELECT 1 FROM Clips c2 WHERE c2.action_id = a.id AND c2.rating = 2) GROUP BY a.id;
+```
+
+To mark the actions with no poorly-trimmed clips as already processed so no Prolific users are assigned it:
+```sql
+UPDATE Actions SET assigned = 1, finished = 1 WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = Actions.id AND c.rating = 2);
 ```
