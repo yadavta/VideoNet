@@ -117,6 +117,6 @@ def submit_trims():
     
     feedback = args.get('feedback')
     if feedback and feedback != '':
-        tutils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
+        tutils.add_feedback(get_db(), user_id, study_id, session_id, feedback)
 
     return render_template('finish.html', completion_code=PROLIFIC_COMPLETION_CODE), 200
