@@ -33,20 +33,20 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
             action = conn.execute('SELECT id, name, domain_name, subdomain, definition FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
                                   (load,)).fetchall()
             if not action: 
-                conn.execute('ROLLBACK;')
+                conn.rollback()
                 return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
 
             # attempt to assign it
             a = action[0]
             cursor = conn.execute("UPDATE Actions SET assigned = 1, assigned_at = datetime('now'), user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0", (user_id, study_id, session_id, a['id']))
             if cursor.rowcount == 1:
-                conn.execute('COMMIT')
+                conn.commit()
                 return a['id'], a['name'], a['domain_name'], a['subdomain'], r['definition']
             else:
-                conn.execute('ROLLBACK')
+                conn.rollback()
                 return error
         except Exception as e:
-            conn.execute('ROLLBACK')
+            conn.rollback()
             print(e)
             return error
     elif int(res[0]['finished']) == 0:
