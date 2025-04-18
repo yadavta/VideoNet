@@ -63,12 +63,12 @@ def show_task():
         return ERROR_MSG
     
     # get action and token
-    action_info: tuple[int, str, str, str | None, str] | str = utils.get_action_and_token(get_db(), user_id, study_id, session_id)
+    action_info = utils.get_action_and_token(get_db(), user_id, study_id, session_id)
     if isinstance(action_info, str): return action_info
-    action_id, action_name, domain_name, subdomain, token = action_info
+    action_id, action_name, domain_name, subdomain, token, defn = action_info
 
     # render webpage
-    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 'subdomain': subdomain,
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'token': token, 'subdomain': subdomain, 'definition': defn,
               'action_id': action_id, 'action_name': action_name, 'domain_name': domain_name, 'domain_name_lowercase': domain_name.lower()}
     return render_template('start.html', **kwargs)
 

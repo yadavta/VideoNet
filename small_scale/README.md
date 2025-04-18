@@ -19,6 +19,7 @@
 - `study_id`: identifier for Prolific study through which this action was processed
 - `session_id`: identifier for unique Prolific session through which this action was processed
 - `token`: random 16-character token used to verify that Prolific submission is made by the same person who opened the task
+- `definition`: LLM-generated definition of action with cues for what to look for in a video to easily recognize this action
 
 `Clips` table schema:
 
@@ -60,6 +61,7 @@ CREATE TABLE Actions(
     study_id TEXT,
     session_id TEXT,
     token TEXT,
+    definition TEXT,
     UNIQUE(user_id, study_id, session_id),
     UNIQUE(name, domain_name)
 );
