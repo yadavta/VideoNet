@@ -25,7 +25,7 @@ def has_unassigned_tasks(c: Connection) -> bool | str:
         return 'An error occured while trying to check if we have any tasks left for you to do.'
     return result['cnt'] > 0
 
-def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str, str, str] | str:
+def get_action_and_token(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str | None, str, str | None] | str:
     """
     1. If no existing token, assign action & token and return them to user
     2. If token exists but has not been used, return existing action & token to user

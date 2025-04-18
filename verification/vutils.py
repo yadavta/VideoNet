@@ -23,13 +23,13 @@ def has_unassigned_tasks(c: Connection) -> bool | str:
         return 'An error occured while trying to check if we have any tasks left for you to do.'
     return result['cnt'] > 0
 
-def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str] | str:
+def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str | None, str | None] | str:
     """
     1. If no existing assignment, assign action and return it to user
     2. If assigment exists but has not been completed, return existing action to user
     3. If assignment exists and has already been completed, return an error
 
-    Upon case 1 or 2, returns 4-tuple of action id, action name, domain name, subdomain.
+    Upon case 1 or 2, returns 5-tuple of action id, action name, domain name, subdomain, definition.
     Upon case 3, returns string.
     """
     res = conn.execute('SELECT * FROM Assignments WHERE user_id = ? AND study_id = ? AND session_id = ?', (user_id, study_id, session_id)).fetchall()
@@ -41,16 +41,16 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
             # find 10 available tasks from DB
             matched = False
             conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-            actions = conn.execute('SELECT id, name, domain_name, subdomain, assigned FROM Actions WHERE assigned < ? ORDER BY RANDOM() LIMIT 10;', (NUM_ANNOTATORS_PER_CLIP,)).fetchall()
+            actions = conn.execute('SELECT id, name, domain_name, subdomain, assigned, definition FROM Actions WHERE assigned < ? ORDER BY RANDOM() LIMIT 10;', (NUM_ANNOTATORS_PER_CLIP,)).fetchall()
             if not actions: 
-                conn.execute('ROLLBACK;')
+                conn.rollback()
                 return error
             
             # see if any of these 10 tasks work with our user (i.e., check for overlap)
             for a in actions:
                 overlap = conn.execute('SELECT * FROM Assignments WHERE action_id = ? AND user_id = ? AND study_id = ?', (a['id'], user_id, study_id)).fetchall()
                 if not overlap:
-                    action_id, action_name, domain_name, subdomain, curr_assigned = a['id'], a['name'], a['domain_name'], a['subdomain'], a['assigned']
+                    action_id, action_name, domain_name, subdomain, curr_assigned, defn = a['id'], a['name'], a['domain_name'], a['subdomain'], a['assigned'], a['definition']
                     matched = True
                     break
             
@@ -63,21 +63,21 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
             cursor2 = conn.execute("INSERT INTO Assignments(action_id, user_id, study_id, session_id, assigned_at) VALUES (?, ?, ?, ?, datetime('now'))", 
                                    (action_id, user_id, study_id, session_id))
             if cursor1.rowcount == 1 and cursor2.rowcount == 1:
-                conn.execute('COMMIT')
-                return action_id, action_name, domain_name, subdomain
+                conn.commit()
+                return action_id, action_name, domain_name, subdomain, defn
                 
             # unable to assign the task; rollback changes and return error
-            conn.execute('ROLLBACK')
+            conn.rollback()
             return error
         except Exception as e:
-            conn.execute('ROLLBACK')
+            conn.rollback()
             return error
     elif int(res[0]['completed']) == 0:
         action_id = res[0]['action_id']
         res = conn.execute('SELECT * FROM Actions WHERE id = ?', (action_id,)).fetchall()
         if not res:
             return 'An error occured while resuming your task.'
-        return int(res[0]['id']), res[0]['name'], res[0]['domain_name'], res[0]['subdomain']
+        return int(res[0]['id']), res[0]['name'], res[0]['domain_name'], res[0]['subdomain'], res[0]['definition']
     else:
         # CASE 3
         return 'You have already completed this Prolific task.'

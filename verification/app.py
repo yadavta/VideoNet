@@ -63,16 +63,16 @@ def show_task():
         return ERROR_MSG
     
     # get action
-    action_info: tuple[int, str, str, str | None, str] | str = vutils.get_action(get_db(), user_id, study_id, session_id)
+    action_info = vutils.get_action(get_db(), user_id, study_id, session_id)
     if isinstance(action_info, str): return action_info
-    action_id, action_name, domain_name, subdomain = action_info
+    action_id, action_name, domain_name, subdomain, defn = action_info
 
     # get clips
     clips: list[tuple[int, str]] | str = vutils.get_clips(get_db(), action_id)
     if isinstance(clips, str): return clips
 
     # render webpage
-    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'action_id': action_id,
+    kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'action_id': action_id, 'definition': defn,
               'action_name': action_name, 'domain_name': domain_name, 'subdomain': subdomain, 'clips': clips}
     return render_template('start.html', **kwargs)
 

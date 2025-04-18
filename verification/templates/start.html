@@ -28,7 +28,7 @@
         <p class="para-txt">If the clip does not contain the desired action, select "<span class="l3">no</span>".</p>
         <p class="para-txt">Please use your best judgement when determing if a clip is "poorly trimmed". In particular, the following scenarios are considered "poorly trimmed": </p>
         <ul>
-            <li class="para-txt">the clip does not contain the entirety of the desired action;</li>
+            <li class="para-txt">the clip does not contain the entirety of the desired action</li>
             <li class="para-txt">the clip contains {{domain_name}} actions other than the desired action</li>
             <li class="para-txt">the clip has a noticeable delay between the beginning of the clip and when the action starts</li>
             <li class="para-txt">the clip has a noticeable delay between when the action finishes and the ending of the clip</li>
@@ -39,9 +39,21 @@
         {% endif %}
         <p class="para-txt">If you are unsure about if a clip contains the desired action, feel free to search Google or YouTube for more information about a {{action_name}}.</p>
         <p class="para-txt attention-txt">If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/verification_tutorial.mp4" target="_blank">watch this tutorial</a>.</p>
+
+        {% if definition %}
+        <hr>
+        <p class="para-txt">
+            For your convenience, a definition of the action follows.
+        </p>
+        <p class="para-txt">
+            <b>{{action_name}}</b>: {{definition}}
+        </p>
+        <hr>
+        {% endif %}
     </div>
 
     <div class="user-input">
+
         <form name="annotations" action="/submit" onsubmit="return validateForm()" method="post">
             <input type="hidden" name="user_id" value="{{ user_id }}">
             <input type="hidden" name="study_id" value="{{ study_id }}">

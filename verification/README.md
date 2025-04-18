@@ -15,6 +15,7 @@ Note the existence of an `Assignments` table. In `small_scale`, we had a bijecti
 - `finished`: integer representing how many Prolific users have finished this action, that is how many Prolific completion codes have been given out for this action
 - `domain_name`: e.g., Football, Skateboarding, etc.
 - `subdomain`: optional action type (e.g., for Football this might be "Penalty" to indicate to Prolific user that the action is a penalty)
+- `definition`: action definition; provided to help Prolific users understand what this action entails
 
 `Assignments` table schema:
 - `id`: primary key (unique identifier)
@@ -66,6 +67,7 @@ CREATE TABLE Actions(
     assigned INTEGER DEFAULT 0,
     finished INTEGER DEFAULT 0,
     subdomain TEXT,
+    definition TEXT,
     UNIQUE(name, domain_name)
 );
 
@@ -114,4 +116,55 @@ Add some clips for testing purposes
 ```sql
 INSERT INTO Actions('name', 'domain_name') VALUES ('Laser Flip', 'Skateboarding'), ('Kickflip', 'Skateboarding');
 INSERT INTO Clips('action_id', 'gcp_url') VALUES (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_good.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_3.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_poor.mp4'), (1, 'https://storage.googleapis.com/action-atlas/public/laser_flip_2.mp4'), (2, 'https://storage.googleapis.com/action-atlas/public/fs_flip_6.mp4');
+```
+
+## Data Analysis
+
+Assuming >=2 1s --> "good" clip, >=2 2s --> "mediocre" clip, >=2 3s --> "bad" clip, and remaining clips are TBD, then:
+- To determine how many clips have zero "good" clips
+  - ```SELECT COUNT(DISTINCT a.id) FROM Actions a WHERE NOT EXISTS ( SELECT 1 FROM Clips c WHERE c.action_id = a.id AND ( SELECT COUNT(*) FROM Annotations an WHERE an.clip_id = c.id AND an.classification = 1) >= 2);```
+- To determine how many clips have zero "mediocre" clips
+  - ```SELECT a.* FROM Actions a WHERE NOT EXISTS ( SELECT 1 FROM Clips c WHERE c.action_id = a.id AND ( SELECT COUNT(*) FROM Annotations an WHERE an.clip_id = c.id AND an.classification = 2) >= 2);```
+
+To get the number of 1s, 2s, and 3s each clip received:
+```sql
+SELECT c.id AS clip_id, SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) AS num_1, SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) AS num_2, SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) AS num_3 FROM Clips c LEFT JOIN Annotations a ON c.id = a.clip_id GROUP BY c.id, c.gcp_url, c.yt_id, c.start, c.end ORDER BY c.id;
+```
+
+Use the folloqing query to get a breakdown of how many clips fell into which distribution of votes.
+```sql
+SELECT votes, COUNT(*) AS num_clips FROM (SELECT c.id, CASE WHEN COUNT(DISTINCT a.classification) = 1 AND MAX(a.classification) = 1 THEN 'All 1s' WHEN COUNT(DISTINCT a.classification) = 1 AND MAX(a.classification) = 2 THEN 'All 2s' WHEN COUNT(DISTINCT a.classification) = 1 AND MAX(a.classification) = 3 THEN 'All 3s' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) = 1 AND SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) = 1 AND SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) = 1 THEN '123' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) = 1 AND SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) = 2 THEN '122' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) = 1 AND SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) = 2 THEN '133' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) = 2 AND SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) = 1 THEN '112' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 1 THEN 1 ELSE 0 END) = 2 AND SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) = 1 THEN '113' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) = 2 AND SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) = 1 THEN '223' WHEN COUNT(a.id) = 3 AND SUM(CASE WHEN a.classification = 3 THEN 1 ELSE 0 END) = 2 AND SUM(CASE WHEN a.classification = 2 THEN 1 ELSE 0 END) = 1 THEN '332' ELSE 'No Votes' END AS votes FROM Clips c LEFT JOIN Annotations a ON c.id = a.clip_id GROUP BY c.id) GROUP BY votes ORDER BY votes;
+```
+
+These are the possible (unordered) combinations of votes that the above query checks for.
+
+- 111
+- 222
+- 333
+- 123
+- 112
+- 113
+- 122
+- 133
+- 223
+- 233
+
+To get a list of clips that have no "1" votes.
+```sql
+SELECT c.* FROM Clips c WHERE NOT EXISTS (SELECT 1 FROM Annotations a WHERE a.clip_id = c.id AND a.classification = 1);
+```
+
+To get a list of actions that have no clips with at least one "1" vote.
+```sql
+SELECT a.* FROM Actions a WHERE NOT EXISTS ( SELECT 1 FROM Clips c JOIN Annotations an ON c.id = an.clip_id WHERE c.action_id = a.id AND an.classification = 1);
+```
+
+To get all clips that have one 1, one 2, and one 3 vote for manual review.
+```sql
+SELECT c.id, c.gcp_url, a.name AS action_name
+FROM Clips c 
+JOIN Actions a ON c.action_id = a.id 
+JOIN Annotations an ON c.id = an.clip_id
+GROUP BY c.id 
+HAVING SUM(an.classification = 1) = 1 AND SUM(an.classification = 2) = 1 AND SUM(an.classification = 3) = 1;
 ```
