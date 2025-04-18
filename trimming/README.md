@@ -63,6 +63,7 @@ CREATE TABLE Actions(
     session_id TEXT,
     assigned_at TEXT,
     load INTEGER,
+    definition TEXT,
     UNIQUE (user_id, study_id, session_id),
     UNIQUE (name, domain_name)
 );

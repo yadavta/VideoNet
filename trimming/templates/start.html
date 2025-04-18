@@ -26,10 +26,10 @@
 
     <div class="intro-container">
         <p class="para-txt">
-            You are provided with <b>{{num_good + num_bad}}</b> clips of {{domain_name | lower}}.
+            You are provided with <b>{{num_good + num_bad}}</b> clips of {{domain_name}}.
         </p>
         <p class="para-txt">
-            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b> {{subdomain or 'action'}} </b> in <b>{{domain_name | lower}}</b>.
+            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b> {{subdomain or 'action'}} </b> in <b>{{domain_name}}</b>.
         </p>
         <p class="para-txt">
             You will help us ensure that these clips are well-trimmed.
@@ -46,7 +46,7 @@
         </p>
         <ul>
             <li class="para-txt">it does not contain the entirety of the action,</li>
-            <li class="para-txt">it contains {{domain_name | lower}} actions other than the desired action,</li>
+            <li class="para-txt">it contains {{domain_name}} actions other than the desired action,</li>
             <li class="para-txt">there is a noticeable delay between the beginning of the clip and when the action starts,</li>
             <li class="para-txt">there is a noticeable delay between when the action finishes and the ending of the clip.</li>
         </ul>
@@ -55,11 +55,20 @@
             Of the <b>{{num_good + num_bad}}</b> total clips, another Prolific annotator determined that <b>{{num_good}}</b> of them {% if num_good == 1 %} was {% else %} were {% endif %} well-trimmed, while the remaining <b>{{num_bad}}</b> {% if num_bad == 1 %} clip was {% else %} clips were {% endif %} poorly-trimmed.
         </p>
         <p class="para-txt">
-            Your job is two-fold: first, you will watch the {{num_good}} well-trimmed {% if num_good == 1 %} clip {% else %} clips {% endif %} to get a sense of what a {{action_name}} in {{domain_name | lower}} looks like; then, you will watch the {{num_bad}} poorly-trimmed {% if num_bad == 1 %} clip {% else %} clips {% endif %} and adjust {% if num_bad == 1%} its trimming {% else %} their trimmings {% endif %} so that {% if num_bad == 1 %} it {% else %} they {% endif %} become well-trimmed.
+            Your job is two-fold: first, you will watch the {{num_good}} well-trimmed {% if num_good == 1 %} clip {% else %} clips {% endif %} to get a sense of what a {{action_name}} in {{domain_name}} looks like; then, you will watch the {{num_bad}} poorly-trimmed {% if num_bad == 1 %} clip {% else %} clips {% endif %} and adjust {% if num_bad == 1%} its trimming {% else %} their trimmings {% endif %} so that {% if num_bad == 1 %} it {% else %} they {% endif %} become well-trimmed.
         </p>
         <p class="para-txt">
             Lastly, we want to ensure that none of the clips contain any text on-screen that writes out "{{action_name}}". If such text is in the original poorly-trimmed clip, please try to trim it out. If your updated trimming still includes the text, please indicate so using the provided checkbox.
         </p>
+        {% if definition %}
+        <hr>
+        <p class="para-txt">
+            For your convenience, a definition of the action is provided below.
+        </p>
+        <p class="para-txt">
+            <b>{{action_name}}</b>: {{definition}}
+        </p>
+        {% endif %}
         <!-- <p class="para-txt attention-txt">
             If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/trimming_tutorial.mp4" target="_blank">watch this tutorial</a>.
         </p> -->

@@ -19,7 +19,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
     2. If assigment exists but has not been completed, return existing action to user
     3. If assignment exists and has already been completed, return an error
 
-    Upon case 1 or 2, returns 4-tuple of action id, action name, domain name, subdomain.
+    Upon case 1 or 2, returns 5-tuple of action id, action name, domain name, subdomain, definition.
     Upon case 3, returns string.
     """
     res = conn.execute('SELECT * FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ?', (user_id, study_id, session_id)).fetchall()
@@ -30,7 +30,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
         try:
             # find available task from DB
             conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-            action = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
+            action = conn.execute('SELECT id, name, domain_name, subdomain, definition FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
                                   (load,)).fetchall()
             if not action: 
                 conn.execute('ROLLBACK;')
@@ -41,7 +41,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
             cursor = conn.execute("UPDATE Actions SET assigned = 1, assigned_at = datetime('now'), user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0", (user_id, study_id, session_id, a['id']))
             if cursor.rowcount == 1:
                 conn.execute('COMMIT')
-                return a['id'], a['name'], a['domain_name'], a['subdomain']
+                return a['id'], a['name'], a['domain_name'], a['subdomain'], r['definition']
             else:
                 conn.execute('ROLLBACK')
                 return error
@@ -52,7 +52,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
     elif int(res[0]['finished']) == 0:
         # CASE 2
         r = res[0]
-        return int(r['id']), r['name'], r['domain_name'], r['subdomain']
+        return int(r['id']), r['name'], r['domain_name'], r['subdomain'], r['definition']
     else:
         # CASE 3
         return 'You have already completed this Prolific task.'

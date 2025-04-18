@@ -61,7 +61,7 @@ def show_task():
     # get action
     action_info: tuple[int, str, str, str | None, str] | str = tutils.get_action(get_db(), user_id, study_id, session_id, load)
     if isinstance(action_info, str): return action_info
-    action_id, action_name, domain_name, subdomain = action_info
+    action_id, action_name, domain_name, subdomain, definition = action_info
     if subdomain in set(['NULL', 'Null', 'null']): subdomain = None
 
     # get clips
@@ -71,7 +71,7 @@ def show_task():
 
     # render webpage
     kwargs = {'user_id': user_id, 'study_id': study_id, 'session_id': session_id, 'action_id': action_id,
-              'action_name': action_name, 'domain_name': domain_name, 'subdomain': subdomain,
+              'action_name': action_name, 'domain_name': domain_name, 'subdomain': subdomain, 'definition': definition,
               'good_clips': good_clips, 'bad_clips': bad_clips, 'num_good': len(good_clips), 'num_bad': len(bad_clips)}
     return render_template('start.html', **kwargs)
 
