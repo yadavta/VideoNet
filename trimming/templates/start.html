@@ -66,11 +66,18 @@
     </div>
 
     <hr class="section-marker">
-
-    <div class="example-videos">
+    <div class="intro-container">
         <p class="para-txt center-txt">
             The following videos are examples of <b>well-trimmed</b> clips of the <b>{{action_name}}</b> {%if subdomain%} {{subdomain|lower}} {% else %} action {% endif %}in <b>{{domain_name | lower}}</b>.
         </p>
+        <p class="para-txt center-txt">
+            Note that some examples may be <b>bad examples</b> (e.g., they may contain extra actions). 
+            <br>
+            This should be a rare occurence, but if it happens please select the "Bad Example" checkbox.
+        </p>
+    </div>
+
+    <div class="example-videos">
         {% for c in good_clips%}
         <div id="div-good-{{loop.index}}" class="good-div">
             <media-controller>
@@ -86,6 +93,10 @@
                     <media-fullscreen-button id="btn-good-{{loop.index}}"></media-fullscreen-button>
                 </media-control-bar>
             </media-controller>
+            <div class="bad-example-check-div">
+                <input type="checkbox" id="good-oops-{{loop.index}}" class="bad-example-checkbox">
+                <label for="good-oops-{{loop.index}}" class="label-txt">Bad Example</label>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -148,7 +159,7 @@
                                     </p>
                                 </video>
                                 <br>
-                                <input type="checkbox" id="onscreen-text-{{loop.index}}">
+                                <input type="checkbox" id="onscreen-text-{{loop.index}}" class="onscreen-checkbox">
                                 <label for="onscreen-text-{{loop.index}}">My updated clip contains the on-screen text "{{action_name}}"</label>
                             </div>
                         </td>
@@ -194,6 +205,7 @@
             let starts = [];
             let ends = [];
             let badClips = {{ bad_clips | tojson | safe }};
+            let goodClips = {{ good_clips | tojson | safe }};
 
             // instantiate videojs objects and trimmers for all the bad clips
             for (let i = 1; i <= {{ num_bad }}; i++) {
@@ -301,6 +313,7 @@
                 data.append('session_id', '{{study_id}}');
                 data.append('action_id', '{{action_id}}');
                 data.append('num_trims', {{num_bad}});
+                data.append('num_examples', {{num_good}});
                 // for each poorly trimmed clip,
                 for (var i = 1; i <= {{num_bad}}; i++) {
                     // check that the clip has been previewed
@@ -347,6 +360,12 @@
                     // check for text on-screen
                     let onscreenText = document.getElementById(`onscreen-text-${i}`);
                     data.append(`checked${i}`, onscreenText.checked);
+                }
+
+                for (let j = 1; j <= {{num_good}}; j++) {
+                    badExample = document.getElementById(`good-oops-${j}`);
+                    data.append(`well_uuid${j}`, goodClips[j - 1].uuid);
+                    data.append(`well_checked${j}`, badExample.checked);
                 }
 
                 data.append('feedback', document.getElementById('feedback').value);

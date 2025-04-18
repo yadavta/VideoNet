@@ -27,6 +27,27 @@ hr.section-marker {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
+}
+
+.label-txt {
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+}
+
+.bad-example-check-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    row-gap: 2rem;
+    column-gap: 0.25rem;
+}
+
+.bad-example-checkbox {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 4px;
 }
 
 .top-txt {
@@ -138,7 +159,7 @@ media-chrome, media-controller {
     background-color: transparent !important;
 }
 
-input[type="checkbox"] {
+.onscreen-checkbox {
     margin-top: 2rem;
 }
 

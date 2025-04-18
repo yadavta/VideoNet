@@ -88,7 +88,7 @@ def submit_trims():
         return 'An error occured while accessing the Prolific identifiers associated with you.', 400
     
     trims: list[tuple[str, float, float]] = []
-    num_trims = args.get('num_trims', type=int)
+    num_trims, num_examples = args.get('num_trims', type=int), args.get('num_examples', type=int)
     for i in range(1, num_trims + 1):
         unique = args.get(f'uuid{i}')
         cushion_start, start, end = args.get(f'cushion_start{i}', type=float), args.get(f'start{i}', type=float), args.get(f'end{i}', type=float)
@@ -98,9 +98,19 @@ def submit_trims():
         onscreen: int = int(onscreen.lower() == 'true')
         final_start, final_end = cushion_start + start, cushion_start + end
         trims.append((unique, final_start, final_end, onscreen))
-    
+        
+    bad_example_uuids: list[str] = []
+    for j in range(1, num_examples):
+        if args.get(f'well_checked{j}', type=str).lower() == 'true':
+            unique = args.get(f'well_uuid{j}', type=str)
+            if not unique: return f'An error occured while marking the {j}-th well-trimmed example as bad.', 500
+            bad_example_uuids.append(unique)
+
     if tutils.add_trimmings(get_db(), trims):
         return 'An error occured while saving your annotations. Please try submitting again. If the issue persists, reach out to us on Prolific.', 500
+    
+    if tutils.mark_bad_examples(get_db(), bad_example_uuids):
+        return f'An error occured while saving the {j}-th well-trimmed example as bad.', 500
     
     if tutils.mark_finished(get_db(), user_id, action_id):
         return 'An error occured while marking your task as finished. Please try submitting again. If the issue persists, reach out to us on Prolific.', 500

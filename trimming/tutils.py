@@ -125,6 +125,24 @@ def add_feedback(conn: Connection, user_id: str, study_id: str, session_id: str,
         if cursor.rowcount != 1:
             raise Exception
         conn.commit()
+        return 0
+    except:
+        conn.rollback()
+        return 1
+    
+def mark_bad_examples(conn: Connection, uuids: list[str]) -> int:
+    """
+    Marks clips with specified UUIDs as having rating of -3, indicating that the Prolific user thought that it was a bad example.
+    These clips should be manually reviewed. 
+    Returns 0 on success, 1 on failure.
+    """
+    try:
+        for unique in uuids:
+            cursor = conn.execute('UPDATE Clips SET rating=-3 WHERE uuid = ?', (unique,))
+            if cursor.rowcount != 1:
+                raise Exception
+        conn.commit()
+        return 0
     except:
         conn.rollback()
         return 1
