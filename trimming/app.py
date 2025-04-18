@@ -100,7 +100,7 @@ def submit_trims():
         trims.append((unique, final_start, final_end, onscreen))
         
     bad_example_uuids: list[str] = []
-    for j in range(1, num_examples):
+    for j in range(1, num_examples + 1):
         if args.get(f'well_checked{j}', type=str).lower() == 'true':
             unique = args.get(f'well_uuid{j}', type=str)
             if not unique: return f'An error occured while marking the {j}-th well-trimmed example as bad.', 500
