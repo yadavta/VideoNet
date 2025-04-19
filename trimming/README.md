@@ -20,6 +20,7 @@ Note that the `Actions` table is sourced directly from the previous (verificatio
 - `session_id`: identifier for unique Prolific session through which this action was trimmed
 - `assigned_at`: time that Prolific user was assigned this task; used for returning tasks due to timeout
 - `load`: integer representing how hefty the workload for this task is
+- `definition`: LLM-generated definition of action with cues for what to look for in a video to easily recognize this action
 
 `Clips` table schema:
 - `id`: primary key (unique identifier)

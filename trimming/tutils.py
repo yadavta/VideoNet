@@ -26,13 +26,13 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
 
     if not res:
         # CASE 1
-        error = 'An error occured while trying to assign you a task. Please reload this page and try again. If the issue persists, something is wrong on our end.'
+        error = 'An error occured while trying to assign you a task. <b>Please reload this page and try again</b>. If the issue persists, something is wrong on our end.'
         try:
             # find available task from DB
             conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
             action = conn.execute('SELECT id, name, domain_name, subdomain, definition FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
                                   (load,)).fetchall()
-            if not action: 
+            if not action:
                 conn.rollback()
                 return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
 
@@ -41,7 +41,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, l
             cursor = conn.execute("UPDATE Actions SET assigned = 1, assigned_at = datetime('now'), user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0", (user_id, study_id, session_id, a['id']))
             if cursor.rowcount == 1:
                 conn.commit()
-                return a['id'], a['name'], a['domain_name'], a['subdomain'], r['definition']
+                return a['id'], a['name'], a['domain_name'], a['subdomain'], a['definition']
             else:
                 conn.rollback()
                 return error
