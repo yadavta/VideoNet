@@ -190,13 +190,13 @@ class WhisperX(WhisperTranscriber):
         print(f"Loaded WhisperX model {whisper_model} from {download_root} on {device}")
         self.device = device
     
-    def __call__(self, video_input: str) -> Dict:
+    def __call__(self, video_input: str, batch_size=128) -> Dict:
         """
         Use the local whisper model to transcribe video.
         """
 
         audio_input: np.ndarray = self.load_audio(video_input)
-        result = self.model.transcribe(audio_input)
+        result = self.model.transcribe(audio_input, batch_size=batch_size)
         segments = parse_segments(result['segments'])
         language = result['language']
 
