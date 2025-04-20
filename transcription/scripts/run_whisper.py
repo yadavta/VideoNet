@@ -1,3 +1,4 @@
+""" Basic script to run whisper transcription jobs on local or videos in gcs"""
 import os
 import argparse
 import time
@@ -11,9 +12,8 @@ import sys
 from loguru import logger
 import warnings
 
-from src.utils.gcs import download_blob_as_bytes, parse_gcs_url, get_file_extension
-from src.utils.async_caller import FutureThreadCaller
-from transcription.verbalizer.whisper_verbalizer import WhisperAPI, WhisperGPU
+from transcription.verbalizer.whisper_verbalizer import WhisperTranscriber
+from transcription.pipeline import transcribe_pipeline
 
 # Configure loguru logger                                                 
 warnings.filterwarnings('ignore', module='pydantic')
@@ -21,216 +21,42 @@ warnings.filterwarnings('ignore', module='google')
 logger.remove()  # Remove default handler                                 
 logger.add(sys.stdout, level="INFO")
 
-def transcribe_whisper(
-    datum,
-    whisper_verbalizer: WhisperAPI | WhisperGPU,
-    verbose=False,
-    check_if_en=True
-):
-    """
-    Loads a video from gcs, extracts key frames, and generates captions for key frames.
-    This function processes a single video entry, handling both GCS and local files.
-    It extracts audio from the video and transcribes it using the provided Whisper model.
-
-    Args:
-        datum (dict): A dictionary containing the video path and other metadata.
-        whipser_verbalizer (object): An instance of the Whisper model to use for transcription.
-        verbose (bool): If True, prints additional information during processing.
-        check_if_en (bool): If True, checks if the video is in English before processing (expects GCS URIs).
-                            Else, processes all languages.
-    Returns:
-        dict: A dictionary containing the following keys:
-            - 'uri': The URI of the video.
-            - 'id': The ID of the video.
-            - 'text': The transcribed text.
-            - 'duration': The duration of the video in seconds.
-            - 'segments': A list of dictionaries containing the start time, end time, and text for each segment.
-            - 'language': The language of the transcription.
-            - (Optional) 'cost': The cost of the transcription (for api models).
-        If error occurs, returns None.
-    """
-
-    uri = datum['video_path']
-    load_time = time.time()
-    result = {"uri": uri, "id": datum['id']}
-
-    if check_if_en:
-        assert uri.startswith('gs://'), 'Language check is only supported for gcs uris'
-
-    if uri.startswith('gs://'):
-        
-        # Check if the video is in English
-        if check_if_en:
-            json_path = datum['json_path']
-            if json_path is None:
-                logger.error(f"Metadata not found for {uri}. Skipping...")
-                return None
-            bucket_json_name, blob_json_name = parse_gcs_url(json_path)
-            content = download_blob_as_bytes(bucket_json_name, blob_json_name)
-            if content is None:
-                logger.error(f"Failed to download metadata for {uri} from {json_path}.")
-                return None
-    
-            metadata = json.loads(content)
-            if metadata["language"] != "en":
-                if verbose:
-                    logger.info(f"Skipping {uri} as it is not English.")
-                return None
- 
-        # Download the video file from GCS
-        try:
-            bucket_name, blob_name = parse_gcs_url(uri)
-            content = download_blob_as_bytes(bucket_name, blob_name)
-        except Exception as e:
-            logger.error(f"Failed to download video {uri}: {e}")
-            return None
-        if verbose:
-            logger.info('Time took to load video: {} seconds'.format(time.time() - load_time))
-
-        # Store the downloaded audio file in a temporary local file
-        # as input to the Whisper model
-        suffix = get_file_extension(uri)
-        with tempfile.NamedTemporaryFile(delete=True, suffix=suffix) as temp:
-            temp.write(content)
-            temp.flush()
-            try:
-                transcription = whisper_verbalizer(temp.name)
-            except Exception as e:
-                logger.error(f'Error in verbalizing {uri}: {e}')
-                return None
-    else:
-        try:
-            transcription = whisper_verbalizer(uri)
-        except Exception as e:
-            logger.error(f'Error in verbalizing {uri}: {e}')
-            return None
-      
-    if verbose:
-        logger.info('Verbalization took: {} seconds'.format(time.time() - load_time))
-    
-    result.update(transcription)
- 
-    return result
-
-def load_jsonl(file_path):
-    """Load a jsonl file and return a list of dictionaries."""
-    with open(file_path, 'r') as f:
-        data = [json.loads(line) for line in f]
-    return data
-
-def save_batch(results: list[dict], output_file: str):
-    """Save a batch of results to a jsonl file."""
-    with open(output_file, 'a') as f:
-        for result in results:
-            f.write(json.dumps(result, ensure_ascii=False)+'\n')
-
 if __name__ == '__main__':
 
     '''
     python -m transcription.scripts.run_whisper \
-        --mode api \
-        --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
-        --shard_index 0 \
-        --num_shards 256
-    
-    python -m transcription.scripts.run_whisper \
-        --mode gpu \
-        --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
-        --shard_index 1 \
-        --num_shards 256
+        zkNgfVCzhYk.webm \
+        --mode whisperx \
+        --whisper_model large-v3-turbo
     '''
     parser = argparse.ArgumentParser("Whisper API or GPU jobs for videos in gcs.")
-    parser.add_argument('--mode', choices=['api', 'gpu'], required=True)
-    parser.add_argument('--input_file', required=True, type=str, help='input jsonl file with gcs uris')
+    parser.add_argument('video', type=str, help='local or gcs uri of video to transcribe')
+    parser.add_argument('--mode', choices=['whisper-api', 'whisper-gpu', 'whisperx'], required=True)
     parser.add_argument('--whisper_model', type=str, default='large', help='size for gpu model')
-    parser.add_argument('--segment_length', default=30*1000, type=int, help='length to segment audio input in miliseconds for API jobs')
-    parser.add_argument('--all_lang', action='store_true', help='transcribe all languages (default: skip non-english)')
-
-    # Sharding arguments
-    parser.add_argument('--shard_index', type=int, default=0)
-    parser.add_argument('--num_shards', type=int, default=100)
-    parser.add_argument('--batch_size', type=int, default=100, help='batch size to call API jobs and/or save results')
-
-    # Output arguments
-    parser.add_argument('--overwrite_output', action='store_true', help='overwrite output file if it exists')
-    parser.add_argument('--output_file', default=None, help='name of output file to save transcriptions')
-    parser.add_argument('--output_dir', default="transcription/output", help='output dir to write the transcriptions onto')
-
-    # API specific arguments
     parser.add_argument('--api_model', type=str, default='whisper-1', help='model to use for API jobs')
-    parser.add_argument('--num_workers', type=int, default=10, help='number of workers to use for api jobs')
+    parser.add_argument('--segment_length', default=30*1000, type=int, help='length to segment audio input in miliseconds for API jobs')
+    parser.add_argument('--output', default='transcription.json', help='output file to save transcriptions')
 
     args = parser.parse_args()
-
-    assert args.shard_index < args.num_shards
-
-    if args.output_file is None:
-        args.output_file = Path(args.input_file).name.replace('.jsonl', '_whisper_{}_{:04d}_{:04d}.jsonl'.format(args.mode, args.shard_index, args.num_shards))
-    os.makedirs(args.output_dir, exist_ok=True)
-    args.output_file = os.path.join(args.output_dir, args.output_file)
 
     whisper_kwargs = {}
     if os.environ.get("WHISPER_CACHE_DIR", None) is not None:
         whisper_kwargs = {'download_root': os.environ["WHISPER_CACHE_DIR"]}
  
     # Load the whisper model
-    if args.mode == 'gpu':
-        whisper_model = WhisperGPU(args.whisper_model, **whisper_kwargs)
-    elif args.mode == 'api':
-        whisper_model = WhisperAPI(segment_length=args.segment_length, whisper_model=args.api_model)
+    model_args = {
+        'whisper_model': args.whisper_model,
+        'api_model': args.api_model,
+        'segment_length': args.segment_length,
+        **whisper_kwargs
+    }
+    whisper_model = WhisperTranscriber.load_model(args.mode, **model_args)
+    result = transcribe_pipeline(args.video, whisper_verbalizer=whisper_model, verbose=True)
+    logger.info(f"Transcription result: {result}")
+    if result is not None:
+        # Save the result to the output file
+        with open(args.output, 'w') as f:
+            json.dump(result, f, ensure_ascii=False)
+        logger.success(f"Transcription completed for {args.video} at {args.output}")
     else:
-        raise ValueError('Mode {} not supported'.format(args.mode))
-    transcribe = partial(transcribe_whisper, 
-                         whisper_verbalizer=whisper_model,
-                         check_if_en=not args.all_lang,
-                         )
- 
-    # Shard data
-    data = load_jsonl(args.input_file)
-    logger.info(f"Found {len(data)} total URIs in {args.input_file}")
-    data = data[args.shard_index::args.num_shards]
-    logger.info(f"Loaded {len(data)} URIs from shard {args.shard_index} of {args.num_shards} shards")
-
-    if args.overwrite_output:
-        logger.info(f"Overwriting {args.output_file}...")
-        with open(args.output_file, 'w') as f:
-            pass
-
-    # Load and skip processed uris
-    uris_to_skip = set()
-    if os.path.isfile(args.output_file) and not args.overwrite_output:
-        with open(args.output_file) as f:
-            for line in f:
-                line = json.loads(line)
-                uris_to_skip.add(line['uri'])
-    input_data = [datum for datum in data if datum['video_path'] not in uris_to_skip]
-    logger.info(f"Skipping {len(uris_to_skip)} already processed URIs")
-    logger.info(f"Processing {len(input_data)} new URIs")
-    logger.info(f"Will save transcriptions to {args.output_file}...")
-
-    res = transcribe(input_data[1], verbose=True)
-    logger.info(f"Example Transcription result: {res}")
- 
-    # Transcribe every batch of videos
-    if args.mode == 'gpu':
-        for idx in tqdm(range(0, len(input_data), args.batch_size)):
-            batch = input_data[idx:idx+args.batch_size]
-            if args.mode == 'gpu':
-                results = []
-                for datum in tqdm(batch):
-                    result = transcribe(datum)
-                    if result is not None:
-                        results.append(result)
-                save_batch(results, args.output_file)
-                logger.info(f"Saved {len(results)} transcriptions to {args.output_file}")
-    # async callers automatically handles batching
-    elif args.mode == 'api':
-        FutureThreadCaller.batch_process_save(
-            data,
-            transcribe,
-            args.output_file,
-            batch_size=args.batch_size,
-            max_workers=args.num_workers
-        )
-    
-    logger.success(f"Transcription completed for {len(input_data)} URIs")
+        logger.error(f"Transcription failed for {args.video}")
