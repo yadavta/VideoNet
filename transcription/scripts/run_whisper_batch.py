@@ -74,6 +74,9 @@ def transcribe_data(
             return None
     
     transcription = transcribe_pipeline(uri, whisper_verbalizer=whisper_verbalizer, verbose=verbose)
+    if transcription is None:
+        logger.error(f"Failed to transcribe {uri}.")
+        return None
     
     result.update(transcription)
  
