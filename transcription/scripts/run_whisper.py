@@ -32,7 +32,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("Whisper API or GPU jobs for videos in gcs.")
     parser.add_argument('video', type=str, help='local or gcs uri of video to transcribe')
     parser.add_argument('--mode', choices=['whisper-api', 'whisper-gpu', 'whisperx'], required=True)
-    parser.add_argument('--whisper_model', type=str, default='large', help='size for gpu model')
+    parser.add_argument('--whisper_model', type=str, default='large-v3-turbo', help='size for gpu model')
     parser.add_argument('--api_model', type=str, default='whisper-1', help='model to use for API jobs')
     parser.add_argument('--segment_length', default=30*1000, type=int, help='length to segment audio input in miliseconds for API jobs')
     parser.add_argument('--output', default='transcription.json', help='output file to save transcriptions')
