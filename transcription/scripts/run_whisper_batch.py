@@ -11,7 +11,7 @@ import sys
 from loguru import logger
 import warnings
 
-from src.utils.gcs import download_blob_as_bytes, parse_gcs_url, get_file_extension
+from src.utils.gcs import download_blob_as_bytes, parse_gcs_url
 from src.utils.async_caller import FutureThreadCaller
 from transcription.verbalizer.whisper_verbalizer import WhisperTranscriber
 from transcription.pipeline import transcribe_pipeline
