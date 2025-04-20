@@ -10,6 +10,11 @@ from loguru import logger
 
 from .base_verbalizer import Verbalizer
 
+try:
+    import whisperx
+except ImportError:
+    logger.warning("WhisperX not installed. Please run `pip install whisperx` if you want to use WhisperX transcriber.")
+
 WHISPER_CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "whisper")
 
 def parse_segments(segments: list[dict]):
@@ -23,13 +28,65 @@ def get_duration(video_input: str) -> float:
     duration = float(probe['format']['duration'])
     return duration
 
-class WhisperAPI(Verbalizer):
+class WhisperTranscriber(Verbalizer):
+    """ Abstract class for Whisper transcribers. """
+    # Registry to store available WhisperTranscriber classes
+    _registry = {}
+    
+    @classmethod
+    def _register_model(cls, name: str):
+        """
+        Decorator to register a WhisperTranscriber subclass in the registry.
+        
+        Args:
+            name: String identifier for the transcriber
+        """
+        def decorator(subclass):
+            cls._registry[name] = subclass
+            return subclass
+        return decorator
+    
+    @classmethod
+    def load_model(cls, name: str, **kwargs):
+        """
+        Factory method to get a WhisperTranscriber instance by name.
+        
+        Args:
+            name: String identifier for the transcriber ('whisper-api', 'whisper-gpu', 'whisperx')
+            **kwargs: Arguments to pass to the transcriber constructor
+            
+        Returns:
+            An instance of the requested WhisperTranscriber subclass
+            
+        Raises:
+            ValueError: If the requested transcriber is not registered
+        """
+        if name not in cls._registry:
+            raise ValueError(
+                f"Transcriber '{name}' not found. Available transcribers: {list(cls._registry.keys())}"
+            )
+        
+        return cls._registry[name](**kwargs)
+    
+    @classmethod
+    def get_available_models(cls):
+        """
+        Get a list of available models.
+        """
+        return sorted(list(cls._registry.keys()))
+    
+    def __call__(self, video_path: str) -> Dict:
+        pass
 
-    def __init__(self, api_key=None, segment_length=30* 1000, whisper_model='whisper-1'):
+@WhisperTranscriber._register_model('whisper-api')
+class WhisperAPI(WhisperTranscriber):
+
+    def __init__(self, api_key=None, segment_length=30* 1000, api_model='whisper-1', **kwargs):
         from src.utils.openai_api import OpenaiAPI
+        print(f"Using OpenAI Whisper API model {api_model} with segment length {segment_length}")
         self.openai_api = OpenaiAPI(api_key)
         self.segment_length = segment_length
-        self.whisper_model = whisper_model
+        self.whisper_model = api_model
 
     def __call__(self, video_input: str) -> Dict:
         """
@@ -83,9 +140,10 @@ class WhisperAPI(Verbalizer):
         
         return result
  
-class WhisperGPU(Verbalizer):
+@WhisperTranscriber._register_model('whisper-gpu')
+class WhisperGPU(WhisperTranscriber):
 
-    def __init__(self, whisper_model, device='cuda', download_root=WHISPER_CACHE_DIR):
+    def __init__(self, whisper_model, device='cuda', download_root=WHISPER_CACHE_DIR, **kwargs):
         self.model = whisper.load_model(whisper_model, device=device, download_root=download_root)
         print(f"Loaded Whisper model {whisper_model} from {download_root} on {device}")
         self.device = device
@@ -122,5 +180,42 @@ class WhisperGPU(Verbalizer):
 
         return language
 
+@WhisperTranscriber._register_model('whisperx')
+class WhisperX(WhisperTranscriber):
+    def __init__(self, whisper_model, device='cuda', download_root=WHISPER_CACHE_DIR, **kwargs):
+        import torch
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
+        self.model = whisperx.load_model(whisper_model, device=device, download_root=download_root)
+        print(f"Loaded WhisperX model {whisper_model} from {download_root} on {device}")
+        self.device = device
+    
+    def __call__(self, video_input: str) -> Dict:
+        """
+        Use the local whisper model to transcribe video.
+        """
+
+        audio_input: np.ndarray = self.load_audio(video_input)
+        result = self.model.transcribe(audio_input)
+        segments = parse_segments(result['segments'])
+        language = result['language']
+
+        text = ' '.join([s['text'] for s in segments])
+
+        duration = get_duration(video_input)
+
+        return {
+            'text': text,
+            'duration': duration,
+            'segments': segments,
+            'language': language
+        }
+    
+    def load_audio(self, video_input: str):
+        return whisperx.load_audio(video_input)
+    
+    def detect_language(self, audio_input: np.ndarray):
+        return self.model.model.detect_language(audio_input)[0]
+    
     
     
