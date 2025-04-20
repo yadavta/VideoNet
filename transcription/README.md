@@ -15,6 +15,11 @@ cd transcription
 pip install -r requirements.txt
 ```
 
+For whisperx and cuda 11, you might need to reinstall `ctranslate2` with version 3.x.x. See this [issue](https://github.com/SYSTRAN/faster-whisper/issues/734)
+```
+pip install ctranslate2==3.24.0
+```
+
 ### Usage
 From root, run `transcription/scripts/run_whisper.py` script to transcribe audio files.
 To support distributed processing, the script accepts `--shard_index` and `--num_shards` arguments. These arguments are used to split the input data into smaller chunks for parallel processing.

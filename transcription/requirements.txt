@@ -15,4 +15,4 @@ fastparquet>=2023.0.0
 # For GCS support
 google-cloud-storage>=2.10.0
 whisperx==3.3.2
-ctranslate2==3.24.0 # downgrade for cuda11
+# ctranslate2==3.24.0 # use this for cuda11
