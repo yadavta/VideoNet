@@ -198,6 +198,8 @@ class WhisperX(WhisperTranscriber):
         audio_input: np.ndarray = self.load_audio(video_input)
         result = self.model.transcribe(audio_input, batch_size=batch_size)
         segments = parse_segments(result['segments'])
+        for idx, seg in enumerate(segments):
+            seg['id'] = idx
         language = result['language']
 
         text = ' '.join([s['text'] for s in segments])
