@@ -36,6 +36,14 @@ hr.section-marker {
     font-size: large;
 }
 
+.checkboxes {
+    display: flex;
+    justify-content: first baseline;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+}
+
 .bad-example-check-div {
     display: flex;
     justify-content: center;
@@ -45,8 +53,8 @@ hr.section-marker {
 }
 
 .bad-example-checkbox {
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 4px;
 }
 

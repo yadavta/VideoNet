@@ -80,9 +80,15 @@
             The following videos are examples of <b>well-trimmed</b> clips of the <b>{{action_name}}</b> {%if subdomain%} {{subdomain|lower}} {% else %} action {% endif %}in <b>{{domain_name | lower}}</b>.
         </p>
         <p class="para-txt center-txt">
-            Note that some examples may be <b>bad examples</b> (e.g., they may contain extra actions). 
+            Note that some examples may be <b>bad examples</b> (e.g., they may not contain the desired action). 
             <br>
             This should be a rare occurence, but if it happens please select the "Bad Example" checkbox.
+        </p>
+
+        <p class="para-txt center-txt">
+            Also note that some examples may have <b>on-screen text containing "{{action_name}}"</b>.
+            <br>
+            This should also be a rare occurence, but if it happens please select the relevant checkbox.
         </p>
     </div>
 
@@ -102,9 +108,16 @@
                     <media-fullscreen-button id="btn-good-{{loop.index}}"></media-fullscreen-button>
                 </media-control-bar>
             </media-controller>
-            <div class="bad-example-check-div">
-                <input type="checkbox" id="good-oops-{{loop.index}}" class="bad-example-checkbox">
-                <label for="good-oops-{{loop.index}}" class="label-txt">Bad Example</label>
+            <div class="checkboxes">
+                <div class="bad-example-check-div">
+                    <input type="checkbox" id="good-oops-{{loop.index}}" class="bad-example-checkbox">
+                    <label for="good-oops-{{loop.index}}" class="label-txt">Bad Example</label>
+                </div>
+                <br>
+                <div class="bad-example-check-div">
+                    <input type="checkbox" id="good-onscreen-{{loop.index}}" class="bad-example-checkbox">
+                    <label for="good-onscreen-{{loop.index}}" class="label-txt">Onscreen Text has <br> Action Name</label>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -120,7 +133,13 @@
             The clips are denoted by the yellow bar; their start and end times are denoted by the cyan markers
         </p>
         <p class="para-txt center-txt">
-            Please fix the trimmings. Once you are done processing a clip, you can preview your trimming with the blue button.
+            Please fix the trimmings. Once you are done processing a clip, you must preview your trimming by pressing the blue button.
+        </p>
+        <p class="para-txt center-txt">
+            In the rare case where one of the clips below does not contain the desired action, please select the "Missing Desired Action" checkbox.
+        </p>
+        <p class="para-txt center-txt">
+            On the other hand, if the clip contains multiple instances of the desired action, please include only one instance in your trimming. <br> (You may choose which one to include.)
         </p>
         <div id="form">
             <input type="hidden" name="user_id" value="{{ user_id }}">
@@ -167,6 +186,9 @@
                                         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
                                     </p>
                                 </video>
+                                <br>
+                                <input type="checkbox" id="lacks-action-{{loop.index}}" class="onscreen-checkbox">
+                                <label for="lacks-action-{{loop.index}}">Missing Desired Action</label>
                                 <br>
                                 <input type="checkbox" id="onscreen-text-{{loop.index}}" class="onscreen-checkbox">
                                 <label for="onscreen-text-{{loop.index}}">My updated clip contains the on-screen text "{{action_name}}"</label>
@@ -239,6 +261,7 @@
             // uncheck all boxes (neccessary to clear cache)
             for (let i = 1; i <= {{ num_bad }}; i++) {
                 document.getElementById(`onscreen-text-${i}`).checked = false;
+                document.getElementById(`lacks-action-${i}`).checked = false;
             }
 
             // fix trimmer end time once video duration metadata loads in
@@ -366,15 +389,19 @@
                     data.append(`start${i}`, s);
                     data.append(`end${i}`, e);
 
-                    // check for text on-screen
+                    // check for text on-screen and lack of desired action
                     let onscreenText = document.getElementById(`onscreen-text-${i}`);
                     data.append(`checked${i}`, onscreenText.checked);
+                    let lacksAction = document.getElementById(`lacks-action-${i}`);
+                    data.append(`lacks${i}`, lacksAction.checked);
                 }
 
                 for (let j = 1; j <= {{num_good}}; j++) {
                     badExample = document.getElementById(`good-oops-${j}`);
+                    badOnsreen = document.getElementById(`good-onscreen-${j}`)
                     data.append(`well_uuid${j}`, goodClips[j - 1].uuid);
                     data.append(`well_checked${j}`, badExample.checked);
+                    data.append(`well_onscreen${j}`, badOnsreen.checked);
                 }
 
                 data.append('feedback', document.getElementById('feedback').value);

@@ -130,15 +130,33 @@ def add_feedback(conn: Connection, user_id: str, study_id: str, session_id: str,
         conn.rollback()
         return 1
     
-def mark_bad_examples(conn: Connection, uuids: list[str]) -> int:
+def mark_bad(conn: Connection, uuids: list[str]) -> int:
     """
-    Marks clips with specified UUIDs as having rating of -3, indicating that the Prolific user thought that it was a bad example.
+    Marks clips with specified UUIDs as having rating of -3, indicating that the Prolific user thought that it was a bad example (if presented as a well-trimed clip),
+        OR that the Prolific user thought that it lacked the desired action (if presented as a poorly-trimmed clip).
     These clips should be manually reviewed. 
     Returns 0 on success, 1 on failure.
     """
     try:
         for unique in uuids:
             cursor = conn.execute('UPDATE Clips SET rating=-3 WHERE uuid = ?', (unique,))
+            if cursor.rowcount != 1:
+                raise Exception
+        conn.commit()
+        return 0
+    except:
+        conn.rollback()
+        return 1
+
+def mark_examples_onscreen(conn: Connection, uuids: list[str]) -> int:
+    """
+    Marks clips with specified UUIDs as having problematic onscreen text (in DB land, this translates to updating the `onscreen` column in the Clips table to 1.)
+    These clips should be manually reviewed and/or have their text automatically obfuscated using the Google Vision API.
+    Returns 0 on success, 1 on failure.
+    """
+    try:
+        for unique in uuids:
+            cursor = conn.execute('UPDATE Clips SET onscreen=1 WHERE uuid = ?', (unique,))
             if cursor.rowcount != 1:
                 raise Exception
         conn.commit()

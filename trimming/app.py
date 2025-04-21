@@ -87,30 +87,41 @@ def submit_trims():
     if not user_id or not study_id or not session_id or action_id is None:
         return 'An error occured while accessing the Prolific identifiers associated with you.', 400
     
+    bad_clip_uuids: list[str] = []
     trims: list[tuple[str, float, float]] = []
     num_trims, num_examples = args.get('num_trims', type=int), args.get('num_examples', type=int)
     for i in range(1, num_trims + 1):
         unique = args.get(f'uuid{i}')
         cushion_start, start, end = args.get(f'cushion_start{i}', type=float), args.get(f'start{i}', type=float), args.get(f'end{i}', type=float)
-        onscreen: str = args.get(f'checked{i}', type=str)
-        if unique is None or cushion_start is None or start is None or end is None or onscreen is None:
+        onscreen, lacks_action = args.get(f'checked{i}', type=str), args.get(f'lacks{i}', type=str)
+        if unique is None or cushion_start is None or start is None or end is None or onscreen is None or lacks_action is None:
             return 'An error occured while parsing your submission.', 400
-        onscreen: int = int(onscreen.lower() == 'true')
+        onscreen, lacks_action = int(onscreen.lower() == 'true'), int(lacks_action.lower() == 'true')
         final_start, final_end = cushion_start + start, cushion_start + end
         trims.append((unique, final_start, final_end, onscreen))
+        if lacks_action:
+            bad_clip_uuids.append(unique)
         
     bad_example_uuids: list[str] = []
+    examples_onscreen_uuids: list[str] = []
     for j in range(1, num_examples + 1):
         if args.get(f'well_checked{j}', type=str).lower() == 'true':
             unique = args.get(f'well_uuid{j}', type=str)
             if not unique: return f'An error occured while marking the {j}-th well-trimmed example as bad.', 500
             bad_example_uuids.append(unique)
+        if args.get(f'well_onscreen{j}', type=str).lower() == 'true':
+            unique = args.get(f'well_uuid{j}', type=str)
+            if not unique: return f'An error occured while marking the {j}-th well-trimmed example as having on-screen text.', 500
+            examples_onscreen_uuids.append(unique)
 
     if tutils.add_trimmings(get_db(), trims):
         return 'An error occured while saving your annotations. Please try submitting again. If the issue persists, reach out to us on Prolific.', 500
     
-    if tutils.mark_bad_examples(get_db(), bad_example_uuids):
-        return f'An error occured while saving the {j}-th well-trimmed example as bad.', 500
+    if tutils.mark_bad(get_db(), bad_example_uuids + bad_clip_uuids):
+        return f'An error occured while marking certain examples as bad OR marking certain clips as lacking the desired action.', 500
+    
+    if tutils.mark_examples_onscreen(get_db(), examples_onscreen_uuids):
+        return f'An error occured while marking certain well-trimmed examples as containing on-screen text.', 500
     
     if tutils.mark_finished(get_db(), user_id, action_id):
         return 'An error occured while marking your task as finished. Please try submitting again. If the issue persists, reach out to us on Prolific.', 500
