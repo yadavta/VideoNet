@@ -2,7 +2,7 @@ import os, argparse, logging
 from pathlib import Path
 
 from src.models import Qwen25VL, Gemini
-from src.utils import cut_video, parse_segments, sanitize_segments
+from src.utils.common import cut_video, parse_segments, sanitize_segments
 from src.globals import ORIGINALS_DIR, CLIPS_DIR
 from src.prompts import GEMINI_TEMPORAL_LOCALIZATION, QWEN_FALSE_POSITIVE_VERIFICATION
 
