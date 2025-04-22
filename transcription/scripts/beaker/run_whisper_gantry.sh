@@ -31,11 +31,19 @@ done
 
 set -x
 ### Set the following variables ###
+# FNAME='oe-training-yt-crawl-video-list-04-10-2025.jsonl'
+# DATA_NAME='yt-crawl-04-10-2025'
+
+# FNAME='oe-training-yt-crawl-video-list-04-10-2025-with-lang-to-process.jsonl'
+# DATA_NAME='yt-crawl-04-10-2025-with-lang-to-process'
+
+FNAME=batch2_362k.jsonl
+DATA_NAME='yt-crawl-batch2_362k'
+
+
 SHARD_START=0
 SHARD_END=63 # inclusive
 NUM_SHARDS=${NUM_SHARDS:-64}
-FNAME='oe-training-yt-crawl-video-list-04-10-2025.jsonl'
-DATA_NAME='yt-crawl-04-10-2025'
 WHISPER_MODE='whisperx' # [whisper-gpu whisperx]
 WHISPER_MODEL=large-v3-turbo
 WHISPER_CACHE_DIR=/cache/whisper
@@ -84,7 +92,7 @@ gantry run \
 
     set -x
 
-    gsutil cp gs://oe-training-yt-crawl/${FNAME} ./
+    gsutil cp gs://oe-training-yt-crawl/batches-to-be-transcribed/${FNAME} ./
     python -m transcription.scripts.run_whisper_batch \
         --mode $WHISPER_MODE \
         --whisper_model $WHISPER_MODEL \
