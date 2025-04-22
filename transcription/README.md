@@ -2,6 +2,8 @@
 
 This module provides tools for transcribing audio files using OpenAI's [Whisper API](https://platform.openai.com/docs/guides/speech-to-text) or a [local Whisper model](https://github.com/openai/whisper). It is designed to work with the `VideoNet` repository but separates the transcription functionality for easier use and testing.
 
+- 🚀 [whisperX](https://github.com/m-bain/whisperX) is now supported!
+
 ### Installation
 
 Install the required dependencies by running pip install in the **root** of the repository:
@@ -21,28 +23,74 @@ pip install ctranslate2==3.24.0
 ```
 
 ### Usage
-From root, run `transcription/scripts/run_whisper.py` script to transcribe audio files.
-To support distributed processing, the script accepts `--shard_index` and `--num_shards` arguments. These arguments are used to split the input data into smaller chunks for parallel processing.
 
-Example usage with local whisper model:
+#### Supported Models
+
+- **WhisperX**: A faster version of Whisper that supports GPU acceleration.
+- **Local Whisper Model**: Uses a local installation of the Whisper model. Requires GPU support for faster processing.
+- **OpenAI Whisper API**: Uses OpenAI's API for transcription. Requires an API key.
+
+To control the model used, set the `--mode` argument to one of the following:
+- `whisperx`: For local whisper model with WhisperX (GPU)
+- `whisper-gpu`: For local Whisper model (GPU)
+- `whisper-api`: For OpenAI Whisper API
+
+By default, we use the `large-v3-turbo` for local whisper  `whisper-1` model for the OpenAI API. You can specify a different model using the `--whisper_model` argument.
+
+#### Transcribing (local | gcs) Video
+To transcribe a video file, run `transcription/scripts/run_whisper.py` from the root. This script accepts a single video file as input and generates a transcription output file.
+```
+python -m transcription.scripts.run_whisper \
+    /path/to/video.mp4 \
+    --mode whisperx \ 
+    --whisper_model large-v3-turbo
+    --output transcription.json
+```
+You can also set video to a GCS path (e.g., `gs://your-bucket/video.mp4`) to transcribe files directly from Google Cloud Storage.
+
+To use **OpenAI Whisper API**, make sure to set the `OPENAI_API_KEY` environment variable.
+By default, we use the `whisper-1` model.
+Then, run the script with the `--mode whisper-api` argument:
 ```bash
 python -m transcription.scripts.run_whisper \
-    --mode gpu \ 
+    /path/to/video.mp4 \
+    --mode whisper-api \ 
+    --api_model whisper-1 \
+    --output transcription.json
+```
+
+#### Transcribing from Video List
+Use `transcription/scripts/run_whisper_batch.py`  to transcribe from list of audio files.
+To support distributed processing, the script accepts `--shard_index` and `--num_shards` arguments. These arguments are used to split the input data into smaller chunks for parallel processing.
+
+Example usage with whisperX:
+```bash
+python -m transcription.scripts.run_whisper_batch \
+    --mode whisperx \ 
     --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
     --shard_index 0 \
     --num_shards 256 \
     --output_dir /path/to/output \
 ```
 
-To use **OpenAI Whisper API**, make sure to set the `OPENAI_API_KEY` environment variable.
-By default, we use the `whisper-1` model (TODO: add model params for api calls).
-Then, run the script with the `--mode api` argument:
+Example usage with local whisper model:
 ```bash
-python -m transcription.scripts.run_whisper \
-    --mode api \
+python -m transcription.scripts.run_whisper_batch \
+    --mode whisper-gpu \ 
     --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
     --shard_index 0 \
     --num_shards 256 \
+    --output_dir /path/to/output \
+```
+
+Example usage with whisper OpenAI API:
+```bash
+python -m transcription.scripts.run_whisper_batch \
+    --mode whisper-api \
+    --input_file transcription/data/oe-training-yt-crawl-video-list-04-10-2025.jsonl \
+    --shard_index 0 \
+    --num_shards 256 \
+    --num_workers 128 \
     --output_dir /path/to/output \
 ```
 
@@ -88,9 +136,10 @@ If the `output_file` argument is not provided, the script will generate a defaul
 
 | Argument | Description | Default |
 |----------|-------------|---------|
-| `--mode` | Transcription mode: 'api' or 'gpu' | (Required) |
+| `--mode` | Transcription mode: 'whisperx', 'whisper-gpu', or 'whisper-api' | (Required) |
 | `--input_file` | Path to the input JSONL file containing video metadata | (Required) |
-| `--whisper_model` | Size of whisper model (for GPU mode) | 'large' |
+| `--whisper_model` | Size of whisper model (for GPU mode) | 'large-v3-turbo' |
+| `--api_model` | Size of whisper model (for API mode) | 'whisper-1' |
 | `--shard_index` | Index of the shard to process | 0 |
 | `--num_shards` | Total number of shards to split the input data into | 1 |
 | `--output_dir` | Directory to save the transcription results | 'transcriptions' |
@@ -120,22 +169,27 @@ bash transcription/scripts/beaker/run_whisper_gantry.sh
    - DATA_NAME: Name to identify input data
    - FNAME: Name of input file
 
-4. (**Recommended**) After completion, you can use the [beaker-client](https://beaker-py.readthedocs.io/en/latest/installation.html) to retrieve results:
+4. Download reults:
+
+- a. (**Recommended**) After completion, you can use the [beaker-client](https://beaker-py.readthedocs.io/en/latest/installation.html) to retrieve results:
 ```
 pip install beaker-py # if not already installed
 ```
 
 Then run:
 ```
-python transcription/scripts/beaker/get_results.py \
+python transcription/scripts/beaker/download_results.py \
     $EXP_NAME \
     --output_dir /path/to/output
 ```
 This will download results for the experiment from each **latest finished** (whether completed/preempted) job. This ensures that you get all the available results, even if some jobs were preempted. 
 
-- Using the beaker CLI (not recommended):
-This approach, while easy to use, downloads the result in the **latest** job,  and ignores the previous job with the sam job ID. So, it will download empty files for preempted jobs since the results are not available before the job has started. 
+While easy to use, beaker-client allows downloading results in the **latest** job,  and ignores the previous job with the sam job ID. So, it will download empty files for preempted jobs since the results are not available before the job has started. 
 ```
 beaker experiment results $EXP_NAME -o /path/to/output
 ```
 
+- **Gather Results**: After downloading, you can dump into a single parquet file with:
+```
+python transcription/scripts/gather_whisper_transcription.py
+```
