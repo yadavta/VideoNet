@@ -34,6 +34,16 @@
                 <p class="action-txt">Domain Name: <b>{{domain_name}}</b></p>
                 {% if subdomain is not none %} <p class="action-txt">Action Type: <b>{{subdomain}}</b></p> {% endif %}
                 <p class="action-txt">Action Name: <b>{{action_name}}</b></p>
+                {% if definition %}
+                <hr>
+                <p class="para-txt">
+                    For your convenience, a definition of the action is provided below.
+                </p>
+                <p class="para-txt">
+                    <b>{{action_name}}</b>: {{definition}}
+                </p>
+                <hr>
+                {% endif %}
                 <table>
                     <thead>
                         <tr>

@@ -40,7 +40,8 @@ CREATE TABLE Clips(
     final_start REAL,
     final_end REAL,
     votes TEXT NOT NULL,
-    rating INTEGER
+    rating INTEGER,
+    onscreen INTEGER
 );
 
 CREATE TABLE Feedback(
@@ -69,7 +70,7 @@ for a in actions:
     subdomain = a['subdomain'] if a['subdomain'] else 'NULL'
     sql += f" {a['id'], a['name'], a['domain_name'], subdomain},"
 if sql[-1] == ',': sql = sql[:-1]
-print(sql)
+
 tconn = sqlite3.connect(tdb)
 tcursor = tconn.cursor()
 tcursor.execute(sql)

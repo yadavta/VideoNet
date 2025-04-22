@@ -27,6 +27,35 @@ hr.section-marker {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
+}
+
+.label-txt {
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: large;
+}
+
+.checkboxes {
+    display: flex;
+    justify-content: first baseline;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+}
+
+.bad-example-check-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    row-gap: 2rem;
+    column-gap: 0.25rem;
+}
+
+.bad-example-checkbox {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 4px;
 }
 
 .top-txt {
@@ -40,6 +69,12 @@ hr.section-marker {
 
 .para-txt {
     /* text-align: left; */
+    font-size: larger;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.labels {
+    text-align: center;
     font-size: larger;
     font-family: Arial, Helvetica, sans-serif;
 }
@@ -132,16 +167,8 @@ media-chrome, media-controller {
     background-color: transparent !important;
 }
 
-input[type="radio"] {
-    float: left;
-    clear: left;
-    margin-right: 1em;
-    transform: scale(1.5);
-}
-
-input[type="radio"] + label {
-    display: block;
-    text-align: left;
+.onscreen-checkbox {
+    margin-top: 2rem;
 }
 
 .l1 {

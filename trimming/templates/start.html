@@ -26,10 +26,10 @@
 
     <div class="intro-container">
         <p class="para-txt">
-            You are provided with <b>{{num_good + num_bad}}</b> clips of {{domain_name | lower}}.
+            You are provided with <b>{{num_good + num_bad}}</b> clips of {{domain_name}}.
         </p>
         <p class="para-txt">
-            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b>{{subdomain or 'action'}}</b> in <b>{{domain_name | lower}}</b>.
+            Each clip includes a <b>{{action_name}}</b>, which is an {% if subdomain is none or subdomain[0]|lower in ['a', 'e', 'i', 'o', 'o'] %} an {% else %} a {% endif%} <b> {{subdomain or 'action'}} </b> in <b>{{domain_name}}</b>.
         </p>
         <p class="para-txt">
             You will help us ensure that these clips are well-trimmed.
@@ -46,7 +46,7 @@
         </p>
         <ul>
             <li class="para-txt">it does not contain the entirety of the action,</li>
-            <li class="para-txt">it contains {{domain_name | lower}} actions other than the desired action,</li>
+            <li class="para-txt">it contains {{domain_name}} actions other than the desired action,</li>
             <li class="para-txt">there is a noticeable delay between the beginning of the clip and when the action starts,</li>
             <li class="para-txt">there is a noticeable delay between when the action finishes and the ending of the clip.</li>
         </ul>
@@ -55,19 +55,44 @@
             Of the <b>{{num_good + num_bad}}</b> total clips, another Prolific annotator determined that <b>{{num_good}}</b> of them {% if num_good == 1 %} was {% else %} were {% endif %} well-trimmed, while the remaining <b>{{num_bad}}</b> {% if num_bad == 1 %} clip was {% else %} clips were {% endif %} poorly-trimmed.
         </p>
         <p class="para-txt">
-            Your job is two-fold: first, you will watch the {{num_good}} well-trimmed {% if num_good == 1 %} clip {% else %} clips {% endif %} to get a sense of what a {{action_name}} in {{domain_name | lower}} looks like; then, you will watch the {{num_bad}} poorly-trimmed {% if num_bad == 1 %} clip {% else %} clips {% endif %} and adjust {% if num_bad == 1%} its trimming {% else %} their trimmings {% endif %} so that {% if num_bad == 1 %} it {% else %} they {% endif %} become well-trimmed.
+            Your job is two-fold: first, you will watch the {{num_good}} well-trimmed {% if num_good == 1 %} clip {% else %} clips {% endif %} to get a sense of what a {{action_name}} in {{domain_name}} looks like; then, you will watch the {{num_bad}} poorly-trimmed {% if num_bad == 1 %} clip {% else %} clips {% endif %} and adjust {% if num_bad == 1%} its trimming {% else %} their trimmings {% endif %} so that {% if num_bad == 1 %} it {% else %} they {% endif %} become well-trimmed.
         </p>
+        <p class="para-txt">
+            Lastly, we want to ensure that none of the clips contain any text on-screen that writes out "{{action_name}}". If such text is in the original poorly-trimmed clip, please try to trim it out. If your updated trimming still includes the text, please indicate so using the provided checkbox.
+        </p>
+        {% if definition %}
+        <hr>
+        <p class="para-txt attention-txt">
+            For your convenience, a definition of the action is provided below.
+        </p>
+        <p class="para-txt" style="color: purple">
+            <b>{{action_name}}</b>: {{definition}}
+        </p>
+        {% endif %}
         <!-- <p class="para-txt attention-txt">
             If this is your first time completing this survey, please <a href="https://homes.cs.washington.edu/~tanush/trimming_tutorial.mp4" target="_blank">watch this tutorial</a>.
         </p> -->
     </div>
 
     <hr class="section-marker">
-
-    <div class="example-videos">
+    <div class="intro-container">
         <p class="para-txt center-txt">
             The following videos are examples of <b>well-trimmed</b> clips of the <b>{{action_name}}</b> {%if subdomain%} {{subdomain|lower}} {% else %} action {% endif %}in <b>{{domain_name | lower}}</b>.
         </p>
+        <p class="para-txt center-txt">
+            Note that some examples may be <b>bad examples</b> (e.g., they may not contain the desired action). 
+            <br>
+            This should be a rare occurence, but if it happens please select the "Bad Example" checkbox.
+        </p>
+
+        <p class="para-txt center-txt">
+            Also note that some examples may have <b>on-screen text containing "{{action_name}}"</b>.
+            <br>
+            This should also be a rare occurence, but if it happens please select the relevant checkbox.
+        </p>
+    </div>
+
+    <div class="example-videos">
         {% for c in good_clips%}
         <div id="div-good-{{loop.index}}" class="good-div">
             <media-controller>
@@ -79,10 +104,21 @@
                     <!-- <media-volume-range></media-volume-range> -->
                     <media-time-display></media-time-display>
                     <media-time-range></media-time-range>
-                    <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
+                    <media-playback-rate-button rates="0.25 0.5 1 1.5 2"></media-playback-rate-button>
                     <media-fullscreen-button id="btn-good-{{loop.index}}"></media-fullscreen-button>
                 </media-control-bar>
             </media-controller>
+            <div class="checkboxes">
+                <div class="bad-example-check-div">
+                    <input type="checkbox" id="good-oops-{{loop.index}}" class="bad-example-checkbox">
+                    <label for="good-oops-{{loop.index}}" class="label-txt">Bad Example</label>
+                </div>
+                <br>
+                <div class="bad-example-check-div">
+                    <input type="checkbox" id="good-onscreen-{{loop.index}}" class="bad-example-checkbox">
+                    <label for="good-onscreen-{{loop.index}}" class="label-txt">Onscreen Text has <br> Action Name</label>
+                </div>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -97,7 +133,13 @@
             The clips are denoted by the yellow bar; their start and end times are denoted by the cyan markers
         </p>
         <p class="para-txt center-txt">
-            Please fix the trimmings. Once you are done processing a clip, you can preview your trimming with the blue button.
+            Please fix the trimmings. Once you are done processing a clip, you must preview your trimming by pressing the blue button.
+        </p>
+        <p class="para-txt center-txt">
+            In the rare case where one of the clips below does not contain the desired action, please select the "Missing Desired Action" checkbox.
+        </p>
+        <p class="para-txt center-txt">
+            On the other hand, if the clip contains multiple instances of the desired action, please include only one instance in your trimming. <br> (You may choose which one to include.)
         </p>
         <div id="form">
             <input type="hidden" name="user_id" value="{{ user_id }}">
@@ -144,6 +186,12 @@
                                         To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
                                     </p>
                                 </video>
+                                <br>
+                                <input type="checkbox" id="lacks-action-{{loop.index}}" class="onscreen-checkbox">
+                                <label for="lacks-action-{{loop.index}}">Missing Desired Action</label>
+                                <br>
+                                <input type="checkbox" id="onscreen-text-{{loop.index}}" class="onscreen-checkbox">
+                                <label for="onscreen-text-{{loop.index}}">My updated clip contains the on-screen text "{{action_name}}"</label>
                             </div>
                         </td>
                     </tr>
@@ -183,13 +231,14 @@
                 }
             }
 
-            // instantiate videojs objects and trimmers for all the bad clips
             let players = [];
             let trimmers = [];
             let starts = [];
             let ends = [];
             let badClips = {{ bad_clips | tojson | safe }};
-            console.log(badClips)
+            let goodClips = {{ good_clips | tojson | safe }};
+
+            // instantiate videojs objects and trimmers for all the bad clips
             for (let i = 1; i <= {{ num_bad }}; i++) {
                 players.push(videojs(`bad-video-${i}`, {
                     controls: true,
@@ -197,17 +246,33 @@
                     responsive: true,
                     playbackRates: [0.25, 0.5, 1, 1.5, 2],
                 }));
-                players[i - 1].muted(true);
-                players[i - 1].controlBar.volumePanel.hide();
-                
+                    
                 trimmers.push(players[i - 1].trimmer());
-                let start = Math.min(0, badClips[i - 1]["cushion_start"] - badClips[i - 1]["og_start"]);
-                let end = trimmers[i - 1].startTime + badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"];
-                trimmers[i - 1].startTime = start;
-                trimmers[i - 1].endTime = end;
-                starts.push(start);
-                ends.push(end);
+                let s = Math.max(0, badClips[i - 1]["og_start"] - badClips[i - 1]["cushion_start"]);
+                let e = 1 + badClips[i - 1]["og_end"] - badClips[i - 1]["cushion_start"];
+                trimmers[i - 1].startTime = s;
+                trimmers[i - 1].endTime = e;
+                trimmers[i - 1].updateTrimmer();
+                void document.getElementById(`bad-video-${i}`).offsetWidth;
+                starts.push(s);
+                ends.push(e);
             }
+
+            // uncheck all boxes (neccessary to clear cache)
+            for (let i = 1; i <= {{ num_bad }}; i++) {
+                document.getElementById(`onscreen-text-${i}`).checked = false;
+                document.getElementById(`lacks-action-${i}`).checked = false;
+            }
+
+            // fix trimmer end time once video duration metadata loads in
+            {% for i in range(num_bad) %}
+            players[{{ i }}].on('loadedmetadata', () => {
+                trimmers[{{i}}].endTime = Math.min(1 + badClips[{{i}}]['og_end'] - badClips[{{i}}]['cushion_start'], players[{{i}}].duration());
+                ends[{{i}}] = trimmers[{{i}}].endTime;
+                console.log(trimmers[{{i}}].endTime);
+                trimmers[{{i}}].updateTrimmer();
+            });
+            {% endfor %}
 
             // instantiate videojs objects for the user clip previews
             let previewPlayers = [];
@@ -264,8 +329,8 @@
                 });
                 starts[idx - 1] = s;
                 ends[idx - 1] = e;
-                previewPlayers[idx - 1].currentTime(0)
-                document.getElementById(`confirm-div-${idx}`).removeAttribute('hidden')
+                previewPlayers[idx - 1].currentTime(0);
+                document.getElementById(`confirm-div-${idx}`).removeAttribute('hidden');
             }
 
             function validateAndSubmitForm() {
@@ -280,6 +345,7 @@
                 data.append('session_id', '{{study_id}}');
                 data.append('action_id', '{{action_id}}');
                 data.append('num_trims', {{num_bad}});
+                data.append('num_examples', {{num_good}});
                 // for each poorly trimmed clip,
                 for (var i = 1; i <= {{num_bad}}; i++) {
                     // check that the clip has been previewed
@@ -305,7 +371,7 @@
                         error.hidden = false;
                         return
                     }
-                    let duration = badClips[i - 1]["cushion_end"] - badClips[i - 1]["cushion_start"]
+                    let duration = players[i - 1].duration();
                     if (s < 0 || s > duration) {
                         error.textContent = `Error with Clip #${i}: your chosen start time must be between 0 and the duration of the provided video.`;
                         error.hidden = false;
@@ -322,6 +388,20 @@
                     data.append(`cushion_start${i}`, badClips[i - 1].cushion_start);
                     data.append(`start${i}`, s);
                     data.append(`end${i}`, e);
+
+                    // check for text on-screen and lack of desired action
+                    let onscreenText = document.getElementById(`onscreen-text-${i}`);
+                    data.append(`checked${i}`, onscreenText.checked);
+                    let lacksAction = document.getElementById(`lacks-action-${i}`);
+                    data.append(`lacks${i}`, lacksAction.checked);
+                }
+
+                for (let j = 1; j <= {{num_good}}; j++) {
+                    badExample = document.getElementById(`good-oops-${j}`);
+                    badOnsreen = document.getElementById(`good-onscreen-${j}`)
+                    data.append(`well_uuid${j}`, goodClips[j - 1].uuid);
+                    data.append(`well_checked${j}`, badExample.checked);
+                    data.append(`well_onscreen${j}`, badOnsreen.checked);
                 }
 
                 data.append('feedback', document.getElementById('feedback').value);

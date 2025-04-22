@@ -4,7 +4,7 @@ Given a list of 7 clips collected by Prolific User A (via `small_scale`), k of w
 
 ## Data Management
 
-**WARNING: ANY UPDATES TO THIS SECTION MUST BE REFLECTED IN `verification_to_trimming.py` AS WELL.**
+**WARNING: ANY UPDATES TO THIS SECTION MUST BE REFLECTED IN `../prep/init_trimming_db.py` AS WELL.**
 
 Note that the `Actions` table is sourced directly from the previous (verification) stage. Meanwhile, the `Clips` table is a result of our preprocessing logic being applied to various tables from the previous stage (in particular, the `ratings` columns is based on the previous stage's `Annotations` table). The `Feedback` table is standard across all stages.
 
@@ -19,6 +19,8 @@ Note that the `Actions` table is sourced directly from the previous (verificatio
 - `study_id`: identifier for Prolific study through which this action was trimmed
 - `session_id`: identifier for unique Prolific session through which this action was trimmed
 - `assigned_at`: time that Prolific user was assigned this task; used for returning tasks due to timeout
+- `load`: integer representing how hefty the workload for this task is
+- `definition`: LLM-generated definition of action with cues for what to look for in a video to easily recognize this action
 
 `Clips` table schema:
 - `id`: primary key (unique identifier)
@@ -35,6 +37,7 @@ Note that the `Actions` table is sourced directly from the previous (verificatio
 - `final_end`: where the annotator from this stage thinks the clip should end; will be null if `updated` is False (0)
 - `votes`: three character string. All characters are integers. First character is how many "yes, and well-trimed" votes this clip got in the previous stage; second character is how many "yes, but poorly-trimmed" votes it got; third character is "no" votes.
 - `rating`: 1, 2, or 3. Based on user annotations from verification stage, this is set to 1 if we believe it is a well-trimmed clip, 2 if we believe it is a poorly-trimmed clip, and 3 if we believe it is the clip of another action.
+- `onscreen`: boolean (stored as integer) denoting if the action name appears as on-screen text.
 
 `Feedback` table schema:
 
@@ -60,6 +63,8 @@ CREATE TABLE Actions(
     study_id TEXT,
     session_id TEXT,
     assigned_at TEXT,
+    load INTEGER,
+    definition TEXT,
     UNIQUE (user_id, study_id, session_id),
     UNIQUE (name, domain_name)
 );
@@ -78,7 +83,8 @@ CREATE TABLE Clips(
     final_start REAL,
     final_end REAL,
     votes TEXT NOT NULL,
-    rating INTEGER
+    rating INTEGER,
+    onscreen INTEGER
 );
 
 CREATE TABLE Feedback(
@@ -93,4 +99,59 @@ CREATE TABLE Feedback(
 For debugging purposes, you can clear all assignments as such:
 ```sql
 UPDATE Actions SET assigned=0, finished=0, user_id=NULL, study_id=NULL, session_id=NULL, assigned_at=NULL WHERE user_id='tantan';
+UPDATE Clips SET final_start=NULL, final_end=NULL, onscreen=NULL WHERE onscreen IS NOT NULL;
+```
+
+## Data Analysis
+
+### Workflow
+
+1. Check clips that all annotators disagreed on (i.e., with rating '-1') and manually assign them a rating.
+2. Ensure that there are no clips that have 0 well-trimmed clips.
+3. Set the `load` field of `Actions`.
+
+### Useful Commands
+
+To check for clips that the annotators all disagreed on:
+```sql
+SELECT c.id, a.name AS action_name, c.exact_url, c.cushion_url FROM Clips c JOIN Actions a ON c.action_id = a.id WHERE c.rating='-1';
+```
+
+To check for actions that have no well-trimmed clips:
+```sql
+SELECT a.* FROM Actions a WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = a.id AND c.rating = 1);
+```
+
+To check for actions that have no poorly-trimed clips (and also how many well-trimmed clips they have):
+```sql
+SELECT a.*, COUNT(CASE WHEN c.rating = 1 THEN c.id ELSE NULL END) AS num_good_clips 
+FROM Actions a LEFT JOIN Clips c ON a.id = c.action_id WHERE 
+NOT EXISTS (SELECT 1 FROM Clips c2 WHERE c2.action_id = a.id AND c2.rating = 2) GROUP BY a.id;
+```
+
+To mark the actions with no poorly-trimmed clips as already processed so no Prolific users are assigned it:
+```sql
+UPDATE Actions SET assigned = 1, finished = 1 WHERE NOT EXISTS (SELECT 1 FROM Clips c WHERE c.action_id = Actions.id AND c.rating = 2);
+```
+
+To set the `load` field of the `Actions` table based on the number of poorly-trimmed clips a Prolific user must trim.
+```sql
+UPDATE Actions SET load = 0;
+
+UPDATE Actions
+SET load = (
+    CASE
+        WHEN clip_count BETWEEN 1 AND 2 THEN 1
+        WHEN clip_count BETWEEN 3 AND 4 THEN 2
+        WHEN clip_count BETWEEN 5 AND 6 THEN 3
+        ELSE 0
+    END
+)
+FROM (
+    SELECT action_id, COUNT(*) as clip_count
+    FROM Clips
+    WHERE rating = 2
+    GROUP BY action_id
+) AS counts
+WHERE Actions.id = counts.action_id;
 ```

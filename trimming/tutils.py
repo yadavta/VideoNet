@@ -13,45 +13,46 @@ def query_db(conn: Connection, query, args=(), one=False) -> list[dict] | dict |
     rows = cursor.fetchall()
     return rows if not one else (rows[0] if rows else None)
 
-def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -> tuple[int, str, str, str] | str:
+def get_action(conn: Connection, user_id: str, study_id: str, session_id: str, load: int) -> tuple[int, str, str, str] | str:
     """
     1. If no existing assignment, assign action and return it to user
     2. If assigment exists but has not been completed, return existing action to user
     3. If assignment exists and has already been completed, return an error
 
-    Upon case 1 or 2, returns 4-tuple of action id, action name, domain name, subdomain.
+    Upon case 1 or 2, returns 5-tuple of action id, action name, domain name, subdomain, definition.
     Upon case 3, returns string.
     """
     res = conn.execute('SELECT * FROM Actions WHERE user_id = ? AND study_id = ? AND session_id = ?', (user_id, study_id, session_id)).fetchall()
 
     if not res:
         # CASE 1
-        error = 'An error occured while trying to assign you a task. Please reload this page and try again. If the issue persists, something is wrong on our end.'
+        error = 'An error occured while trying to assign you a task. <b>Please reload this page and try again</b>. If the issue persists, something is wrong on our end.'
         try:
             # find available task from DB
             conn.execute('BEGIN EXCLUSIVE TRANSACTION;')
-            action = conn.execute('SELECT id, name, domain_name, subdomain FROM Actions WHERE assigned = 0 ORDER BY RANDOM() LIMIT 1;').fetchall()
-            if not action: 
-                conn.execute('ROLLBACK;')
+            action = conn.execute('SELECT id, name, domain_name, subdomain, definition FROM Actions WHERE assigned = 0 AND load = ? ORDER BY RANDOM() LIMIT 1;', 
+                                  (load,)).fetchall()
+            if not action:
+                conn.rollback()
                 return '<h1 style="text-align:center; margin-top:2rem;"> Apologies, we have no tasks remaining.</h1>'
 
             # attempt to assign it
             a = action[0]
             cursor = conn.execute("UPDATE Actions SET assigned = 1, assigned_at = datetime('now'), user_id = ?, study_id = ?, session_id = ? WHERE id = ? AND assigned = 0", (user_id, study_id, session_id, a['id']))
             if cursor.rowcount == 1:
-                conn.execute('COMMIT')
-                return a['id'], a['name'], a['domain_name'], a['subdomain']
+                conn.commit()
+                return a['id'], a['name'], a['domain_name'], a['subdomain'], a['definition']
             else:
-                conn.execute('ROLLBACK')
+                conn.rollback()
                 return error
         except Exception as e:
-            conn.execute('ROLLBACK')
+            conn.rollback()
             print(e)
             return error
     elif int(res[0]['finished']) == 0:
         # CASE 2
         r = res[0]
-        return int(r['id']), r['name'], r['domain_name'], r['subdomain']
+        return int(r['id']), r['name'], r['domain_name'], r['subdomain'], r['definition']
     else:
         # CASE 3
         return 'You have already completed this Prolific task.'
@@ -79,17 +80,17 @@ def get_clips(conn: Connection, action_id: str) -> tuple[list[dict], list[dict]]
         return "Sorry, we don't have any clips for this action. Please return the survey and message us that this error occured. We apologize for the inconvenience."
     return good_clips, bad_clips
 
-def add_trimmings(conn: Connection, trims: list[tuple[str, float, float]]) -> int:
+def add_trimmings(conn: Connection, trims: list[tuple[str, float, float, int]]) -> int:
     """
-    Receives a list of trimmings denoted as 3 tuples with the uuid, user-designated start time, and user-designated end time.
+    Receives a list of trimmings denoted as 4 tuples with the uuid, user-designated start time, user-designated end time, and if action name appears on-screen.
     Updates Clips table to reflect these trimmings. 
     Returns 0 on success, 1 on failure.
     """
     try:
         cursor = conn.execute('BEGIN IMMEDIATE TRANSACTION;')
         for t in trims:
-            cursor.execute("UPDATE Clips SET final_start = ?, final_end = ? WHERE uuid = ?", 
-                           (t[1], t[2], t[0]))
+            cursor.execute("UPDATE Clips SET final_start = ?, final_end = ?, onscreen = ? WHERE uuid = ?", 
+                           (t[1], t[2], t[3], t[0]))
             if cursor.rowcount != 1:
                 raise Exception
         conn.commit()
@@ -124,6 +125,42 @@ def add_feedback(conn: Connection, user_id: str, study_id: str, session_id: str,
         if cursor.rowcount != 1:
             raise Exception
         conn.commit()
+        return 0
+    except:
+        conn.rollback()
+        return 1
+    
+def mark_bad(conn: Connection, uuids: list[str]) -> int:
+    """
+    Marks clips with specified UUIDs as having rating of -3, indicating that the Prolific user thought that it was a bad example (if presented as a well-trimed clip),
+        OR that the Prolific user thought that it lacked the desired action (if presented as a poorly-trimmed clip).
+    These clips should be manually reviewed. 
+    Returns 0 on success, 1 on failure.
+    """
+    try:
+        for unique in uuids:
+            cursor = conn.execute('UPDATE Clips SET rating=-3 WHERE uuid = ?', (unique,))
+            if cursor.rowcount != 1:
+                raise Exception
+        conn.commit()
+        return 0
+    except:
+        conn.rollback()
+        return 1
+
+def mark_examples_onscreen(conn: Connection, uuids: list[str]) -> int:
+    """
+    Marks clips with specified UUIDs as having problematic onscreen text (in DB land, this translates to updating the `onscreen` column in the Clips table to 1.)
+    These clips should be manually reviewed and/or have their text automatically obfuscated using the Google Vision API.
+    Returns 0 on success, 1 on failure.
+    """
+    try:
+        for unique in uuids:
+            cursor = conn.execute('UPDATE Clips SET onscreen=1 WHERE uuid = ?', (unique,))
+            if cursor.rowcount != 1:
+                raise Exception
+        conn.commit()
+        return 0
     except:
         conn.rollback()
         return 1
