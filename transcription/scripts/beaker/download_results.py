@@ -25,6 +25,8 @@ def gather_latest_jobs(jobs: tuple[Job],
                 'job': job,
                 'started': job.status.started,
             })
+        elif not job.status.canceled:
+            print(job.name)
 
     # Sort the jobs by timestamp
     latest_jobs = []
@@ -46,7 +48,7 @@ def download_results(job: Job,
     # Download the results
     dataset_id = job.result.beaker
     print(f"Downloaded results for job: {job.name} (dataset: {dataset_id}) to {output_dir}")
-    beaker.dataset.fetch(dataset_id, target=output_dir)
+    beaker.dataset.fetch(dataset_id, target=output_dir, force=True)
 
 
 if __name__ == "__main__":
@@ -58,6 +60,8 @@ if __name__ == "__main__":
     parser.add_argument('--completed', action='store_true', help='Only download completed jobs.')
 
     args = parser.parse_args()
+
+    os.makedirs(args.output_dir, exist_ok=True)
 
     # Set up Beaker client
     beaker = Beaker.from_env()
