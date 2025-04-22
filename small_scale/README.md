@@ -93,3 +93,10 @@ To add all skateboarding tasks for testing purposes:
 ```sql
 INSERT INTO Actions('name') VALUES ('Tic-tac'), ('Manual'), ('Drop In'), ('Carving'), ('Ollie'), ('Shuvit'), ('Kickflip'), ('50-50 Grind'), ('Pop Shuvit'), ('Heelflip'), ('Backside Flip'), ('Backside Heelflip'), ('Frontside Flip'), ('Frontside Heelflip'), ('360 Flip'), ('Laser Flip'), ('Hardflip'), ('Inward Heelflip'), ('Boardslide'), ('Noseslide'), ('Tailslide'), ('Bluntslide'), ('5-0 Grind'), ('Cooked Grind'), ('Nosegrind'), ('Smith Grind'), ('Feeble Grind'), ('Rock to Fakie'), ('Tail Stall'), ('Axle Stall'), ('Rock and Roll'), ('Nose Stall'), ('Disaster'), ('FS Smith'), ('Fakie'), ('360 Shuvit'), ('540 Flip'), ('Ghetto Bird'), ('Fakie Big Flip'), ('Front Side 180'), ('Backside 180'), ('Nose Manual'), ('No Comply 180'), ('Doubleflip'), ('Double Kickflip'), ('Impossible'), ('FS Shuvit'), ('Acid Drop'), ('Boneless'), ('Nollie'), ('Lip Slide')
 ```
+
+While post-processing, make sure to check that no actions' clips were added twice (by accident) to the Clips database.
+```sql
+SELECT a.id, a.name AS action_name, a.domain_name, COUNT(c.id) AS clip_count
+FROM Actions a JOIN Clips c ON a.id = c.action_id 
+GROUP BY a.id, a.name, a.domain_name HAVING COUNT(c.id) > 7 ORDER BY clip_count DESC;
+```
