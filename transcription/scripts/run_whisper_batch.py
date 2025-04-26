@@ -88,6 +88,13 @@ def load_jsonl(file_path):
         data = [json.loads(line) for line in f]
     return data
 
+def load_parquet(file_path):
+    """Load a parquet file and return a list of dictionaries."""
+    import pandas as pd
+    df = pd.read_parquet(file_path)
+    data = df.to_dict(orient='records')
+    return data
+
 def save_batch(results: list[dict], output_file: str):
     """Save a batch of results to a jsonl file."""
     with open(output_file, 'a') as f:
@@ -159,7 +166,12 @@ if __name__ == '__main__':
                          )
  
     # Shard data
-    data = load_jsonl(args.input_file)
+    if args.input_file.endswith('.jsonl'):
+        data = load_jsonl(args.input_file)
+    elif args.input_file.endswith('.parquet'):
+        data = load_parquet(args.input_file)
+    else:
+        raise ValueError(f"Unsupported file format: {args.input_file}")
     logger.info(f"Found {len(data)} total URIs in {args.input_file}")
     data = data[args.shard_index::args.num_shards]
     logger.info(f"Loaded {len(data)} URIs from shard {args.shard_index} of {args.num_shards} shards")
