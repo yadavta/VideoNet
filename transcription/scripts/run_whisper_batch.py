@@ -143,7 +143,11 @@ if __name__ == '__main__':
     assert args.shard_index < args.num_shards
 
     if args.output_file is None:
-        args.output_file = Path(args.input_file).name.replace('.jsonl', '_whisper_{}_{:04d}_{:04d}.jsonl'.format(args.mode, args.shard_index, args.num_shards))
+        ext = Path(args.input_file).suffix
+        args.output_file = args.input_file.replace(
+            ext, 
+            '_whisper_{}_{:04d}_{:04d}{}'.format(args.mode, args.shard_index, args.num_shards, ext)
+        )
     os.makedirs(args.output_dir, exist_ok=True)
     args.output_file = os.path.join(args.output_dir, args.output_file)
 
