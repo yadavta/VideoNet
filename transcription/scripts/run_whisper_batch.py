@@ -144,10 +144,14 @@ if __name__ == '__main__':
 
     if args.output_file is None:
         ext = Path(args.input_file).suffix
+
+        # set output file name based on input file name.
+        # output will always be in jsonl format
         args.output_file = args.input_file.replace(
             ext, 
-            '_whisper_{}_{:04d}_{:04d}{}'.format(args.mode, args.shard_index, args.num_shards, ext)
+            '_whisper_{}_{:04d}_{:04d}.jsonl'.format(args.mode, args.shard_index, args.num_shards)
         )
+        assert args.output_file != args.input_file, "Output file name cannot be the same as input file name"
     os.makedirs(args.output_dir, exist_ok=True)
     args.output_file = os.path.join(args.output_dir, args.output_file)
 
