@@ -3,7 +3,7 @@ from beaker import Beaker, Job, Dataset
 import argparse
 from collections import defaultdict
 
-def gather_latest_jobs(jobs: tuple[Job], 
+def fetch_latest_jobs(jobs: tuple[Job], 
                        only_completed: bool = False
 ) -> list[Job]:
     """
@@ -42,12 +42,14 @@ def download_results(job: Job,
     """
     Download the results of a job.
     """
-    # Create the output directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
 
-    # Download the results
+    # Print the job name and status
     dataset_id = job.result.beaker
     print(f"Downloaded results for job: {job.name} (dataset: {dataset_id}) to {output_dir}")
+
+    # Download the results
+    output_dir = os.path.join(output_dir, job.name)
+    os.makedirs(output_dir, exist_ok=True)
     beaker.dataset.fetch(dataset_id, target=output_dir, force=True)
 
 
@@ -70,7 +72,7 @@ if __name__ == "__main__":
     exp = beaker.experiment.get(args.exp_name)
 
     # Get the latest jobs
-    latest_jobs = gather_latest_jobs(exp.jobs, only_completed=args.completed)
+    latest_jobs = fetch_latest_jobs(exp.jobs, only_completed=args.completed)
     print(f"Found {len(latest_jobs)} jobs in experiment: '{args.exp_name}'")
 
     for job in latest_jobs:
