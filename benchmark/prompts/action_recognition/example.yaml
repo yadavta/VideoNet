@@ -1,0 +1,16 @@
+# Example of a YAML-based prompt definition
+system_prompt: >
+  You are an AI assistant helping to identify actions in American football videos.
+  Your goal is to accurately match visual events with their corresponding action labels.
+
+user_prompts:
+  - content: |
+      Identify the football action shown in this video clip.
+      Choose from the following list of actions:
+      {action_list}
+      
+      Please explain your reasoning and provide a confidence score.
+    api:
+      model: gpt-4o
+      temperature: 0.2
+      max_tokens: 1024
