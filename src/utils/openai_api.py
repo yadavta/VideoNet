@@ -11,7 +11,7 @@ from pathlib import Path
 import backoff
 import requests
 from loguru import logger
-from openai import APIConnectionError, BadRequestError, OpenAI, RateLimitError
+from openai import APIConnectionError, BadRequestError, OpenAI, RateLimitError, NOT_GIVEN
 from openai.types.completion_usage import CompletionUsage
 from PIL import Image
 from pydantic import BaseModel
@@ -235,8 +235,12 @@ class OpenaiAPI:
 
     def _complete_chat(self, messages, model='gpt-4o-2024-08-06', 
                        max_tokens=256, response_format=None, 
-                       top_p = 1.0, temperature=1.0, n=1, stop = '\n\n\n', 
-                       frequency_penalty=None, presence_penalty=None):
+                       top_p = 1.0, temperature=1.0, n=1, 
+                       stop = None, 
+                       reasoning_effort=None,
+                       reasoning_max_tokens=None,
+                       frequency_penalty=None, presence_penalty=None,
+                       ):
         """ 
         Helper function that calls the OpenAI chat completion API with exponential backoff support.
         Args:
@@ -265,26 +269,53 @@ class OpenaiAPI:
             completions_fn = self.client.beta.chat.completions.parse
         else:
             completions_fn = self.client.chat.completions.create
+        
+        def is_reasoning_model(model):
+            return model.startswith("o")
+        
+        # Set as NOT_GIVEN for default values
+        if max_tokens is None:
+            max_tokens = NOT_GIVEN
+        if stop is None:
+            # stop = ["\n\n\n"]
+            stop = NOT_GIVEN
+        if reasoning_effort is None:
+            reasoning_effort = NOT_GIVEN
+        if reasoning_max_tokens is None:
+            reasoning_max_tokens = NOT_GIVEN
                     
         while c < self.max_tries:
             try:
-                response = completions_fn(
-                    messages=messages, model=model, max_tokens=max_tokens, response_format=response_format,
-                    temperature=temperature, top_p=float(top_p), n=n, stop=stop,
-                    frequency_penalty=frequency_penalty, presence_penalty=presence_penalty
-                )
+                self.logger.debug("sending request...")
+                if is_reasoning_model(model):
+                    response = completions_fn(
+                        messages=messages, model=model, max_completion_tokens=reasoning_max_tokens,
+                        temperature=temperature, top_p=float(top_p), reasoning_effort=reasoning_effort,
+                    )
+                else:
+                    response = completions_fn(
+                        messages=messages, model=model, max_completion_tokens=max_tokens, response_format=response_format,
+                        temperature=temperature, top_p=float(top_p), n=n, stop=stop,
+                        frequency_penalty=frequency_penalty, presence_penalty=presence_penalty
+                    )
+                self.logger.debug("response received")
+                
                 return response
             except Exception:
                 error = sys.exc_info()[0]
                 if error == BadRequestError: # should break if message was malformed.
                     self.logger.error(f"BadRequestError\nQuery:\n\n{messages}\n\n")
                     self.logger.error(sys.exc_info())
-                    break
+                    return None
                 elif error in (APIConnectionError, RateLimitError):
                     self.logger.error(f"Error: {error}")
                     self.logger.error(f"Retrying after {self.backoff_seconds} seconds ({c+1}/{self.max_tries})")
                     time.sleep(self.backoff_seconds)
                     c+=1
+                else:
+                    self.logger.error(f"Error: {error}")
+                    self.logger.error(sys.exc_info())
+                    return None
 
         return response
     
@@ -299,7 +330,8 @@ class OpenaiAPI:
         ''' Prepare messages for chat_completions call '''
         messages = []
         if sys_prompt is not None:
-            messages.append({"role": "system", "content": sys_prompt})
+            # messages.append({"role": "system", "content": sys_prompt}) # role 'system' is deprecated
+            messages.append({"role": "developer", "content": sys_prompt})
         user_message = self._build_user_message(usr_prompt, image_input, image_detail)
         example_messages = []
         if examples is not None:
@@ -351,7 +383,7 @@ class OpenaiAPI:
             List[Dict]: List of messages with role and content.
         '''
         example_messages = []
-        valid_example_roles = ['user', 'system']
+        valid_example_roles = ['user', 'system', 'assistant']
         valid_user_keys = ['role', 'content', 'image', 'detail']
 
         assert len(examples) % 2 == 0, "Examples should be in pairs of user and system response"
@@ -365,12 +397,12 @@ class OpenaiAPI:
                 for k in example.keys():
                     assert k in valid_user_keys, f"Invalid key: {k} in example {example}"
             else:
-                expected_role = 'system'
+                expected_role = 'assistant'
                 assert 'image' not in example, "Image should not be provided in system response."
-                message = [{"role": "system", "content": example['content']}]
+                message = [{"role": "assistant", "content": example['content']}]
 
             assert example['role'] == expected_role, f"Expected role: {expected_role} but found role: {example['role']} in example {example}"
-            example_messages.append(message)
+            example_messages += message
         return example_messages
     
     def call_chatgpt(
@@ -385,6 +417,9 @@ class OpenaiAPI:
         max_tokens=256,
         top_p=1.0,
         temperature=1.0,
+        reasoning_max_tokens=None,
+        reasoning_effort: str = None,
+        **kwargs,
     ) -> tuple[str | BaseModel, CompletionUsage]:  
         """
         Generate a response from an OpenAI Chat model with optional image input.
@@ -406,6 +441,8 @@ class OpenaiAPI:
             max_tokens (int, optional): Maximum tokens for the response (default is 256).
             top_p (float, optional): Nucleus sampling probability (default is 1.0).
             temperature (float, optional): Sampling temperature for randomness (default is 1.0).
+            reasoning_max_tokens (int, optional): Maximum tokens for reasoning models (default is None).
+            reasoning_effort (str, optional): Level of reasoning effort for the model (low, medium, high).
 
         Returns:
             tuple (str or BaseModel, dict): The response from the OpenAI Chat API and usage information.
@@ -432,7 +469,10 @@ class OpenaiAPI:
                 response_format=response_format,
                 top_p=top_p,
                 temperature=temperature,
-                n=1
+                n=1,
+                reasoning_effort=reasoning_effort,
+                reasoning_max_tokens=reasoning_max_tokens,
+                **kwargs
             )
             if response is None:
                 return None
