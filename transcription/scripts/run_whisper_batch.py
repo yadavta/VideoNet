@@ -52,6 +52,9 @@ def transcribe_data(
     """
 
     uri = datum['video_path']
+    if uri is None:
+        logger.error(f"URI not found for {datum}. Skipping...")
+        return None
     result = {
         "uri": uri, 
         "id": datum.get('id', Path(uri).stem),
