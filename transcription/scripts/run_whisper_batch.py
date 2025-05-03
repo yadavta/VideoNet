@@ -52,7 +52,10 @@ def transcribe_data(
     """
 
     uri = datum['video_path']
-    result = {"uri": uri, "id": datum['id']}
+    result = {
+        "uri": uri, 
+        "id": datum.get('id', Path(uri).stem),
+    }
 
     if check_if_en:
         assert uri.startswith('gs://'), 'Language check is only supported for gcs uris'
