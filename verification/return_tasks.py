@@ -18,7 +18,7 @@ if __name__ == '__main__':
         cursor = conn.cursor()
         cursor.execute('''
                         SELECT id, action_id, assigned_at FROM Assignments
-                        WHERE completed = 0 AND assigned_at < datetime('now', '-1 hour')
+                        WHERE completed = 0 AND assigned_at < datetime('now', '-34 minutes')
                         ''')
         rows = cursor.fetchall()
         for r in rows:
