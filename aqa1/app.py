@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os, subprocess
-import aqa1.a1utils as a1utils
+import a1utils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
@@ -100,9 +100,9 @@ def submit_annotations():
         annotations.append((correct, wrong, unique, batch_uuid))
         
     if a1utils.update_videos(get_db(), annotations):
-        return ""
+        return "We were unable to process your annotations. Please go back and hit 'submit' again. If the issue persists, please message us."
     if a1utils.mark_finished(get_db(), batch_uuid, user_id, study_id, session_id):
-        return ""
+        return "We have processed your annotations but were unable to mark your study as complete in our server. Please message us on Prolific and submit a NOCODE; we will make sure to approve your submission so you get paid."
     
     if feedback and feedback != '':
         a1utils.add_feedback(get_db(), feedback, user_id, study_id, session_id)
