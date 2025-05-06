@@ -76,7 +76,7 @@ def convert_time_to_str(timestamp: float, end=False) -> str:
     else:
         return f"{seconds} seconds"
     
-def update_videos(conn: Connection, annotations: list[tuple[int, int, str, str]]) -> int:
+def update_videos(conn: Connection, annotations: list[tuple[int, int, str, str, str]]) -> int:
     """
     Returns 0 on success and 1 on failure.
     """
@@ -84,7 +84,8 @@ def update_videos(conn: Connection, annotations: list[tuple[int, int, str, str]]
     while i < 5:
         try:
             with conn:
-                conn.executemany('UPDATE Videos SET correct = ?, wrong = ? WHERE uuid = ? AND batch_uuid = ?', annotations)
+                conn.executemany('UPDATE Videos SET correct = ?, wrong = ?, action = ? \
+                                 WHERE uuid = ? AND batch_uuid = ?', annotations)
                 return 0
         except Exception:
             time.sleep(0.2)

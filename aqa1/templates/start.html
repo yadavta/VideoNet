@@ -15,6 +15,17 @@
     <div class="intro-container">
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{videos | length}} videos</b> of <b>{{domain}}</b>.</p>
+        <p class="para-txt">For each video, we provide start and end timestamps that mark a segment <b>likely</b> to contain both the <b>correct and incorrect ways</b> of performing the provided action. These segments have been automatically selected. We now need your assistance to <b>verify</b> the following:</p>
+        <ol>
+            <li class="para-txt"><b>Correct Method</b>: Check that the correct way of performing the action is actually shown in or near the segment. The correct action should be visibly performed, not just described.</li>
+
+            <li class="para-txt"><b>Incorrect Method</b>: Confirm whether the incorrect way of performing the action is actually demonstrated within the segment or nearby. Please note: the person must physically perform the incorrect action in the video<b>—it's not enough if they only talk about it.</b></li>
+
+            <li class="para-txt"><b>Action Name Accuracy</b>: If you find that the action's name is inaccurate, please update the "Action Name" textbox as needed.</li>
+        </ol>
+        
+        <p class="para-txt"><b>Important</b>: The provided timestamps may not be exact. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+
     </div>
 
     <div class="user-input">
@@ -36,7 +47,7 @@
                     {% for video in videos %}
                     <tr>
                         <td>
-                            <iframe 
+                            <iframe
                                 width="700" 
                                 height="400" 
                                 src="https://www.youtube.com/embed/{{video[1]}}?start={{video[2]|int}}&rel=0"
@@ -50,9 +61,13 @@
                             <input hidden type="text" name="v{{ loop.index }}-uuid" value="{{ video[0] }}">
 
                             <p>Please only consider the segment of the video that runs from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b>.</p>
-                            <hr>
-                            <p>Action Name: {{video[4]}}</p>
-                            <hr>
+                            <hr style="margin-bottom:1.2rem">
+                            <label>Action Name:
+                                <input type="text" name="action-{{ loop.index }}" value="{{video[4]}}" class="action-name">
+                            </label>
+                            <br>
+                            <p style="font-size:medium">(please update the textbox above if the give name is inaccurate)</p>
+                            <hr style="margin-top:1.2rem">
                             <p>Segment contains <b>correct</b> instance of the desired action?</p>
                             <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-yes" value="1"> <label for="c-{{ loop.index }}-yes" class="l1">Yes</label><br>
                             <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-no" value="0"> <label for="c-{{ loop.index }}-no" class="l3">No</label><br>
@@ -91,6 +106,11 @@
                     }
                     if (form[`wrong-${i}`].value.length === 0) {
                         error.innerHTML = `ERROR: you must denote if <b>video #${i}</b> contains a <b>wrong</b> instance of the action.`;
+                        error.hidden = false;
+                        return false;
+                    }
+                    if (form[`action-${i}`].value.length === 0) {
+                        error.innerHTML = `ERROR: the action for <b> video #${i}</b> cannot be empty. If in doubt, please use the action name we originally provided.`
                         error.hidden = false;
                         return false;
                     }

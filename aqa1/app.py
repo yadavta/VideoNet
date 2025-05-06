@@ -1,7 +1,8 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os, subprocess
-import a1utils
+# import a1utils
+import aqa1.a1utils as a1utils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
@@ -87,17 +88,17 @@ def submit_annotations():
         return "Your submission was corrupted. Please try again. If the issue persists, please message us."
     batch_uuid, feedback = args['batch_uuid'], args['feedback']
     
-    annotations: list[tuple[int, int, str, str]] = []
+    annotations: list[tuple[int, int, str, str, str]] = []
     for i in range(1, int(args['video_count']) + 1):
-        if f'v{i}-uuid' not in args or f'correct-{i}' not in args or f'wrong-{i}' not in args:
+        if f'v{i}-uuid' not in args or f'correct-{i}' not in args or f'wrong-{i}' not in args or f'action-{i}' not in args:
             return "Your submission was corrupted. Please try again. If the issue persists, please message us."
         correct, wrong = int(args[f'correct-{i}']), int(args[f'wrong-{i}'])
         if correct not in acceptable_numbers or wrong not in acceptable_numbers:
             return "Your annotations were corrupted. Please try again. If the issue persists, please message us."
-        unique = args[f'v{i}-uuid']
-        if unique == "":
-            return "Your submission was corrupted. Please try again. If the issue persists, please message us."
-        annotations.append((correct, wrong, unique, batch_uuid))
+        unique, action = args[f'v{i}-uuid'], args[f'action-{i}']
+        if action == "": return "It appears that one of your action names is missing. Please fix that and re-submit."
+        if unique == "": return "Your submission was corrupted. Please try again. If the issue persists, please message us."
+        annotations.append((correct, wrong, action, unique, batch_uuid))
         
     if a1utils.update_videos(get_db(), annotations):
         return "We were unable to process your annotations. Please go back and hit 'submit' again. If the issue persists, please message us."
