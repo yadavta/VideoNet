@@ -1,8 +1,8 @@
 from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os, subprocess
-# import a1utils
-import aqa1.a1utils as a1utils
+import a1utils
+# import aqa1.a1utils as a1utils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
