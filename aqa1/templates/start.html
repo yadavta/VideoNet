@@ -15,18 +15,18 @@
     <div class="intro-container">
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{videos | length}} videos</b> of <b>{{domain}}</b>.</p>
-        <p class="para-txt">For each video, we provide start and end timestamps that mark a segment <b>likely</b> to contain both the <b>correct and incorrect ways</b> of performing the provided action. These segments have been automatically selected. We now need your assistance to <b>verify</b> the following:</p>
+        <p class="para-txt">For each video, we provide <b>start</b> and <b>end</b> timestamps that mark a segment <b>likely</b> to contain both the <b>referenced correct and incorrect ways</b> of performing the provided action. These segments and the references for correct and wrong methods have been automatically selected based on what the speaker says. We now need your assistance to <b>verify</b> the following:</p>
         <ol>
-            <li class="para-txt"><b>Correct Method</b>: Check that the correct way of performing the action is actually shown in or near the segment. The correct action should be visibly performed, not just described.</li>
+            <li class="para-txt"><b>Correct Method</b>: Check that the correct way of performing the action, as specified by the reference, is actually shown in or near the segment. The correct action should be <b>visibly performed</b>, not just described.</li>
 
-            <li class="para-txt"><b>Incorrect Method</b>: Confirm whether the incorrect way of performing the action is actually demonstrated within the segment or nearby. Please note: the person must physically perform the incorrect action in the video<b>—it's not enough if they only talk about it.</b></li>
+            <li class="para-txt"><b>Incorrect Method</b>: Confirm whether the incorrect way of performing the action--specified by the reference--is actually demonstrated within the segment or nearby. Please note: the person must physically perform the incorrect action in the video<b>—it's not enough if they only talk about it.</b></li>
 
             <li class="para-txt"><b>Action Name Accuracy</b>: If you find that the action's name is inaccurate, please update the "Action Name" textbox as needed.</li>
         </ol>
         
         <p class="para-txt"><b>Important</b>: the provided <b>timestamps may not be exact</b>. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
 
-        <p class="para-txt"><b>Hint</b>: we've asked LLMs to identify what about the action is being done correctly vs incorrectly. We've included those hints below the radio boxes (look for <i>LLM Hint</i>); we hope they are helpful.</p>
+        <!-- <p class="para-txt"><b>Hint</b>: we've asked LLMs to identify what about the action is being done correctly vs incorrectly. We've included those hints below the radio boxes (look for <i>LLM Hint</i>); we hope they are helpful.</p> -->
 
     </div>
 
@@ -69,15 +69,15 @@
                             <br>
                             <p style="font-size:medium">please update the textbox above if the provided name is inaccurate</p>
                             <hr style="margin-top:2rem; margin-bottom:2rem;">
-                            <p>Segment contains <b>correct</b> instance of the desired action?</p>
+                            <p style="font-size:large"><i>Reference for correct</i>: <span style="color:blue;">{{video[5]}}</span></p>
+                            <p >Segment contains <b>correct</b> instance of the desired action?</p>
                             <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-yes" value="1"> <label for="c-{{ loop.index }}-yes" class="l1">Yes</label>
                             <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-no" value="0"> <label for="c-{{ loop.index }}-no" class="l3">No</label>
-                            <p style="font-size:medium"><i>LLM Hint</i>: {{video[5]}}</p>
                             <hr style="margin-top:2rem; margin-bottom:2rem;">
+                            <p style="font-size:large"><i>Reference for wrong</i>: <span style="color:blue;">{{video[6]}}</span></p>
                             <p>Segment contains <b>wrong</b> instance of the desired action?</p>
                             <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-yes" value="1"> <label for="w-{{ loop.index }}-yes" class="l1">Yes</label>
                             <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-no" value="0"> <label for="w-{{ loop.index }}-no" class="l3">No</label>
-                            <p style="font-size:medium"><i>LLM Hint</i>: {{video[6]}}</p>
                         </td>
                     </tr>
                     {% endfor %}
