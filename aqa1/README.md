@@ -21,6 +21,8 @@
 - `yt_id`: text
 - `correct`: boolean (represented as integer); denotes if user thinks this clip includes instance of action being performed correctly
 - `wrong`: boolean (represented as integer); denotes if user thinks this clip includes instance of action being perfromed incorrectly
+- `pos_rsn`: LLM-generated explanation of what is correct about the action
+- `neg_rsn`: LLM-generated explanation of what is wrong about the action
 - `start`: float; start time of segment in YouTube video in seconds
 - `end`: float; end time of segment in YouTube video in seconds
 - `action`: text; user's best guess what the action is
@@ -62,10 +64,12 @@ CREATE TABLE Videos(
     yt_id TEXT NOT NULL,
     correct INTEGER DEFAULT -1,
     wrong INTEGER DEFAULT -1,
+    pos_rsn TEXT NOT NULL,
+    neg_rsn TEXT NOT NULL,
     start REAL,
     end REAL,
-    action TEXT,
-    domain TEXT REFERENCES Domains(name),
+    action TEXT NOT NULL,
+    domain TEXT REFERENCES Domains(name) NOT NULL,
     uuid TEXT UNIQUE
 );
 

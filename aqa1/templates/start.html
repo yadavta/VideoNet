@@ -24,7 +24,9 @@
             <li class="para-txt"><b>Action Name Accuracy</b>: If you find that the action's name is inaccurate, please update the "Action Name" textbox as needed.</li>
         </ol>
         
-        <p class="para-txt"><b>Important</b>: The provided timestamps may not be exact. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+        <p class="para-txt"><b>Important</b>: the provided <b>timestamps may not be exact</b>. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+
+        <p class="para-txt"><b>Hint</b>: we've asked LLMs to identify what about the action is being done correctly vs incorrectly. We've included those hints below the radio boxes (look for <i>LLM Hint</i>); we hope they are helpful.</p>
 
     </div>
 
@@ -47,6 +49,7 @@
                     {% for video in videos %}
                     <tr>
                         <td>
+                            <p class="para-txt">Segment lasts from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b></p>
                             <iframe
                                 width="700" 
                                 height="400" 
@@ -59,22 +62,22 @@
                         </td>
                         <td>
                             <input hidden type="text" name="v{{ loop.index }}-uuid" value="{{ video[0] }}">
-
-                            <p>Please only consider the segment of the video that runs from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b>.</p>
-                            <hr style="margin-bottom:1.2rem">
+                            <!-- <hr style="margin-bottom:1.2rem"> -->
                             <label>Action Name:
                                 <input type="text" name="action-{{ loop.index }}" value="{{video[4]}}" class="action-name">
                             </label>
                             <br>
-                            <p style="font-size:medium">(please update the textbox above if the give name is inaccurate)</p>
-                            <hr style="margin-top:1.2rem">
+                            <p style="font-size:medium">please update the textbox above if the provided name is inaccurate</p>
+                            <hr style="margin-top:2rem; margin-bottom:2rem;">
                             <p>Segment contains <b>correct</b> instance of the desired action?</p>
-                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-yes" value="1"> <label for="c-{{ loop.index }}-yes" class="l1">Yes</label><br>
-                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-no" value="0"> <label for="c-{{ loop.index }}-no" class="l3">No</label><br>
-                            <hr>
+                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-yes" value="1"> <label for="c-{{ loop.index }}-yes" class="l1">Yes</label>
+                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-no" value="0"> <label for="c-{{ loop.index }}-no" class="l3">No</label>
+                            <p style="font-size:medium"><i>LLM Hint</i>: {{video[5]}}</p>
+                            <hr style="margin-top:2rem; margin-bottom:2rem;">
                             <p>Segment contains <b>wrong</b> instance of the desired action?</p>
-                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-yes" value="1"> <label for="w-{{ loop.index }}-yes" class="l1">Yes</label><br>
-                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-no" value="0"> <label for="w-{{ loop.index }}-no" class="l3">No</label><br>
+                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-yes" value="1"> <label for="w-{{ loop.index }}-yes" class="l1">Yes</label>
+                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-no" value="0"> <label for="w-{{ loop.index }}-no" class="l3">No</label>
+                            <p style="font-size:medium"><i>LLM Hint</i>: {{video[6]}}</p>
                         </td>
                     </tr>
                     {% endfor %}

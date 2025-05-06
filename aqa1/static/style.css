@@ -145,11 +145,15 @@ table {
 th, td {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
-    border: 1px solid #803c00;
+}
+
+td {
+    padding: 4rem 0;
 }
 
 th {
     padding: 1rem 0;
+    border: 1px solid #803c00;
 }
 
 th:first-child {
@@ -184,13 +188,20 @@ media-chrome, media-controller {
     margin-top: 2rem;
 }
 
+input[type='radio'] { 
+    transform: scale(1.5); 
+}
+
 .l1 {
     font-weight: bold;
     color: #006400;
+    padding-left: 5px;
+    margin-right: 2rem;
 }
 
 .l3 {
     font-weight: bold;
+    padding-left: 5px;
     color: #990033;
 }
 

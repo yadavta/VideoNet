@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, g
 from sqlite3 import Connection
 import sqlite3, os, subprocess
 import a1utils
+# import aqa1.a1utils as a1utils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')
@@ -61,7 +62,7 @@ def show_task():
     batch_uuid, domain = assignment_info
     
     # get videos
-    videos: list[tuple[str, str, int, int, str]] | str = a1utils.get_videos(get_db(), batch_uuid)
+    videos: list[tuple[str, str, int, int, str, str, str]] | str = a1utils.get_videos(get_db(), batch_uuid)
     if isinstance(videos, str): return videos
     
     start_times: list[str] = [a1utils.convert_time_to_str(v[2]) for v in videos]

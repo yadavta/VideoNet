@@ -60,13 +60,20 @@ def get_assignment(conn: Connection, user_id: str, study_id: str, session_id: st
 
 def get_videos(c: Connection, batch_uuid: str) -> list[tuple[str, str, int, int, str]] | str:
     """
-    Attempts to retrieve the videos for the specified batch. Upon failure, returns an error message in string form. Upon success, returns a list of videos, where each video is represented as a 5-tuple.
-    The 5-tuple contains, in order, the UUID of the video in the Videos table, the YouTube ID of the video, the start time (in seconds) of the LLM-identified segment, and the end time (in seconds) of the LLM-identified segment, and the action name.
+    Attempts to retrieve the videos for the specified batch. Upon failure, returns an error message in string form. Upon success, returns a list of videos, where each video is represented as a 7-tuple.
+    The 5-tuple contains, in order, 
+        - the UUID of the video in the Videos table,
+        - the YouTube ID of the video,
+        - the start time (in seconds) of the LLM-identified segment,
+        - the end time (in seconds) of the LLM-identified segment,
+        - the action name,
+        - the LLM-generated explanation of the correct execution (i.e., why is it deemed correct)
+        - the LLM-generated explanation of the wrong execution (i.e., why is it deemed wrong)
     """
-    res = query_db(c, 'SELECT uuid, yt_id, start, end, action FROM Videos WHERE batch_uuid = ? ORDER BY yt_id', (batch_uuid,))
+    res = query_db(c, 'SELECT uuid, yt_id, start, end, action, pos_rsn, neg_rsn FROM Videos WHERE batch_uuid = ? ORDER BY yt_id', (batch_uuid,))
     if not res:
        return "An error occured while trying to fetch the videos associated with the action you were assigned. Please reload this page and try again. If the issue persists, please return the survey as something is wrong on our end." 
-    return [(v['uuid'], v['yt_id'], v['start'], v['end'], v['action']) for v in res]
+    return [(v['uuid'], v['yt_id'], v['start'], v['end'], v['action'], v['pos_rsn'], v['neg_rsn']) for v in res]
 
 def convert_time_to_str(timestamp: float, end=False) -> str:
     ts = int(timestamp + 1) if end else int(timestamp)
