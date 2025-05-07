@@ -16,9 +16,9 @@
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{videos | length}} videos</b> of <b>{{domain}}</b>.</p>
 
-        <p class="para-txt">For each video, we have provided <b>descriptions</b> of both the <b>correct and incorrect ways to perform the given action</b>. We have also provided the start and end times of a segment in the video that is likely to contain both the correct and incorrect demonstrations.</p>
+        <p class="para-txt">For each video, we have provided <b>descriptions</b> of both the <b>correct and incorrect ways to perform the given action</b>. We have also provided the start and end times of a section in the video that is likely to contain both the correct and incorrect demonstrations.</p>
         
-        <p class="para-txt">All segments and action descriptions have already been validated by Prolific annotators. However, some of the action names may be subpar, so <i>please</i> feel free to update the action names as you see fit.</p>
+        <p class="para-txt">All video sections and action descriptions have already been validated by Prolific annotators. However, some of the action names may be subpar, so <b>please feel free to update the action names</b> as you see fit.</p>
 
         <p class="para-txt">Your tasks are:</p>
         <ul class="para-txt">
@@ -27,7 +27,7 @@
             <li>If you believe that either the correct or incorrect action does not appear in the video, please enter "NA" in the appropriate text box (entering it in the seconds box is sufficient).</li>
         </ul>
         
-        <p class="para-txt"><b>Important:</b> The provided timestamps may not be exact. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+        <p class="para-txt"><b>Important:</b> The provided video section timestamps may not be exact. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
         <p class="para-txt">Note that the textboxes labeled 'm' are for minutes, and the textboxes labeled 's' are for seconds.</p>
     </div>
 
@@ -50,7 +50,7 @@
                     {% for video in videos %}
                     <tr>
                         <td>
-                            <p class="para-txt">Segment lasts from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b></p>
+                            <p class="para-txt">Relevant section lasts from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b></p>
                             <iframe
                                 width="700" 
                                 height="400" 
