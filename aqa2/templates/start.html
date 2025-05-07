@@ -15,19 +15,20 @@
     <div class="intro-container">
         <h1 class="top-txt" id="top">Welcome!</h1>
         <p class="para-txt">You will be provided with <b>{{videos | length}} videos</b> of <b>{{domain}}</b>.</p>
-        <p class="para-txt">For each video, we provide <b>start</b> and <b>end</b> timestamps that mark a segment <b>likely</b> to contain both the <b>referenced correct and incorrect ways</b> of performing the provided action. These segments and the references for correct and wrong methods have been automatically selected based on what the speaker says. We now need your assistance to <b>verify</b> the following:</p>
-        <ol>
-            <li class="para-txt"><b>Correct Method</b>: Check that the correct way of performing the action, as specified by the reference, is actually shown in or near the segment. The correct action should be <b>visibly performed</b>, not just described.</li>
 
-            <li class="para-txt"><b>Incorrect Method</b>: Confirm whether the incorrect way of performing the action--specified by the reference--is actually demonstrated within the segment or nearby. Please note: the person must physically perform the incorrect action in the video<b>—it's not enough if they only talk about it.</b></li>
-
-            <li class="para-txt"><b>Action Name Accuracy</b>: If you find that the action's name is inaccurate, please update the "Action Name" textbox as needed.</li>
-        </ol>
+        <p class="para-txt">For each video, we have provided <b>descriptions</b> of both the <b>correct and incorrect ways to perform the given action</b>. We have also provided the start and end times of a segment in the video that is likely to contain both the correct and incorrect demonstrations.</p>
         
-        <p class="para-txt"><b>Important</b>: the provided <b>timestamps may not be exact</b>. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+        <p class="para-txt">All segments and action descriptions have already been validated by Prolific annotators. However, some of the action names may be subpar, so <i>please</i> feel free to update the action names as you see fit.</p>
 
-        <!-- <p class="para-txt"><b>Hint</b>: we've asked LLMs to identify what about the action is being done correctly vs incorrectly. We've included those hints below the radio boxes (look for <i>LLM Hint</i>); we hope they are helpful.</p> -->
-
+        <p class="para-txt">Your tasks are:</p>
+        <ul class="para-txt">
+            <li>Identify the <b>start and end times</b> of the video segment showing the <b>correct method</b> and write them in the corresponding text boxes.</li>
+            <li>Identify the <b>start and end times</b> of the video segment showing the <b>wrong method</b> and write them in the corresponding text boxes.</li>
+            <li>If you believe that either the correct or incorrect action does not appear in the video, please enter "NA" in the appropriate text box (entering it in the seconds box is sufficient).</li>
+        </ul>
+        
+        <p class="para-txt"><b>Important:</b> The provided timestamps may not be exact. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+        <p class="para-txt">Note that the textboxes labeled 'm' are for minutes, and the textboxes labeled 's' are for seconds.</p>
     </div>
 
     <div class="user-input">
@@ -71,7 +72,7 @@
                             
                             <hr class="divide-annotations">
 
-                            <p class="ref-txt"><i>Reference</i>: <span style="color:darkblue;">{{video[5]}}</span></p>
+                            <p class="ref-txt"><i>Correct Description</i>: <span style="color:darkblue;">{{video[5]}}</span></p>
                             <p>Correct Segment:</p>
                             <input type="text" size="1" name="c-s-min-{{loop.index}}" id="c-start-min-{{ loop.index }}" class="min">
                             <label for="c-start-min-{{ loop.index }}" class="minutes">m</label>
@@ -85,7 +86,7 @@
 
                             <hr class="divide-annotations">
 
-                            <p class="ref-txt"><i>Reference</i>: <span style="color:darkblue;">{{video[6]}}</span></p>
+                            <p class="ref-txt"><i>Wrong Description</i>: <span style="color:darkblue;">{{video[6]}}</span></p>
                             <p>Wrong Segment:</p>
                             <input type="text" size="1" name="w-s-min-{{loop.index}}" id="w-start-min-{{ loop.index }}" class="min">
                             <label for="w-start-min-{{ loop.index }}" class="minutes">m</label>
