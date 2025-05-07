@@ -36,7 +36,7 @@ def show_error():
 @app.route('/return-tasks-ostrich')
 def return_tasks():
     if request.args.get('animal') == 'beaver':
-        subprocess.run(['python', '/opt/render/project/src/small_scale/return_tasks.py'])
+        subprocess.run(['python', '/opt/render/project/heval/small_scale/return_tasks.py'])
         return 'Returned (if applicable)', 200
     else:
         return 'Wrong Password', 401
