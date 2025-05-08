@@ -1,0 +1,1125 @@
+## BALLET ##
+Pirouette,Soutenu,Chaînés,Renversé
+Grand Jeté,Cabriole,Sissonne,Pas de Chat
+Arabesque,Attitude,Cambré,Grand Battement
+Attitude,Ballonné,Développé,Fondu
+Fouetté,Rond de Jambe,Frappé,Piqué
+Développé,Grand Battement,Fondu,Penché
+Chassé,Glissade,Temps de Cuisse,Emboîté
+Plié,Fondu,Cambré,Soubresaut
+Relevé,Piqué,Temps Levé,Échappé
+Grand Battement,Développé,Arabesque,Frappé
+Pas de Bourrée,Emboîté,Glissade,Balancé
+Assemblé,Sissonne,Brisé,Entrechat
+Entrechat,Brisé,Cabriole,Soubresaut
+Balancé,Emboîté,Pas de Cheval,Renversé
+Échappé,Soubresaut,Temps Levé,Assemblé
+Glissade,Chassé,Temps de Cuisse,Pas de Chat
+Tour en L'air,Chaînés,Manège,Soutenu
+Frappé,Tendu,Pas de Cheval,Développé
+Tendu,Frappé,Pas de Cheval,Rond de Jambe
+Cambré,Renversé,Penché,Fondu
+Rond de Jambe,Fouetté,Frappé,Pas de Cheval
+Soutenu,Chaînés,Pirouette,Renversé
+Sissonne,Assemblé,Pas de Chat,Grand Jeté
+Cabriole,Brisé,Entrechat,Temps de Cuisse
+Brisé,Entrechat,Cabriole,Soubresaut
+Penché,Cambré,Renversé,Grand Battement
+Soubresaut,Échappé,Temps Levé,Entrechat
+Emboîté,Pas de Bourrée,Temps de Cuisse,Balancé
+Temps Levé,Échappé,Relevé,Soubresaut
+Chaînés,Soutenu,Piqué,Manège
+Fondu,Plié,Attitude,Cambré
+Manège,Chaînés,Tour en L'air,Glissade
+Piqué,Relevé,Chaînés,Fouetté
+Retiré,Attitude,Ballonné,Pas de Cheval
+Pas de Cheval,Frappé,Tendu,Ballonné
+Renversé,Cambré,Penché,Arabesque
+Pas de Chat,Sissonne,Assemblé,Temps de Cuisse
+Temps de Cuisse,Emboîté,Chassé,Pas de Bourrée
+Ballonné,Attitude,Retiré,Fondu
+## BARTENDING ##
+Shaking,Palm Spin,Ice Shaving,Throwing
+Muddling,Ice Carving / Ice Cutting,Arm Roll,Swizzling
+Stirring,Finger Rolls,Ice Stamping,Nest
+Dry Shaking,Helicopter,Rimming,Flash
+Rolling,Multiplex,Ice Shaving,Capture
+Straining,Palm Spin,Flaming,Swizzling
+Free Pour,Helicopter,Ice Stamping,Rolling
+Layering,Waterfall,Shadow Pass,Ice Carving / Ice Cutting
+Rimming,Ice Stamping,Finger Rolls,Multiplex
+Flaming,Throwing,Ice Carving / Ice Cutting,Bump
+Twisting,Snatch,Ice Shaving,Palm Spin
+Jigger,Bottle Stall,Ice Carving / Ice Cutting,Shadow Pass
+Throwing,Rolling,Flaming,Ice Shaving
+Swizzling,Capture,Nest,Rimming
+Bottle Stall,Ice Stamping,Free Pour,Layering
+Flash,Twisting,Waterfall,Straining
+Multiplex,Ice Carving / Ice Cutting,Flaming,Jigger
+Bump,Twisting,Waterfall,Layering
+Nest,Free Pour,Straining,Helicopter
+Snatch,Ice Shaving,Muddling,Rimming
+Finger Rolls,Palm Spin,Flaming,Ice Stamping
+Shadow Pass,Throwing,Rimming,Waterfall
+Helicopter,Capture,Jigger,Rolling
+Palm Spin,Free Pour,Flaming,Swizzling
+Arm Roll,Shaking,Dry Shaking,Twisting
+Capture,Shaking,Stirring,Rimming
+Waterfall,Bottle Stall,Bump,Flash
+Ice Shaving,Snatch,Stirring,Dry Shaking
+Ice Stamping,Shaking,Stirring,Bump
+Ice Carving / Ice Cutting,Flash,Muddling,Arm Roll
+## BASKETBALL ##
+Crossover,Spin Move,Reach-in Foul,Travel
+Hesitation / Hesi,Step-Back,Five-second Violation,Jump Stop
+In & Out,Double Dribble,Spin Move,Illegal Screen
+Between the Legs,Behind-the-Back Pass,Lane Violation,Overhead Pass
+Behind the Back Dribble,Wrap-around Pass,Spin Move,Steal
+Euro Step,Spin Move,Travel,Charging
+Jump Stop,Charging,Double Dribble,Blocking Foul
+Spin Move,Euro Step,In & Out,Fadeaway
+Reverse Layup,Finger Roll Layup,Double Clutch Dunk,Hook Shot
+Finger Roll Layup,Floater,Bank Shot,Hook Shot
+Bank Shot,Hook Shot,Floater,Fadeaway
+Putback Dunk,Goaltending,Over the Back Foul,Block
+Tomahawk Dunk,Windmill Dunk,Double Clutch Dunk,Between the Legs Dunk
+Windmill Dunk,Between the Legs Dunk,Tomahawk Dunk,Double Clutch Dunk
+Double Clutch Dunk,Windmill Dunk,Reverse Layup,Tomahawk Dunk
+Between the Legs Dunk,Windmill Dunk,Tomahawk Dunk,Double Clutch Dunk
+Alley-oop,Putback Dunk,Between the Legs Dunk,Windmill Dunk
+Fadeaway,Hook Shot,Bank Shot,Corner Three
+Floater,Finger Roll Layup,Bank Shot,Hook Shot
+Step-Back,Fadeaway,Hesitation / Hesi,Jump Stop
+Free Throw,Catch-and-Shoot Three,Jump Shot,Corner Three
+Corner Three,Catch-and-Shoot Three,Fadeaway,Jump Shot
+Catch-and-Shoot Three,Corner Three,Jump Shot,Free Throw
+Jump Shot,Fadeaway,Free Throw,Step-Back
+Hook Shot,Finger Roll Layup,Bank Shot,Floater
+Charging,Blocking Foul,Loose Ball Foul,Reach-in Foul
+Illegal Screen,Blocking Foul,Lane Violation,Loose Ball Foul
+Loose Ball Foul,Over the Back Foul,Reach-in Foul,Charging
+Over the Back Foul,Loose Ball Foul,Reach-in Foul,Putback Dunk
+Double Dribble,Travel,Five-second Violation,Hesitation / Hesi
+Travel,Double Dribble,Euro Step,Spin Move
+Goaltending,Block,Putback Dunk,Reverse Layup
+Shooting Foul,Blocking Foul,Reach-in Foul,Charging
+Blocking Foul,Charging,Shooting Foul,Loose Ball Foul
+Five-second Violation,8-second Violation,Double Dribble,Lane Violation
+8-second Violation,Five-second Violation,Travel,Double Dribble
+Lane Violation,Illegal Screen,Five-second Violation,Loose Ball Foul
+Reach-in Foul,Loose Ball Foul,Over the Back Foul,Steal
+Chest Pass,Bounce Pass,Overhead Pass,No Look Pass
+Bounce Pass,Chest Pass,Behind-the-Back Pass,Wrap-around Pass
+Overhead Pass,Chest Pass,Bounce Pass,Wrap-around Pass
+Behind-the-Back Pass,Wrap-around Pass,No Look Pass,Bounce Pass
+No Look Pass,Behind-the-Back Pass,Wrap-around Pass,Chest Pass
+Wrap-around Pass,Behind-the-Back Pass,No Look Pass,Bounce Pass
+Steal,Reach-in Foul,Loose Ball Foul,Block
+Block,Goaltending,Putback Dunk,Over the Back Foul
+## BHARATANATYAM ##
+Thattadavu 1,Mandala Bheda,Pakka Adavu,Sarikkal Adavu / Sarukkal Adavu
+Thattadavu 2,Mandi Adavu,Nattadavu 5,Periya Adavu
+Thattadavu 3,Kartari Adavu,Nattadavu 7,Pakka Adavu
+Thattadavu 4,Nattadavu 1,Mandi Adavu,Kartari Adavu
+Thattadavu 5,Jaati Adavu,Periya Adavu,Sarikkal Adavu / Sarukkal Adavu
+Thattadavu 6,Nattadavu 8,Pakka Adavu,Mandala Bheda
+Thattadavu 7,Nattadavu 2,Kuditta Tatta Adavu,Jaati Adavu
+Thattadavu 8,Sarikkal Adavu / Sarukkal Adavu,Kartari Adavu,Nattadavu 6
+Nattadavu 1,Thattadavu 2,Kartari Adavu,Pakka Adavu
+Nattadavu 2,Thattadavu 1,Sarikkal Adavu / Sarukkal Adavu,Periya Adavu
+Nattadavu 3,Thattadavu 8,Mandala Bheda,Pakka Adavu
+Nattadavu 4,Mandi Adavu,Thattadavu 5,Kuditta Tatta Adavu
+Nattadavu 5,Thattadavu 3,Kartari Adavu,Mandala Bheda
+Nattadavu 6,Thattadavu 7,Mandi Adavu,Jaati Adavu
+Nattadavu 7,Periya Adavu,Sarikkal Adavu / Sarukkal Adavu,Thattadavu 4
+Nattadavu 8,Kartari Adavu,Thattadavu 6,Mandi Adavu
+Pakka Adavu,Kuditta Tatta Adavu,Thattadavu 4,Nattadavu 3
+Kuditta Tatta Adavu,Pakka Adavu,Nattadavu 4,Thattadavu 5
+Mandi Adavu,Nattadavu 8,Thattadavu 1,Sarikkal Adavu / Sarukkal Adavu
+Periya Adavu,Nattadavu 7,Kartari Adavu,Thattadavu 3
+Kartari Adavu,Nattadavu 5,Thattadavu 8,Mandala Bheda
+Mandala Bheda,Thattadavu 7,Nattadavu 6,Periya Adavu
+Sarikkal Adavu / Sarukkal Adavu,Nattadavu 2,Thattadavu 2,Mandi Adavu
+Jaati Adavu,Thattadavu 5,Nattadavu 1,Kuditta Tatta Adavu
+## BOULDERING ##
+Rose Move,Gaston,Barn Door,Flagging
+Dyno,Deadpoint,Bat Hang,Figure Four
+Gaston,Layback,Crimp,Palm Press
+Crimp,Gaston,Deadpoint,Smearing
+Mantle,Bat Hang,Bicycle,Barn Door
+Heel Hook,Bat Hang,Figure Four,Drop Knee
+Toe Hook,Figure Four,Palm Press,Pogo / Moon Kick
+Figure Four,Bat Hang,Dyno,Heel Hook
+Double Clutch,Deadpoint,Pogo / Moon Kick,Backstep
+Drop Knee,Backstep,Rock-Over,Flagging
+Deadpoint,Dyno,Double Clutch,Crimp
+Pogo / Moon Kick,Dyno,Barn Door,Double Clutch
+Bicycle,Knee Bar,Backstep,Mantle
+Flagging,Smearing,Backstep,Rose Move
+Stemming,Layback,Palm Press,Knee Bar
+Rock-Over,Drop Knee,Backstep,Mantle
+Smearing,Palm Press,Flagging,Stemming
+Palm Press,Gaston,Smearing,Stemming
+Layback,Gaston,Stemming,Backstep
+Knee Bar,Bicycle,Bat Hang,Stemming
+Backstep,Drop Knee,Rock-Over,Layback
+Barn Door,Pogo / Moon Kick,Rose Move,Dyno
+Bat Hang,Figure Four,Heel Hook,Toe Hook
+## BREAK DANCE ##
+Indian Step,Kick Side Step,Zulu Spin,Baby Love
+Baby Freeze,Elbow Freeze,Air Chair,Nike Freeze
+Donkey Kick,Kip Up,Coin Drop,Corkscrew
+Coin Drop,Backspin,Elbow Track,Munchmill
+Nike Freeze,Flag Freeze,Hollowback,Air Chair
+Cross Step,Baby Love,Kick Side Step,Zulu Spin
+Kick Side Step,Baby Love,Indian Step,Cross Step
+Flare,1990 Spin,Munchmill,UFO
+Head Spin,Halo,1990 Spin,Elbow Track
+Turtle Freeze,Deadman,Elbow Freeze,Air Chair
+Helicopter,Thread the Needle,Zulu Spin,6-step
+6-step,Zulu Spin,Pretzel,Thread the Needle
+Swipe,Cricket,Jackhammer,Munchmill
+Backspin,Halo,Munchmill,Coin Drop
+Corkscrew,Kip Up,Donkey Kick,Thread the Needle
+Jackhammer,Hand Hop,UFO,1990 Spin
+Cricket,Swipe,UFO,Hand Hop
+Elbow Track,Munchmill,Halo,Coin Drop
+Deadman,Hollowback,Elbow Freeze,Flag Freeze
+CC,Pretzel,Thread the Needle,Zulu Spin
+Pretzel,CC,Thread the Needle,Baby Love
+Zulu Spin,6-step,Helicopter,Pretzel
+Thread the Needle,CC,Pretzel,Helicopter
+UFO,Hand Hop,Jackhammer,1990 Spin
+1990 Spin,Head Spin,Jackhammer,Hand Hop
+Munchmill,Swipe,Backspin,Elbow Track
+Hollowback,Nike Freeze,Flag Freeze,Deadman
+Air Chair,Elbow Freeze,Nike Freeze,Hollowback
+Elbow Freeze,Deadman,Baby Freeze,Air Chair
+Flag Freeze,Hollowback,Nike Freeze,Deadman
+Kip Up,Donkey Kick,Corkscrew,Coin Drop
+Baby Love,Cross Step,Kick Side Step,Pretzel
+Halo,Head Spin,Backspin,Elbow Track
+Hand Hop,Jackhammer,UFO,Cricket
+## CALLIGRAPHY ##
+Upstroke,Ascending Loop,Compound Curve,Oval
+Downstroke,Descending Loop,Overturn,Oval
+Underturn,Compound Curve,Ascending Loop,Downstroke
+Overturn,Compound Curve,Descending Loop,Oval
+Oval,Compound Curve,Descending Loop,Downstroke
+Ascending Loop,Upstroke,Overturn,Descending Loop
+Descending Loop,Downstroke,Overturn,Upstroke
+Compound Curve,Underturn,Overturn,Downstroke
+## CHEERLEADING ##
+Liberty,Toe Touch Jump,Cupie,Pyramid
+Heel Stretch,Table Top,Standing Back Tuck,Cartwheel
+Bow and Arrow,Pike Jump,Layout,Basket Toss
+Scorpion,Hurdler Jump,Pancake,Cupie
+Arabesque,Layout,Handstand,Hitch Kick Full Basket
+No Hands,Herkie Jump,Layout,Arabesque
+Pancake,Pike Jump,Back Handspring,Twist Basket Toss
+Basket Toss,Handstand,Hurdler Jump,Cupie
+Twist Basket Toss,Standing Back Tuck,Pike Jump,Liberty
+Hitch Kick Full Basket,Toe Touch Jump,Arabesque,Back Handspring
+Hitch Kick Double Basket,Herkie Jump,Layout,Pancake
+Toe Touch Jump,Scorpion,Back Handspring,Handstand
+Pike Jump,Cupie,Twist Basket Toss,Heel Stretch
+Hurdler Jump,Basket Toss,Pancake,Liberty
+Herkie Jump,Hitch Kick Full Basket,Cartwheel,Pyramid
+Back Handspring,No Hands,Pyramid,Toe Touch Jump
+Handstand,Layout,Hitch Kick Double Basket,Table Top
+Cartwheel,Pike Jump,Bow and Arrow,Pyramid
+Standing Back Tuck,Pancake,No Hands,Cupie
+Layout,Scorpion,Basket Toss,Table Top
+Pyramid,Heel Stretch,Cartwheel,Toe Touch Jump
+Table Top,Bow and Arrow,Pike Jump,Back Handspring
+Cupie,Hurdler Jump,Twist Basket Toss,Cartwheel
+## COFFEE ##
+Blooming,Backflushing,Purging Steam Wand,Swirling
+Grinding,Emptying Drip Tray,Center Pour,Rinsing the Filter
+Tamping,Steaming,Grinding,Swirling
+Knocking Out the Puck,Grinding,Backflushing,Rinsing the Filter
+Steaming,Stirring,Center Pour,Swirling
+Purging Steam Wand,Backflushing,RDT (Ross Droplet Technique),Emptying Drip Tray
+Emptying Drip Tray,Rinsing the Filter,Wiping the Rim,Center Pour
+Wiping the Rim,RDT (Ross Droplet Technique),Tapping,Grinding
+Rinsing the Filter,Emptying Drip Tray,Backflushing,Purging Steam Wand
+Swirling,Stirring,Blooming,WDT (Weiss Distribution Technique)
+Stirring,WDT (Weiss Distribution Technique),Swirling,Tapping
+Backflushing,Purging Steam Wand,Emptying Drip Tray,Blooming
+RDT (Ross Droplet Technique),Wiping the Rim,Purging Steam Wand,Tamping
+WDT (Weiss Distribution Technique),Stirring,Wiping the Rim,Tapping
+Tapping,WDT (Weiss Distribution Technique),Knocking Out the Puck,Wiping the Rim
+Center Pour,Grinding,Swirling,Steaming
+## COOKING ##
+Brunoise,Mincing,Grating,Supreming
+Julienne,Chiffonade,Grating,Stir-Frying
+Oblique cut,Tournée,Supreming,Scoring
+Tournée,Oblique cut,Supreming,Crimping
+Mincing,Grating,Brunoise,Pureeing
+Chiffonade,Julienne,Folding In / Folding,Supreming
+Paysanne,Julienne,Oblique cut,Press and Push
+Boiling,Deep-Frying,Steaming,Poaching
+Simmering,Pressure Cooking,Reducing,Steaming
+Braising,Pressure Cooking,Roasting,Smoking
+Blanching,Poaching,Steaming,Sous Vide
+Deglazing,Basting,Flambéing,Tasting
+Reducing,Caramelizing,Simmering,Deep-Frying
+Deep-Frying,Boiling,Air-Frying,Charring
+Sautéing,Stir-Frying,Searing,Julienne
+Roasting,Air-Frying,Smoking,Charring
+Pressure Cooking,Sous Vide,Simmering,Steaming
+Poaching,Sous Vide,Pressure Cooking,Marinating
+Sous Vide,Pressure Cooking,Poaching,Taking the Temperature
+Smoking,Roasting,Charring,Air-Frying
+Basting,Marinating,Deglazing,Tasting
+Searing,Charring,Stir-Frying,Flambéing
+Caramelizing,Reducing,Charring,Toasting
+Marinating,Basting,Poaching,Folding In / Folding
+Stretch and Fold,Coil Fold,Laminating,Press and Push
+Slap and Fold,Press and Push,Coil Fold,Knockback
+Rubaud Method,Coil Fold,Folding In / Folding,Creaming
+Windowpane Test,Poke Test,Stretch and Fold,Laminating
+Press and Push,Slap and Fold,Stretch and Fold,Blind Baking
+Creaming,Folding In / Folding,Pureeing,Rubaud Method
+Poke Test,Windowpane Test,Taking the Temperature,Docking
+Coil Fold,Stretch and Fold,Rubaud Method,Dividing Dough
+Laminating,Blind Baking,Stretch and Fold,Crimping
+Blind Baking,Docking,Toasting,Press and Push
+Docking,Scoring,Blind Baking,Crimping
+Crimping,Scoring,Laminating,Docking
+Scoring,Docking,Crimping,Oblique cut
+Knockback,Poke Test,Slap and Fold,Dividing Dough
+Folding In / Folding,Creaming,Rubaud Method,Marinating
+Supreming,Oblique cut,Brunoise,Tournée
+Pureeing,Creaming,Mincing,Reducing
+Dividing Dough,Coil Fold,Press and Push,Knockback
+Grating,Mincing,Julienne,Brunoise
+Steaming,Pressure Cooking,Simmering,Boiling
+Stir-Frying,Sautéing,Searing,Flambéing
+Toasting,Roasting,Caramelizing,Blind Baking
+Charring,Searing,Smoking,Caramelizing
+Air-Frying,Deep-Frying,Roasting,Smoking
+Flambéing,Searing,Deglazing,Stir-Frying
+Tasting,Taking the Temperature,Basting,Deglazing
+Taking the Temperature,Tasting,Poke Test,Sous Vide
+## CRICKET ##
+Arm Ball,Slider,Flipper,Off Cutter
+Beamer,Full Toss,Yorker,Bouncer
+Bouncer,Slower Ball,Beamer,Yorker
+Googly,Doosra,Carrom Ball,Slider
+Doosra,Carrom Ball,Googly,Arm Ball
+Leg Break / Leg Spin,Googly,Slider,Off Spin
+Leg Cutter,Off Cutter,Outswinger,Inswinger
+Off Spin,Arm Ball,Carrom Ball,Leg Break / Leg Spin
+Off Cutter,Leg Cutter,Inswinger,Slower Ball
+Yorker,Full Toss,Beamer,Flipper
+Swing,Reverse Swing,Outswinger,Inswinger
+Reverse Swing,Swing,Slower Ball,Outswinger
+Slower Ball,Off Cutter,Bouncer,Full Toss
+Full Toss,Beamer,Yorker,Slower Ball
+Outswinger,Inswinger,Leg Cutter,Swing
+Inswinger,Outswinger,Off Cutter,Reverse Swing
+Carrom Ball,Doosra,Googly,Arm Ball
+Slider,Arm Ball,Flipper,Leg Break / Leg Spin
+Flipper,Slider,Arm Ball,Yorker
+Slog Sweep,Pull Shot,Helicopter Shot,Reverse Sweep
+Inside Out Shot,Cover Drive,Switch Hit,Off Drive
+Pull Shot,Hook Shot,Slog Sweep,Upper Cut
+Hook Shot,Pull Shot,Upper Cut,Paddle Scoop
+Cover Drive,Off Drive,Inside Out Shot,Square Cut
+Straight Drive,On Drive,Off Drive,Cover Drive
+Flick Shot,Leg Glance,On Drive,Helicopter Shot
+Square Cut,Late Cut,Upper Cut,Cover Drive
+Late Cut,Square Cut,Leg Glance,Reverse Sweep
+Off Drive,Cover Drive,Inside Out Shot,Straight Drive
+On Drive,Straight Drive,Flick Shot,Helicopter Shot
+Leg Glance,Flick Shot,Late Cut,Paddle Scoop
+Reverse Sweep,Switch Hit,Paddle Scoop,Slog Sweep
+Upper Cut,Square Cut,Hook Shot,Paddle Scoop
+Switch Hit,Reverse Sweep,Inside Out Shot,Paddle Scoop
+Paddle Scoop,Reverse Sweep,Upper Cut,Switch Hit
+Helicopter Shot,Slog Sweep,Flick Shot,Pull Shot
+LBW (Leg Before Wicket),Bowled Out,Hit Wicket,Hit the Ball Twice
+Mankading (Running Out the Non-Striker),Run Out,Obstructing the Field,Handling the Ball
+Bowled Out,LBW (Leg Before Wicket),Hit Wicket,Stumping
+Catch,Handling the Ball,Obstructing the Field,Run Out
+Hit Wicket,LBW (Leg Before Wicket),Bowled Out,Stumping
+Stumping,Run Out,Bowled Out,Hit Wicket
+Handling the Ball,Obstructing the Field,Hit the Ball Twice,Catch
+Hit the Ball Twice,Handling the Ball,Obstructing the Field,Hit Wicket
+Obstructing the Field,Handling the Ball,Mankading (Running Out the Non-Striker),Run Out
+Run Out,Mankading (Running Out the Non-Striker),Stumping,Catch
+## CROCHET ##
+Alpine Stitch,Waffle Stitch,Bullion Stitch,Spike Stitch
+Back Loop Only (BLO),Front Loop Only (FLO),Surface Slip Stitch,Yarn Under
+Back Post Double Crochet (BPDC),Bullion Stitch,Crab Stitch / Reverse Single Crochet,Ribbing
+Bean Stitch,Bullion Stitch,Star Stitch,Spike Stitch
+Bobble Stitch,Bullion Stitch,Jasmine Stitch,Spike Stitch
+Bullion Stitch,Bean Stitch,Alpine Stitch,Front Post Double Crochet (FPDC)
+Chain,Bullion Stitch,Magic Circle / Magic Ring,Yarn Under
+Crab Stitch / Reverse Single Crochet,Surface Slip Stitch,Spike Stitch,Invisible Knot
+Crunch Stitch,Moss Stitch,Lemon Peel Stitch,Ribbing
+Decrease / Single Crochet Decrease,Yarn Under,Standing Single Crochet,Surface Slip Stitch
+Double Crochet,Standing Double Crochet,Shell Stitch,Star Stitch
+Feather Stitch,Star Stitch,V Stitch,Shell Stitch
+Front Loop Only (FLO),Back Loop Only (BLO),Surface Slip Stitch,Spike Stitch
+Front Post Double Crochet (FPDC),Alpine Stitch,Waffle Stitch,Bullion Stitch
+Half Double Crochet,Standing Double Crochet,Crunch Stitch,Star Stitch
+Increase / Single Crochet Increase,Yarn Over,Spike Stitch,Standing Single Crochet
+Invisible Fasten Off,Invisible Knot,Surface Slip Stitch,Yarn Under
+Invisible Knot,Invisible Fasten Off,Surface Slip Stitch,Standing Single Crochet
+Jasmine Stitch,Star Stitch,Bullion Stitch,Shell Stitch
+Lemon Peel Stitch,Moss Stitch,Crunch Stitch,Spike Stitch
+Magic Circle / Magic Ring,Invisible Knot,Bullion Stitch,Yarn Under
+Moss Stitch,Lemon Peel Stitch,Crunch Stitch,Spike Stitch
+Popcorn Stitch,Bullion Stitch,Star Stitch,Alpine Stitch
+Puff Stitch,Bullion Stitch,Star Stitch,Bean Stitch
+Ribbing,Waffle Stitch,Alpine Stitch,Back Post Double Crochet (BPDC)
+Shell Stitch,Star Stitch,Jasmine Stitch,Feather Stitch
+Single Crochet,Standing Single Crochet,Yarn Under,Crunch Stitch
+Slip Stitch,Surface Slip Stitch,Invisible Knot,Front Loop Only (FLO)
+Spike Stitch,Surface Slip Stitch,Standing Single Crochet,Crab Stitch / Reverse Single Crochet
+Standing Double Crochet,Double Crochet,Yarn Over,Bullion Stitch
+Standing Single Crochet,Single Crochet,Yarn Under,Surface Slip Stitch
+Star Stitch,Jasmine Stitch,Shell Stitch,Bullion Stitch
+Surface Slip Stitch,Slip Stitch,Invisible Fasten Off,Spike Stitch
+Triple Crochet,Standing Double Crochet,Bullion Stitch,Feather Stitch
+V Stitch,Shell Stitch,Feather Stitch,Star Stitch
+Waffle Stitch,Alpine Stitch,Ribbing,Front Post Double Crochet (FPDC)
+Yarn Over,Yarn Under,Bullion Stitch,Standing Double Crochet
+Yarn Under,Yarn Over,Bullion Stitch,Back Loop Only (BLO)
+## FENCING ##
+Prise de Fer,Coule (Glide),Compound Riposte,Point-in-Line
+Riposte / Parade Riposte,Head Cut,Appel,Flunge
+Compound Riposte,Flick Attack,Disengage,Flèche Attack
+Counter Riposte,Double / Double-Hit,Beat Attack,Displacement
+Stop Hit,Point-in-Line,Advance Lunge / Marche Fente,Balestra Lunge
+Disengage,Ceding Parry,Flick Attack,Head Cut
+Flick Attack,Head Cut,Displacement,Double / Double-Hit
+Point-in-Line,Stop Hit,Appel,Prise de Fer
+Parry,Displacement,Counter Riposte,Coule (Glide)
+Ceding Parry,Point-in-Line,Double / Double-Hit,Flick Attack
+Displacement,Balestra Lunge,Flunge,Appel
+Appel,Beat Attack,Advance Lunge / Marche Fente,Displacement
+Flèche Attack,Double / Double-Hit,Flick Attack,Head Cut
+Advance Lunge / Marche Fente,Flunge,Compound Riposte,Stop Hit
+Balestra Lunge,Appel,Flèche Attack,Displacement
+Flunge,Advance Lunge / Marche Fente,Beat Attack,Point-in-Line
+Beat Attack,Parry,Riposte / Parade Riposte,Head Cut
+Coule (Glide),Disengage,Parry,Ceding Parry
+Double / Double-Hit,Ceding Parry,Flick Attack,Counter Riposte
+Head Cut,Beat Attack,Riposte / Parade Riposte,Flèche Attack
+## FIGURE SKATING ##
+Biellmann Spin,Split Jump,Cantilever,Camel Spin
+Camel Spin,Spiral,Hydroblade,Layback Spin
+Combination Spin,Twizzle,Bracket Turn,Mazurka Jump
+Crossovers,Mohawk,Stroking,Choctaw
+Death Spiral,Hydroblade,Cantilever,Layback Spin
+Layback Spin,Biellmann Spin,Cantilever,Spiral
+Scratch Spin,Twizzle,Three-Turn,Double Loop
+Sit Spin,Hydroblade,Cantilever,Bracket Turn
+Three-Turn,Bracket Turn,Twizzle,Rocker
+Bracket Turn,Three-Turn,Choctaw,Rocker
+Mohawk,Choctaw,Crossovers,Three-Turn
+Rocker,Three-Turn,Bracket Turn,Choctaw
+Choctaw,Mohawk,Bracket Turn,Stroking
+Hydroblade,Death Spiral,Cantilever,Sit Spin
+Spiral,Camel Spin,Biellmann Spin,Layback Spin
+Stroking,Crossovers,Choctaw,Mohawk
+Twizzle,Three-Turn,Combination Spin,Scratch Spin
+Twist Lift,Split Jump,Quad Flip,Double Axel
+Half-Flip Jump,Waltz Jump,Mazurka Jump,Double Salchow
+Mazurka Jump,Split Jump,Half-Flip Jump,Waltz Jump
+Split Jump,Biellmann Spin,Mazurka Jump,Waltz Jump
+Waltz Jump,Half-Flip Jump,Mazurka Jump,Split Jump
+Double Salchow,Double Toe Loop,Double Loop,Triple Salchow
+Double Toe Loop,Double Flip,Double Lutz,Triple Toe Loop
+Double Flip,Double Lutz,Double Loop,Triple Flip
+Double Loop,Double Salchow,Double Flip,Double Toe Loop
+Double Lutz,Double Flip,Double Axel,Triple Lutz
+Double Axel,Triple Axel,Double Lutz,Triple Salchow
+Triple Toe Loop,Triple Salchow,Double Axel,Quad Toe Loop
+Triple Salchow,Triple Toe Loop,Double Axel,Quad Salchow
+Triple Flip,Triple Lutz,Double Flip,Quad Flip
+Triple Lutz,Triple Flip,Quad Lutz,Triple Axel
+Triple Axel,Quad Axel,Triple Lutz,Double Axel
+Quad Toe Loop,Quad Salchow,Triple Toe Loop,Quad Flip
+Quad Salchow,Quad Toe Loop,Triple Salchow,Quad Loop
+Quad Loop,Quad Flip,Quad Lutz,Quad Salchow
+Quad Flip,Quad Loop,Quad Lutz,Twist Lift
+Quad Lutz,Quad Flip,Triple Lutz,Quad Loop
+Quad Axel,Triple Axel,Quad Salchow,Quad Toe Loop
+Cantilever,Hydroblade,Death Spiral,Layback Spin
+## AMERICAN FOOTBALL ##
+Pass Interference,Illegal Contact,Interception,Hail Mary
+Holding,Face Mask,Illegal Formation,Horse-collar Tackle
+Blocking Below the Waist,Chop Block,Clipping,Tackle for Loss
+Block in the Back,Horse-collar Tackle,Clipping,Illegal Contact
+Chop Block,Trap,Counter,Blocking Below the Waist
+Clipping,Block in the Back,Chop Block,Tackle for Loss
+Encroachment,Neutral Zone Infraction,False Start,Illegal Shift
+Face Mask,Horse-collar Tackle,Stiff Arm,Targeting
+False Start,Illegal Shift,Encroachment,Neutral Zone Infraction
+Horse-collar Tackle,Face Mask,Unnecessary Roughness,Holding
+Illegal Batting,Spike,Fumble,Blocked Punt
+Illegal Contact,Pass Interference,Block in the Back,Holding
+Illegal Formation,Illegal Shift,12 Men on the Field,Ineligible Receiver Downfield
+Illegal Forward Pass,Intentional Grounding,Hail Mary,Bootleg
+12 Men on the Field,Illegal Formation,Illegal Shift,Challenge Flag
+Illegal Shift,False Start,Illegal Formation,Jet Sweep
+Ineligible Receiver Downfield,Illegal Formation,Illegal Shift,Draw
+Intentional Grounding,Illegal Forward Pass,Spike,Safety
+Leverage,Hurdle,Blocked Field Goal,Blocked Punt
+Neutral Zone Infraction,Encroachment,False Start,Illegal Shift
+Roughing the Kicker,Running Into the Kicker,Leverage,Unsportsmanlike Conduct
+Running Into the Kicker,Roughing the Kicker,Leverage,Neutral Zone Infraction
+Targeting,Unnecessary Roughness,Face Mask,Horse-collar Tackle
+Unsportsmanlike Conduct,Unnecessary Roughness,Challenge Flag,Running Into the Kicker
+Unnecessary Roughness,Targeting,Horse-collar Tackle,Unsportsmanlike Conduct
+ISO,Power,Trap,Counter
+Power,ISO,Counter,Trap
+Toss,Sweep,Jet Sweep,End-around
+Sweep,Toss,Jet Sweep,End-around
+Trap,Counter,ISO,Power
+Counter,Trap,Draw,ISO
+Draw,Counter,Bootleg,Illegal Shift
+Bootleg,Draw,Illegal Forward Pass,QB Sneak
+QB Sneak,ISO,Bootleg,Power
+End-around,Jet Sweep,Sweep,Toss
+Jet Sweep,End-around,Toss,Illegal Shift
+Field Goal,Punt,Onside Kick,Blocked Field Goal
+Punt,Field Goal,Fair Catch,Squib Kick
+Fumble,Illegal Batting,Interception,Onside Kick
+Interception,Pass Interference,Hail Mary,Fumble
+Sack,Tackle for Loss,Intentional Grounding,Unnecessary Roughness
+Tackle for Loss,Sack,Blocking Below the Waist,Clipping
+Blocked Punt,Blocked Field Goal,Illegal Batting,Leverage
+Blocked Field Goal,Blocked Punt,Leverage,Hurdle
+Spike,Intentional Grounding,Illegal Forward Pass,Illegal Batting
+Fair Catch,Punt,Squib Kick,Onside Kick
+Safety,Intentional Grounding,Sack,Tackle for Loss
+Stiff Arm,Face Mask,Horse-collar Tackle,Spin Move
+Spin Move,Hurdle,Stiff Arm,Jet Sweep
+Hurdle,Spin Move,Stiff Arm,Leverage
+Challenge Flag,Unsportsmanlike Conduct,12 Men on the Field,Illegal Formation
+Hail Mary,Interception,Illegal Forward Pass,Pass Interference
+Onside Kick,Squib Kick,Punt,Fair Catch
+Squib Kick,Onside Kick,Punt,Field Goal
+## GARDENING ##
+Pinching,Bud Rubbing,Scarify Seeds,Pricking Out
+Deadheading,Air Layering,Bud Rubbing,Foliar Feeding
+Thinning Cut,Staking,Dividing Perennials,Tilling
+Heading Cut,Broadcasting Seed,Bud Rubbing,Foliar Feeding
+Releadering Cut / Reduction Cut,Staking,Air Layering,Tamping
+Air Layering,Mulching,Hand Pollinate,Teasing Roots
+Pricking Out,Scarify Seeds,Teasing Roots,Broadcasting Seed
+Heeling In,Staking,Dividing Perennials,Tamping
+Tilling,Broadcasting Seed,Staking,Mulching
+Teasing Roots,Dividing Perennials,Pricking Out,Foliar Feeding
+Bud Rubbing,Deadheading,Scarify Seeds,Pinching
+Tamping,Top Dress,Mulching,Hand Pollinate
+Broadcasting Seed,Top Dress,Foliar Feeding,Tilling
+Top Dress,Mulching,Foliar Feeding,Air Layering
+Mulching,Air Layering,Top Dress,Tamping
+Dividing Perennials,Teasing Roots,Heeling In,Thinning Cut
+Scarify Seeds,Pinching,Bud Rubbing,Pricking Out
+Hand Pollinate,Deadheading,Air Layering,Scarify Seeds
+Staking,Heeling In,Thinning Cut,Releadering Cut / Reduction Cut
+Foliar Feeding,Hand Pollinate,Broadcasting Seed,Teasing Roots
+## GYM ##
+Deadlift,Romanian Deadlift (RDL),Leg Press,Dumbbell Shrug
+Squat,Bulgarian Split Squat,Leg Press,Deadlift
+Lateral Raise,Dumbbell Shrug,Hammer Curl,Chest Fly
+Dumbbell Press,Shoulder Press / Overhead Press,Skull Crusher,Chest Fly
+Push-up,Dumbbell Press,Shoulder Press / Overhead Press,Chest Fly
+Dip,Tricep Pushdown,Lateral Raise,Dumbbell Shrug
+Chest Fly,Lateral Raise,Skull Crusher,Bent-Over Row
+Pull-Up,Lat Pulldown,Face Pull,Shoulder Press / Overhead Press
+Bent-Over Row,Romanian Deadlift (RDL),Face Pull,Dumbbell Shrug
+Lat Pulldown,Pull-Up,Shoulder Press / Overhead Press,Face Pull
+Face Pull,Lat Pulldown,Bent-Over Row,Hammer Curl
+Dumbbell Shrug,Lateral Raise,Deadlift,Hammer Curl
+Shoulder Press / Overhead Press,Dumbbell Press,Lat Pulldown,Push-up
+Hammer Curl,Bicep Curl,Face Pull,Lateral Raise
+Bicep Curl,Hammer Curl,Dumbbell Shrug,Tricep Pushdown
+Tricep Pushdown,Dip,Skull Crusher,Bicep Curl
+Skull Crusher,Tricep Pushdown,Dumbbell Press,Chest Fly
+Lunge,Bulgarian Split Squat,Calf Raise,Romanian Deadlift (RDL)
+Leg Press,Squat,Deadlift,Calf Raise
+Romanian Deadlift (RDL),Bent-Over Row,Deadlift,Leg Press
+Calf Raise,Leg Press,Bulgarian Split Squat,Romanian Deadlift (RDL)
+Bulgarian Split Squat,Lunge,Squat,Calf Raise
+## HAIRSTYLING ##
+Point Cutting,Feathering,Thinning (with Thinning Shears),Scrunch
+Blunt Cutting,Slide Cutting,Scissor Over Comb,Channel Cutting
+Reverse Point Cutting,Feathering,Freehand Clipper Cut,Finger Coiling
+Thinning (with Thinning Shears),Channel Cutting,Backcombing,Clipper Over Comb
+Slide Cutting,Razor Cutting,Feathering,Reverse Point Cutting
+Channel Cutting,Slide Cutting,Thinning (with Thinning Shears),Freehand Clipper Cut
+Razor Cutting,Slide Cutting,Blunt Cutting,Backcombing
+Clipper Over Comb,Freehand Clipper Cut,Blunt Cutting,Thinning (with Thinning Shears)
+Freehand Clipper Cut,Scissor Over Comb,Razor Cutting,Reverse Point Cutting
+Scrunch,Finger Coiling,Point Cutting,Clipper Over Comb
+Backcombing,Thinning (with Thinning Shears),Scrunch,Razor Cutting
+Finger Coiling,Reverse Point Cutting,Channel Cutting,Feathering
+Scissor Over Comb,Clipper Over Comb,Blunt Cutting,Slide Cutting
+Feathering,Point Cutting,Razor Cutting,Finger Coiling
+## ICE HOCKEY ##
+Closing Hand on Puck,Top Shelf,Drop Pass,Pad Stack Save
+Delay of Game,Paddle Down,Bank Shot,Saucer Pass
+High Sticking,Flip Shot,Faceoff,Hip Check
+Boarding,Spinorama,Charging,Stretch Pass
+Interference,One-Timer,Holding,Bank Shot
+Hooking,Poke Check,No-Look Pass,Pad Stack Save
+Holding,Backhand Pass,Between-the-Legs Shot,Interference
+Headbutt,Deflection,Faceoff,Saucer Pass
+Charging,Stretch Pass,Hip Check,Glove Save
+Tripping,Poke Check,Spinorama,Drop Pass
+Spearing,Hip Check,Flip Shot,No-Look Pass
+Slashing,Flip Shot,Poke Check,Stretch Pass
+Slap Shot,Suicide Pass,Paddle Down,Hip Check
+Wrist Shot,Bank Shot,Flip Shot,Paddle Down
+Snap Shot,No-Look Pass,Drop Pass,Faceoff
+One-Timer,Spinorama,Glove Save,Tic-Tac-Toe Pass
+Top Shelf,Blocker Save,Flip Shot,Saucer Pass
+Between-the-Legs Shot,Spinorama,Deflection,Backhand Pass
+Backhand Shot,Stretch Pass,Saucer Pass,Hip Check
+Deflection,Between-the-Legs Shot,Slashing,Pad Stack Save
+Wrap-around Goal,Spinorama,Backhand Pass,Drop Pass
+Flip Shot,Saucer Pass,Top Shelf,Backhand Shot
+Bank Shot,Delay of Game,Charging,Faceoff
+Saucer Pass,Flip Shot,Headbutt,Bank Shot
+Backhand Pass,Holding,Spinorama,No-Look Pass
+Drop Pass,Closing Hand on Puck,Wrist Shot,Glove Save
+Suicide Pass,Stretch Pass,Bank Shot,Interference
+Tic-Tac-Toe Pass,One-Timer,Delay of Game,Charging
+No-Look Pass,Hooking,Spearing,Backhand Pass
+Stretch Pass,Slap Shot,Charging,Suicide Pass
+Tape-to-Tape Pass,Hooking,Delay of Game,Closing Hand on Puck
+Faceoff,Spinorama,High Sticking,Wrist Shot
+Spinorama,Boarding,Wrap-around Goal,Slap Shot
+Hip Check,Charging,Spearing,Drop Pass
+Poke Check,Backhand Shot,Hooking,Holding
+Glove Save,Closing Hand on Puck,High Sticking,Drop Pass
+Blocker Save,Top Shelf,Charging,Flip Shot
+Paddle Down,Delay of Game,Slap Shot,Top Shelf
+Pad Stack Save,Stretch Pass,Slashing,Between-the-Legs Shot
+## JUGGLING ##
+Reverse Cascade,Juggler's Tennis,The Shower,The Factory
+423,Flash,Cherry Picker,The Windmill
+The Box,Fake Columns,Sprung Cascade,Boston Mess
+The Weave,Burke's Barrage,Rubenstein's Revenge,Takeouts
+The Shower,Reverse Cascade,Multiplex,Chops
+Under the Arm,The Windmill,Columns,Fountain
+Under the Leg,Penguin Catches,Chops,Rubenstein's Revenge
+Neck Catch,Penguin Catches,Columns,Flash
+Mills Mess,Boston Mess,Fake Columns,Fountain
+Burke's Barrage,Takeouts,The Weave,Juggler's Tennis
+Columns,The Box,Juggler's Tennis,Neck Catch
+Rubenstein's Revenge,Burke's Barrage,The Factory,The Weave
+The Windmill,Reverse Cascade,Chops,Fake Columns
+The Factory,Cherry Picker,Columns,441
+Cherry Picker,The Box,Under the Arm,Multiplex
+Fountain,Sprung Cascade,Reverse Cascade,Penguin Catches
+Sprung Cascade,441,Mills Mess,Flash
+Boston Mess,The Windmill,Reverse Cascade,Under the Leg
+Chops,Under the Arm,423,The Factory
+Penguin Catches,Neck Catch,Under the Arm,Flash
+441,The Box,Takeouts,Mills Mess
+Flash,Multiplex,Burke's Barrage,Under the Leg
+Multiplex,Fake Columns,Fountain,Juggler's Tennis
+Takeouts,Burke's Barrage,Rubenstein's Revenge,Cherry Picker
+Fake Columns,Boston Mess,Penguin Catches,Reverse Cascade
+Juggler's Tennis,The Shower,423,Reverse Cascade
+## KNOTS ##
+Single Sheet Bend,Zeppelin Bend,Hunter's Bend,Water Knot
+Double Sheet Bend,Carrick Bend,Ashley's Bend,Blood Knot
+Water Knot,Surgeon's Knot,Figure Eight Bend,Double Fisherman's Knot
+Fisherman's Knot,Blood Knot,Hunter's Bend,Single Sheet Bend
+Double Fisherman's Knot,Zeppelin Bend,Snell Knot,Ashley's Bend
+Zeppelin Bend,Hunter's Bend,Carrick Bend,Double Sheet Bend
+Carrick Bend,Ashley's Bend,Zeppelin Bend,Figure Eight Bend
+Ashley's Bend,Hunter's Bend,Double Fisherman's Knot,Carrick Bend
+Hunter's Bend,Zeppelin Bend,Ashley's Bend,Fisherman's Knot
+Figure Eight Bend,Water Knot,Alpine Butterfly Loop,Zeppelin Bend
+Surgeon's Knot,Square Knot,Constrictor Knot,Canadian Jam Knot
+Single Bowline Knot,Spanish Bowline,Perfection Loop,Farmer's Loop
+Alpine Butterfly Loop,Farmer's Loop,Artillery Loop,Spanish Bowline
+Double Bowline Knot,Perfection Loop,Spanish Bowline,Single Sheet Bend
+Perfection Loop,Artillery Loop,Spanish Bowline,Single Bowline Knot
+Farmer's Loop,Alpine Butterfly Loop,Artillery Loop,Double Bowline Knot
+Artillery Loop,Farmer's Loop,Perfection Loop,Alpine Butterfly Loop
+Rolling Hitch,Midshipman's Hitch,Farrimond Friction Hitch,Blake's Hitch
+Mooring Hitch,Buntline Hitch,Highwayman's Hitch,Pile Hitch
+Timber Hitch,Killick Hitch,Pile Hitch,Cow Hitch
+Cow Hitch,Clove Hitch,Killick Hitch,Timber Hitch
+Prusik Knot,Blake's Hitch,Farrimond Friction Hitch,Munter Hitch
+Constrictor Knot,Sailmaker's Whipping,Canadian Jam Knot,Buntline Hitch
+Midshipman's Hitch,Rolling Hitch,Farrimond Friction Hitch,Icicle Hitch
+Pile Hitch,Killick Hitch,Mooring Hitch,Timber Hitch
+Buntline Hitch,Mooring Hitch,Constrictor Knot,Cow Hitch
+Highwayman's Hitch,Manger Hitch,Slipped Overhand Knot,Midshipman's Hitch
+Icicle Hitch,Rolling Hitch,Pile Hitch,Blake's Hitch
+Blake's Hitch,Prusik Knot,Farrimond Friction Hitch,Midshipman's Hitch
+Canadian Jam Knot,Poacher's Knot,Constrictor Knot,Manger Hitch
+Overhand Knot,Slipped Overhand Knot,Half Hitch Knot,Stevedore Knot
+Stevedore Knot,Diamond Knot,Heaving Line Knot,Overhand Knot
+Blood Knot,Snell Knot,Double Fisherman's Knot,Fisherman's Knot
+Square Knot,Surgeon's Knot,Constrictor Knot,Manger Hitch
+Spanish Bowline,Single Bowline Knot,Double Bowline Knot,Farmer's Loop
+Munter Hitch,Farrimond Friction Hitch,Prusik Knot,Rolling Hitch
+Clove Hitch,Cow Hitch,Constrictor Knot,Killick Hitch
+Trucker's Hitch,Killick Hitch,Pile Hitch,Mooring Hitch
+Killick Hitch,Timber Hitch,Pile Hitch,Cow Hitch
+Diamond Knot,Stevedore Knot,Heaving Line Knot,Crown Knot
+Eye Splice,Sailmaker's Whipping,Crown Knot,Buntline Hitch
+Sailmaker's Whipping,Eye Splice,Constrictor Knot,Crown Knot
+Cobra Knot,Berry Knot,Gathering Knot,Josephine Knot
+Honda Knot / Lasso Knot,Poacher's Knot,Canadian Jam Knot,Manger Hitch
+Snell Knot,Blood Knot,Double Fisherman's Knot,Water Knot
+Poacher's Knot,Honda Knot / Lasso Knot,Canadian Jam Knot,Manger Hitch
+Manger Hitch,Highwayman's Hitch,Slipped Overhand Knot,Canadian Jam Knot
+Farrimond Friction Hitch,Blake's Hitch,Midshipman's Hitch,Prusik Knot
+Half Hitch Knot,Slipped Overhand Knot,Overhand Knot,Highwayman's Hitch
+Slipped Overhand Knot,Half Hitch Knot,Highwayman's Hitch,Manger Hitch
+Heaving Line Knot,Stevedore Knot,Diamond Knot,Crown Knot
+Crown Knot,Diamond Knot,Heaving Line Knot,Berry Knot
+Gathering Knot,Cobra Knot,Berry Knot,Josephine Knot
+Josephine Knot,Berry Knot,Cobra Knot,Gathering Knot
+Berry Knot,Cobra Knot,Josephine Knot,Diamond Knot
+## NEUROLOGICAL ABNORMALITIES ##
+Athetosis,Chorea,Dystonic Tremor,Focal Onset Impaired Awareness Seizure
+Fasciculations,Essential Tremor,Myoclonic Seizure,Hyperreflexia
+Waddling Gait,Chorea,Ataxic Gait,Dystonic Tremor
+Tonic Seizure,Hyperreflexia,Orthostatic Tremor,Parkinsonian Tremor
+Atonic Seizure,Areflexia,Orthostatic Tremor,Essential Tremor
+Myoclonic Seizure,Fasciculations,Hyperreflexia,Chorea
+Tonic-Clonic Seizure,Dystonic Tremor,Parkinsonian Tremor,Hyperreflexia
+Infantile Spasm,Athetosis,Chorea,Focal Onset Aware Seizure
+Focal Onset Aware Seizure,Absence Seizure,Essential Tremor,Parkinsonian Tremor
+Focal Onset Impaired Awareness Seizure,Absence Seizure,Ataxic Gait,Orthostatic Tremor
+Hyperreflexia,Myoclonic Seizure,Fasciculations,Tonic Seizure
+Areflexia,Atonic Seizure,Fasciculations,Essential Tremor
+Steppage Gait,Ataxic Gait,Dystonic Tremor,Essential Tremor
+Ataxic Gait,Steppage Gait,Chorea,Orthostatic Tremor
+Parkinsonian Gait,Absence Seizure,Orthostatic Tremor,Dystonic Tremor
+Chorea,Athetosis,Myoclonic Seizure,Dystonic Tremor
+Absence Seizure,Focal Onset Aware Seizure,Parkinsonian Gait,Orthostatic Tremor
+Essential Tremor,Parkinsonian Tremor,Fasciculations,Areflexia
+Parkinsonian Tremor,Essential Tremor,Fasciculations,Tonic Seizure
+Dystonic Tremor,Athetosis,Tonic Seizure,Focal Onset Impaired Awareness Seizure
+Orthostatic Tremor,Atonic Seizure,Parkinsonian Gait,Hyperreflexia
+## NEUROLOGICAL ASSESSMENTS ##
+Finger Tapping,Thumb Opposition,Foot Tapping,Head impulse
+Finger-to-Nose Test,Heel-to-Shin Test,Saccades,Tandem Gait (Heel to Toe)
+Rapid Alternating Movements,Toe Walking,Pronator Drift,Heel walking
+Dysdiadochokinesia,Foot Tapping,Head impulse,Romberg Test
+Heel-to-Shin Test,Finger-to-Nose Test,Toe Walking,Thumb Opposition
+Foot Tapping,Heel walking,Finger Tapping,Nystagmus
+Thumb Opposition,Finger-to-Nose Test,Pronator Drift,Dysdiadochokinesia
+Head impulse,Romberg Test,Rapid Alternating Movements,Heel-to-Shin Test
+Saccades,Pronator Drift,Toe Walking,Finger Tapping
+Nystagmus,Saccades,Finger Tapping,Heel walking
+Tandem Gait (Heel to Toe),Heel-to-Shin Test,Nystagmus,Dysdiadochokinesia
+Heel walking,Romberg Test,Finger-to-Nose Test,Foot Tapping
+Toe Walking,Heel-to-Shin Test,Rapid Alternating Movements,Pronator Drift
+Romberg Test,Nystagmus,Thumb Opposition,Tandem Gait (Heel to Toe)
+Pronator Drift,Thumb Opposition,Saccades,Heel walking
+## PAINTING ##
+Dry Brushing,Scumbling,Graded Wash,Variegated Wash
+Stippling,Variegated Wash,Flat Wash,Glazing
+Scumbling,Dry Brushing,Glazing,Lifting
+Glazing,Flat Wash,Scumbling,Lifting
+Flat Wash,Glazing,Stippling,Dry Brushing
+Graded Wash,Variegated Wash,Dry Brushing,Stippling
+Variegated Wash,Graded Wash,Stippling,Scumbling
+Lifting,Graded Wash,Glazing,Flat Wash
+## PARKOUR ##
+Kong Vault,Dash Vault,Double Kong Vault,Dive Roll
+Safety Vault,Lazy Vault,Pop Vault,Turn Vault
+Speed Vault,Pop Vault,Safety Vault,Tic Tac
+Lazy Vault,Turn Vault,Speed Vault,Aerial
+Dash Vault,Kash Vault,Double Kong Vault,Lazy Vault
+Kash Vault,Palm Flip,Kong Vault,Dash Vault
+Turn Vault,Reverse Vault,Palm Spin,Lazy Vault
+Double Kong Vault,Kash Vault,Dive Roll,Dash Vault
+Reverse Vault,Palm Spin,Wall Spin,Turn Vault
+Wall Run,Tic Tac,Pop Vault,Cat Leap
+Tic Tac,Wall Run,Pop Vault,Palm Spin
+Wall Flip,Palm Flip,Back Flip,Corkscrew (Cork)
+Wall Spin,Palm Spin,Reverse Vault,Turn Vault
+Cat Leap,Precision Jump,Wall Run,Tic Tac
+Cat Hang,Cat Balance,Muscle Up,Bar Kip
+Cat Balance,Crane Jump/Landing,Rail Precision,Cat Hang
+Palm Spin,Wall Spin,Reverse Vault,Coffee Grinder
+Palm Flip,Wall Flip,Corkscrew (Cork),Gainer
+Precision Jump,Cat Leap,Pop Vault,Speed Vault
+Crane Jump/Landing,Cat Balance,Tic Tac,Aerial
+Rail Precision,Cat Balance,Precision Jump,Pop Vault
+Safety Roll,Dive Roll,Speed Vault,Front Handspring
+Dive Roll,Front Handspring,Kong Vault,Webster
+Back Roll,Back Handspring,Coffee Grinder,Palm Spin
+Lache,Underbar,Cat Leap,Wall Run
+Underbar,Speed Vault,Dash Vault,Safety Vault
+Bar Kip,Muscle Up,Palm Flip,Cat Hang
+Muscle Up,Cat Hang,Wall Run,Palm Flip
+Front Flip,Webster,Front Handspring,Dive Roll
+Back Flip,Wall Flip,Gainer,Back Handspring
+Side Flip,Aerial,Cartwheel,Palm Spin
+Corkscrew (Cork),Gainer,Palm Flip,Side Flip
+Gainer,Webster,Corkscrew (Cork),Wall Flip
+Webster,Front Flip,Gainer,Dash Vault
+Cartwheel,Aerial,Side Flip,Coffee Grinder
+Aerial,Cartwheel,Side Flip,Lazy Vault
+Front Handspring,Dive Roll,Webster,Front Flip
+Back Handspring,Back Roll,Back Flip,Wall Flip
+Pop Vault,Speed Vault,Safety Vault,Tic Tac
+Coffee Grinder,Cartwheel,Palm Spin,Back Roll
+## PEN SPINNING ##
+Thumb Around,Fake Double,Spider Spin,Triangle Pass
+Charge,Shadow,Warped Sonic,Figure 8
+Sonic,Infinity,Swivel,Shadow
+Finger Pass,Triangle Pass,Power Pass,Wiper
+Thumb Around Reverse,Cardioid,Fake Double,Spider Spin
+Index Around,Index Bak (Korean Bak),Bust,Fake Double
+Index Bak (Korean Bak),Bust,Fingerless Thumbaround Reverse,Palm Spin
+Backaround Fall (Bakfall),Finger Pass,Sonic Fall,Twisted Sonic Bust
+Bust,Twisted Sonic Bust,Fake Double,Devils Sonic
+Sonic Reverse,Swivel,Charge Reverse,Infinity
+Twisted Sonic,Bust,Shadow,Figure 8
+Twisted Sonic Reverse,Devils Sonic,Charge Reverse,Warped Sonic
+Warped Sonic,Twisted Sonic Bust,Sonic Rise,Palm Spin
+Sonic Rise,Sonic Fall,Warped Sonic,Triangle Pass
+Sonic Fall,Sonic Rise,Power Pass,Continuous Thumb Around
+Fingerless Thumb Around,Spider Spin,Palm Spin,Cardioid
+Fingerless Thumbaround Reverse,Infinity,Spider Spin,Swivel
+Continuous Thumb Around,Infinity,Spider Spin,Shadow
+Swivel,Charge Reverse,Kams 4 Loop Combo,Infinity
+Charge Reverse,Swivel,Shadow,Kams 4 Loop Combo
+Shadow,Figure 8,Kams 4 Loop Combo,Palm Spin
+Fake Double,Continuous Thumb Around,Cardioid,Index Around
+Devils Sonic,Twisted Sonic Bust,Figure 8,Shadow
+Spider Spin,Palm Spin,Triangle Pass,Cardioid
+Cardioid,Wiper,Fake Double,Figure 8
+Palm Spin,Spider Spin,Twisted Sonic Bust,Cardioid
+Wiper,Continuous Thumb Around,Triangle Pass,Power Pass
+Infinity,Figure 8,Cardioid,Swivel
+Figure 8,Infinity,Thumb Around,Bust
+Triangle Pass,Finger Pass,Palm Spin,Spider Spin
+Twisted Sonic Bust,Bust,Devils Sonic,Kams 4 Loop Combo
+Kams 4 Loop Combo,Power Pass,Index Around,Charge Reverse
+Power Pass,Finger Pass,Triangle Pass,Wiper
+## POTTERY ##
+Cone Up,Throw Off the Hump,Trimming,Burnishing
+Cone Down,Spiral Wedging,Scoring and Slipping,Trimming
+Opening the Clay,Burnishing,Throw Off the Hump,Collaring
+Pulling the Walls,Burnishing,Scoring and Slipping,Spiral Wedging
+Collaring,Trimming,Spiral Wedging,Throw Off the Hump
+Trimming,Burnishing,Scoring and Slipping,Cone Up
+Spiral Wedging,Cone Down,Pulling the Walls,Collaring
+Throw Off the Hump,Cone Up,Scoring and Slipping,Burnishing
+Scoring and Slipping,Opening the Clay,Trimming,Throw Off the Hump
+Burnishing,Cone Down,Collaring,Pulling the Walls
+## SALSA ##
+Cross Body Lead,Titanic,Setenta,New York Walk
+Left Turn,360,Vacilala,Swing Step
+Right Turn,Double Turn,Copa,Back Spot Turn
+Enchufla,Exhibela,Suzy Q / Suzie Q,Bayamo
+360,Swing Step,Coca-Cola,Reverse Cross Body Lead
+Double Turn,Back Spot Turn,Right Turn,Exhibela
+Copa,Pretzel / Hammer Lock,Sombrero,Reverse Cross Body Lead
+Back Spot Turn,Left Turn,Double Turn,Vacilala
+Reverse Cross Body Lead,Setenta,Titanic,Enchufla
+New York Walk,Suzy Q / Suzie Q,Candado,Vacilala
+Swing Step,360,Coca-Cola,Bayamo
+Titanic,Pretzel / Hammer Lock,Candado,Sombrero
+Bayamo,Sombrero,Pretzel / Hammer Lock,Copa
+Suzy Q / Suzie Q,New York Walk,Exhibela,Vacilala
+Sombrero,Bayamo,Titanic,Setenta
+Setenta,Copa,Pretzel / Hammer Lock,Candado
+Candado,Sombrero,Bayamo,Exhibela
+Vacilala,Left Turn,Right Turn,Suzy Q / Suzie Q
+Pretzel / Hammer Lock,Bayamo,Sombrero,Titanic
+Coca-Cola,Back Spot Turn,Left Turn,Swing Step
+Exhibela,Enchufla,Candado,New York Walk
+## HAND SEWING / EMBROIDERY ##
+Quilter's Knot,Bullion Stitch,Woven Wheel Rose,Coral Stitch
+French Knot,Colonial Knot,Seed Stitch,Algerian Eye Stitch
+French Seam,Rolled Hem,Blind Hem Stitch,Slip Stitch
+Flat-felled Seam,Double-fold Hem,Prick Stitch,Herringbone Stitch
+Rolled Hem,Slip Stitch,French Seam,Whip Stitch
+Double-fold Hem,Flat-felled Seam,Blind Hem Stitch,Buttonhole Stitch
+Running Stitch,Tent Stitch,Fly Stitch,Split Stitch
+Back Stitch,Split Stitch,Stem Stitch,Couching Stitch
+Basting Stitch,Seed Stitch,Half Back Stitch,Tailor's Tacks
+Whip Stitch,Buttonhole Stitch,Ladder Stitch,Slip Stitch
+Blind Hem Stitch,Prick Stitch,Slip Stitch,Seed Stitch
+Chevron Stitch,Herringbone Stitch,Cretan Stitch,Fishbone Stitch
+Stem Stitch,Split Stitch,Coral Stitch,Long and Short Stitch
+Cretan Stitch,Chevron Stitch,Feather Stitch,Palestrina Stitch
+Cross Stitch,Algerian Eye Stitch,Tent Stitch,Burden Stitch
+Herringbone Stitch,Chevron Stitch,Feather Stitch,Cretan Stitch
+Satin Stitch,Padded Satin Stitch,Long and Short Stitch,Couching Stitch
+Feather Stitch,Fly Stitch,Lazy Daisy Stitch,Sheaf Stitch
+Bullion Stitch,Colonial Knot,Woven Wheel Rose,Padded Satin Stitch
+Algerian Eye Stitch,Cross Stitch,Woven Wheel Rose,Tent Stitch
+Burden Stitch,Long and Short Stitch,Seed Stitch,Padded Satin Stitch
+Buttonhole Stitch,Coral Stitch,Palestrina Stitch,Ladder Stitch
+Colonial Knot,Bullion Stitch,Coral Stitch,French Knot
+Coral Stitch,Palestrina Stitch,Stem Stitch,Colonial Knot
+Couching Stitch,Padded Satin Stitch,Split Stitch,Satin Stitch
+Fishbone Stitch,Fly Stitch,Feather Stitch,Long and Short Stitch
+Fly Stitch,Lazy Daisy Stitch,Feather Stitch,Chevron Stitch
+Half Back Stitch,Split Stitch,Running Stitch,Prick Stitch
+Ladder Stitch,Slip Stitch,Whip Stitch,Buttonhole Stitch
+Lazy Daisy Stitch,Woven Wheel Rose,Fly Stitch,Feather Stitch
+Long and Short Stitch,Satin Stitch,Padded Satin Stitch,Fishbone Stitch
+Padded Satin Stitch,Satin Stitch,Bullion Stitch,Couching Stitch
+Palestrina Stitch,Coral Stitch,Cretan Stitch,Buttonhole Stitch
+Prick Stitch,Blind Hem Stitch,Half Back Stitch,Slip Stitch
+Seed Stitch,French Knot,Burden Stitch,Basting Stitch
+Sheaf Stitch,Lazy Daisy Stitch,Feather Stitch,Fly Stitch
+Slip Stitch,Ladder Stitch,Rolled Hem,Whip Stitch
+Split Stitch,Stem Stitch,Back Stitch,Couching Stitch
+Tailor's Tacks,Basting Stitch,Seed Stitch,Half Back Stitch
+Tent Stitch,Cross Stitch,Running Stitch,Algerian Eye Stitch
+Woven Wheel Rose,Bullion Stitch,Lazy Daisy Stitch,Colonial Knot
+## SKATEBOARDING ##
+Tic-tac,FS Shuvit,Carving,Front Side 180
+Manual,Nosegrind,Nose Manual,5-0 Grind
+Drop In,Acid Drop,Nose Stall,Disaster
+Carving,Rock and Roll,Tic-tac,Backside 180
+Ollie,Nollie,Boneless,Acid Drop
+Shuvit,FS Shuvit,Pop Shuvit,Front Side 180
+Kickflip,Heelflip,Impossible,Doubleflip
+50-50 Grind,Smith Grind,Feeble Grind,5-0 Grind
+Pop Shuvit,360 Shuvit,FS Shuvit,Inward Heelflip
+Heelflip,Kickflip,Inward Heelflip,Doubleflip
+Backside Flip,Frontside Flip,Ghetto Bird,Fakie Big Flip
+Backside Heelflip,Frontside Heelflip,Laser Flip,Inward Heelflip
+Frontside Flip,Backside Flip,Hardflip,Ghetto Bird
+Frontside Heelflip,Backside Heelflip,Hardflip,Laser Flip
+360 Flip,Laser Flip,540 Flip,Fakie Big Flip
+Laser Flip,360 Flip,Inward Heelflip,540 Flip
+Hardflip,Inward Heelflip,Impossible,Frontside Flip
+Inward Heelflip,Hardflip,Heelflip,360 Flip
+Boardslide,Lip Slide,Feeble Grind,Crooked Grind
+Noseslide,Crooked Grind,Nose Stall,Nose Manual
+Tailslide,Bluntslide,Smith Grind,Feeble Grind
+Bluntslide,Lip Slide,Tailslide,Smith Grind
+5-0 Grind,Manual,Tail Stall,Feeble Grind
+Crooked Grind,Noseslide,Nosegrind,Smith Grind
+Nosegrind,Crooked Grind,Nose Manual,Manual
+Smith Grind,Feeble Grind,50-50 Grind,Bluntslide
+Feeble Grind,Smith Grind,Boardslide,5-0 Grind
+Rock to Fakie,Axle Stall,Tail Stall,Nose Stall
+Tail Stall,5-0 Grind,Axle Stall,Nose Stall
+Axle Stall,Tail Stall,Smith Grind,Disaster
+Rock and Roll,Disaster,Carving,Backside 180
+Nose Stall,Nose Manual,Noseslide,Tail Stall
+Disaster,Rock and Roll,Axle Stall,Bluntslide
+Fakie,Nollie,Tic-tac,FS Shuvit
+360 Shuvit,Pop Shuvit,Impossible,FS Shuvit
+540 Flip,360 Flip,Laser Flip,Fakie Big Flip
+Ghetto Bird,Hardflip,Backside Flip,Impossible
+Fakie Big Flip,Backside Flip,360 Flip,540 Flip
+Front Side 180,Backside 180,No Comply 180,FS Shuvit
+Backside 180,Front Side 180,No Comply 180,Carving
+Nose Manual,Manual,Nosegrind,Nose Stall
+No Comply 180,Boneless,FS Shuvit,Front Side 180
+Doubleflip,Kickflip,Heelflip,Laser Flip
+Impossible,Hardflip,360 Shuvit,Ghetto Bird
+FS Shuvit,Shuvit,Front Side 180,Tic-tac
+Acid Drop,Boneless,Ollie,Drop In
+Boneless,No Comply 180,Ollie,Acid Drop
+Nollie,Ollie,Fakie,Nose Manual
+Lip Slide,Boardslide,Bluntslide,Feeble Grind
+## SOCCER ##
+Cutback Pass,Throw-In,Maradona Spin,Chip Shot / Lob
+Backheel,Cruyff Turn,Rabona,Inside Hook
+Rabona,Trivela,Bolasie Flick,Backheel
+Corner Kick,Goal Kick,Knee Slide Celebration,Cross-Field Pass
+Penalty Kick,Drop Kick,Trivela,Throw-In
+Volley,Side Volley,Bicycle Kick,Scorpion Kick
+Half Volley,Drop Kick,Knuckleball,Rocket Goal
+Side Volley,Bicycle Kick,Knuckleball,Half Volley
+Bicycle Kick,Scorpion Kick,Sombrero Flick,Diving Save
+Diving Header,Diving Save,Knee Slide Celebration,Goal Line Clearance
+Chip Shot / Lob,Rainbow Flick,Knuckleball,Trivela
+Knuckleball,Rocket Goal,Trivela,Chip Shot / Lob
+Rocket Goal,Goal Line Clearance,Drop Kick,Knuckleball
+First-Time Shot,Half Volley,Volley,Side Volley
+Through Ball,Cross-Field Pass,Interception,Outside Hook
+Cross-Field Pass,Corner Kick,Through Ball,Free Kick
+One-Two Pass,La Croqueta,Stop and Go,Inside Hook
+Free Kick,Penalty Kick,Corner Kick,Goal Kick
+Goal Kick,Drop Kick,Throw-In,Cross-Field Pass
+Drop Kick,Goal Kick,Rocket Goal,Half Volley
+Trivela,Rabona,Chip Shot / Lob,Outside Hook
+Scorpion Kick,Bolasie Flick,Bicycle Kick,Sombrero Flick
+Tackle,Interception,Shielding the Ball,Diving Save
+Goal Line Clearance,Diving Save,Knee Slide Celebration,Interception
+Diving Save,Diving Header,Goal Line Clearance,Scorpion Kick
+Interception,Tackle,Shielding the Ball,Cutback Pass
+Double Stepover,Scissors,Stop and Go,Elastico / Flip Flap
+Outside Hook,Inside Hook,La Croqueta,Cruyff Turn
+Inside Hook,Outside Hook,Cruyff Turn,Stop and Go
+Rainbow Flick,Sombrero Flick,Bolasie Flick,Scorpion Kick
+Scissors,Double Stepover,La Croqueta,Elastico / Flip Flap
+Roulette Turn / Marseille Turn,Maradona Spin,Cruyff Turn,La Croqueta
+Nutmeg,La Croqueta,Cruyff Turn,Inside Hook
+Elastico / Flip Flap,Double Stepover,La Croqueta,Outside Hook
+Cruyff Turn,Inside Hook,Maradona Spin,Stop and Go
+La Croqueta,Inside Hook,Elastico / Flip Flap,Outside Hook
+Sombrero Flick,Rainbow Flick,Bolasie Flick,Scorpion Kick
+Maradona Spin,Roulette Turn / Marseille Turn,Cruyff Turn,Stop and Go
+Stop and Go,Inside Hook,Double Stepover,Scissors
+Bolasie Flick,Sombrero Flick,Rainbow Flick,Scorpion Kick
+Throw-In,Cutback Pass,Goal Kick,Penalty Kick
+Knee Slide Celebration,Diving Header,Goal Line Clearance,Diving Save
+Shielding the Ball,Tackle,Interception,Stop and Go
+## SPA MASSAGE ##
+Effleurage,Rocking,Tapotement Cupping,Skin Rolling
+Petrissage,Hara Massage,Beating / Pounding,Tapotement Tapping
+Tapotement Cupping,Effleurage,Hara Massage,Ischemic Compression
+Tapotement Hacking,Skin Rolling,Friction,Rocking
+Tapotement Tapping,Skin Rolling,Rocking,Ischemic Compression
+Beating / Pounding,Petrissage,Friction,Hara Massage
+Friction,Tapotement Hacking,Beating / Pounding,Rocking
+Hara Massage,Ischemic Compression,Petrissage,Tapotement Tapping
+Skin Rolling,Ischemic Compression,Effleurage,Tapotement Hacking
+Ischemic Compression,Hara Massage,Tapotement Tapping,Tapotement Cupping
+Rocking,Effleurage,Tapotement Cupping,Petrissage
+## SUTURING ##
+Simple Interrupted Suture,Figure-of-Eight Suture,Vertical Mattress Suture,Stay Suture
+Continuous (Running) Suture,Purse-String Suture,Lembert Suture,Running Subcuticular Stitch
+Continuous Locking Suture,Horizontal Mattress Suture,Purse-String Suture,Cushing Suture
+Running Subcuticular Stitch,Lembert Suture,Cushing Suture,Purse-String Suture
+Vertical Mattress Suture,Corner Stitch,Horizontal Mattress Suture,Simple Interrupted Suture
+Horizontal Mattress Suture,Continuous Locking Suture,Figure-of-Eight Suture,Corner Stitch
+Figure-of-Eight Suture,Corner Stitch,Horizontal Mattress Suture,Stay Suture
+Purse-String Suture,Continuous (Running) Suture,Cushing Suture,Instrument Tie
+Lembert Suture,Cushing Suture,Simple Buried Suture,Continuous Locking Suture
+Simple Buried Suture,Lembert Suture,Corner Stitch,Vertical Mattress Suture
+Instrument Tie,Stay Suture,Purse-String Suture,Running Subcuticular Stitch
+Corner Stitch,Figure-of-Eight Suture,Vertical Mattress Suture,Horizontal Mattress Suture
+Cushing Suture,Lembert Suture,Running Subcuticular Stitch,Continuous Locking Suture
+Stay Suture,Instrument Tie,Simple Interrupted Suture,Figure-of-Eight Suture
+## TAP DANCE ##
+Shuffle,Flap,Riffle,Nerve Tap
+Flap,Shuffle Ball Change,Stamp,Bombershay
+Cramp Roll,Paradiddle,Waltz Clog,Slurp
+Single Time Step,Maxi Ford,Buffalo,Shim Sham
+Buffalo,Falling Off the Log,Cincinnati,Maxi Ford
+Shuffle Ball Change,Flap,Bombershay,Front Essence
+Brush,Scuff,Nerve Tap,Stamp
+Scuff,Brush,Slurp,Bombershay
+Wings,Pullback,Toe Stand,Trench
+Pullback,Wings,Cincinnati,Crawl
+Paradiddle,Cramp Roll,Bombershay,Slurp
+Stamp,Flap,Toe Stand,Scuff
+Shim Sham,Over the Top,Waltz Clog,Falling Off the Log
+Maxi Ford,Buffalo,Cincinnati,Over the Top
+Waltz Clog,Front Essence,Cramp Roll,Shim Sham
+Cincinnati,Buffalo,Pullback,Back Essence
+Over the Top,Trench,Falling Off the Log,Maxi Ford
+Back Essence,Shuffle Ball Change,Crawl,Bombershay
+Front Essence,Shuffle Ball Change,Over the Top,Waltz Clog
+Paddle and Roll,Cramp Roll,Slurp,Nerve Tap
+Riffle,Shuffle,Nerve Tap,Brush
+Triple Time Step,Single Time Step,Shim Sham,Maxi Ford
+Toe Stand,Wings,Pullback,Stamp
+Crawl,Pullback,Trench,Back Essence
+Bombershay,Paradiddle,Shuffle Ball Change,Front Essence
+Trench,Over the Top,Crawl,Falling Off the Log
+Falling Off the Log,Buffalo,Shim Sham,Over the Top
+Nerve Tap,Slurp,Riffle,Paddle and Roll
+Slurp,Nerve Tap,Scuff,Paddle and Roll
+## TATTOOING ##
+Push Whip Shading,Pendulum Shading,Color Packing,Stipple Shading
+Pull Whip Shading,Cross Shading,Color Packing,Stipple Shading
+Stipple Shading,Color Packing,Pendulum Shading,Push Whip Shading
+Cross Shading,Pendulum Shading,Pull Whip Shading,Color Packing
+Pendulum Shading,Cross Shading,Push Whip Shading,Stipple Shading
+Color Packing,Pull Whip Shading,Push Whip Shading,Cross Shading
+## TENNIS ##
+Forehand Drive,Inside-Out Forehand,Squash Shot,Flat Serve
+Two-Handed Backhand,One-Handed Backhand,Chip Return,Squash Shot
+One-Handed Backhand,Backhand Volley,Chip Return,Underhand Serve
+Forehand Volley,Half-Volley,Inside-Out Forehand,Drop Shot
+Backhand Volley,Half-Volley,One-Handed Backhand,Chip Return
+Half-Volley,Drop Shot,Underhand Serve,Squash Shot
+Smash,Flat Serve,Kick Serve,American Twist Serve
+Drop Shot,Half-Volley,Underhand Serve,Chip Return
+Lob,American Twist Serve,Slice Serve,Behind-the-Back
+Inside-Out Forehand,Forehand Drive,Squash Shot,Slice Serve
+Behind-the-Back,Squash Shot,Half-Volley,Lob
+Chip Return,Slice Serve,Drop Shot,One-Handed Backhand
+Squash Shot,Behind-the-Back,Forehand Drive,Inside-Out Forehand
+Flat Serve,Smash,Kick Serve,Underhand Serve
+Kick Serve,American Twist Serve,Smash,Lob
+Slice Serve,American Twist Serve,Chip Return,Inside-Out Forehand
+Underhand Serve,Drop Shot,Half-Volley,One-Handed Backhand
+American Twist Serve,Kick Serve,Smash,Lob
+Ace,Flat Serve,Slice Serve,Forehand Volley
+## WOODWORKING / WHITTLING ##
+Push Cut,V Cut,Stop Cut,V Cut
+Pull Cut,V Cut,Stop Cut,Stop Cut
+Stop Cut,Push Cut,Pull Cut,Push Cut
+V Cut,Pull Cut,Push Cut,Pull Cut
+## YO-YO ##
+Sleeper,Gyroscopic Flop,UFO,Electric Fan
+Throw Down,Forward Pass,Vertical Punches,Regeneration
+Gravity Pull,Forward Pass,Regeneration,Hop the Fence
+Breakaway,Forward Pass,UFO,Leg Wrap
+Forward Pass,Breakaway,Throw Down,Hop the Fence
+Around the World,Time Warp,Pinwheel,Windmill
+Brain Twister,Boingy Boing,Plastic Whip,Double Trapeze
+Pinwheel,Around the World,Windmill,Electric Fan
+Rock the Baby,Eiffel Tower,Jamaican Flag,Green Triangle
+Eiffel Tower,Jamaican Flag,Rock the Baby,Robin Hood
+Jamaican Flag,Eiffel Tower,Robin Hood,Green Triangle
+Robin Hood,Jamaican Flag,Eiffel Tower,Ninja Vanish
+UFO,Breakaway,Throw Down,Electric Fan
+Elevator,Boingy Boing,Gyroscopic Flop,Vertical Punches
+Walk the Dog,Creeper,Leg Wrap,Throw Down
+Creeper,Walk the Dog,Leg Wrap,Meltdown
+Man on Trapeze,Double Trapeze,Slack Trapeze,Gunslinger
+Double or Nothing,Double Trapeze,Bluelien Rolls,White Buddha
+Green Triangle,Eiffel Tower,Ninja Vanish,Robin Hood
+Jade Whip,Iron Whip,Plastic Whip,Offstring Whip
+Iron Whip,Jade Whip,Plastic Whip,Bee Sting
+Hidemasa Hook,Brent Stole,Ninja Vanish,Slack Trapeze
+Slack Trapeze,Plastic Whip,Hidemasa Hook,Offstring Whip
+Plastic Whip,Jade Whip,Slack Trapeze,Gyroscopic Flop
+Ninja Vanish,Brent Stole,Reverse Brent Stole,Hidemasa Hook
+Kwyjibo,Spirit Bomb,White Buddha,Bluelien Rolls
+Spirit Bomb,Kwyjibo,Ladder Escape,White Buddha
+Ladder Escape,White Buddha,Bluelien Rolls,Spirit Bomb
+Brent Stole,Reverse Brent Stole,Ninja Vanish,Hidemasa Hook
+Reverse Brent Stole,Brent Stole,Ninja Vanish,Slack Trapeze
+White Buddha,Ladder Escape,Kwyjibo,Bluelien Rolls
+Boingy Boing,Brain Twister,Elevator,Vertical Punches
+Double Suicide,Slack Trapeze,Hidemasa Hook,Reverse Brent Stole
+Two Handed Loops,Milk the Cow,Cattle Crossing,Tangler
+Vertical Punches,Punching Bag,Hop the Fence,Throw Down
+Milk the Cow,Two Handed Loops,Vertical Punches,Hop the Fence
+Cattle Crossing,Tangler,Two Handed Loops,Milk the Cow
+Hop the Fence,Vertical Punches,Punching Bag,Gravity Pull
+Tangler,Cattle Crossing,Two Handed Loops,Leg Wrap
+Leg Wrap,Walk the Dog,Creeper,Time Warp
+Punching Bag,Vertical Punches,Milk the Cow,Hop the Fence
+Time Warp,Around the World,Leg Wrap,Shoot the Moon
+Shoot the Moon,Hop the Fence,Time Warp,Vertical Punches
+Double Trapeze,Man on Trapeze,Double or Nothing,Gunslinger
+Gunslinger,Double Trapeze,Velvet Rolls,Bluelien Rolls
+Velvet Rolls,Bluelien Rolls,Gunslinger,Windmill
+Bluelien Rolls,Velvet Rolls,White Buddha,Double or Nothing
+Offstring Whip,Jade Whip,Slack Trapeze,Plastic Whip
+Regeneration,Gravity Pull,Throw Down,Hop the Fence
+Soloham,Two Handed Loops,Tangler,Double Suicide
+Gyroscopic Flop,Sleeper,Elevator,Plastic Whip
+Electric Fan,UFO,Pinwheel,Windmill
+Bee Sting,Iron Whip,Jade Whip,Meltdown
+Meltdown,Bee Sting,Creeper,Leg Wrap
+Windmill,Pinwheel,Electric Fan,Around the World
