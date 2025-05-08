@@ -1,4 +1,5 @@
 import argparse, os, json, subprocess
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from tqdm import tqdm
 
@@ -22,14 +23,20 @@ if not (len(uuids) == len(uuids_list) == len(urls)):
 uuid_to_url_tail: dict[str, tuple[str, str]] = {uuids_list[i]: (urls[i], tails[i]) for i in range(len(uuids))}
 
 # download the clips
-vid_paths: dict[str, str] = {}
-for unique in tqdm(uuids, desc="downloading clips"):
+#   core logic
+def download_clip(unique: str) -> tuple[str, str]:
     url, tail = uuid_to_url_tail[unique]
     vid_path = os.path.join(tmp_dir, tail)
-    vid_paths[unique] = vid_path
-    if os.path.isfile(vid_path): continue
-    gcs_url = "gs://" + url.split('https://storage.googleapis.com/')[-1]
-    subprocess.run(['gcloud', 'storage', 'cp', gcs_url, vid_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if not os.path.isfile(vid_path): 
+        gcs_url = "gs://" + url.split('https://storage.googleapis.com/')[-1]
+        subprocess.run(['gcloud', 'storage', 'cp', gcs_url, vid_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return unique, vid_path
+
+#   parallelization logic
+with ThreadPoolExecutor() as executor:
+    futures = [executor.submit(download_clip, u) for u in uuids]
+    results = [future.result() for future in tqdm(as_completed(futures), total=len(futures), desc='downloading clips')]
+vid_paths: dict[str, str] = dict(results)
 
 # output FPS for each video if asked to; used for Qwen
 fps_info: dict[str, float] = {}
