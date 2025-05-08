@@ -104,8 +104,8 @@ with ThreadPoolExecutor(max_workers=8) as executor:
 
 # Check on the files that hadn't uploading/processing earlier
 if not_active:
-    print(f"\nDone uploading files. {len(not_active)} of them are not in the ACTIVE state. Sleeping for fifteen minutes then will check on them.\n")
-    time.sleep(900)
+    print(f"\nDone uploading files. {len(not_active)} of them are not in the ACTIVE state. Sleeping for twenty minutes then will check on them.\n")
+    time.sleep(1200)
     
     not_active_2 = []
     for name, unique in tqdm(not_active, desc='checking non-active clips'):
@@ -116,8 +116,8 @@ if not_active:
         time.sleep(2)
     
     if not_active_2:
-        print(f"\n{len(not_active_2)} of them are **STILL** not in the ACTIVE state. Sleeping for fifteen minutes then will check on them.\n")
-        time.sleep(900)
+        print(f"\n{len(not_active_2)} of them are **STILL** not in the ACTIVE state. Sleeping for fourty minutes then will check on them.\n")
+        time.sleep(2400)
         
         not_active_3 = []
         for name, unique in tqdm(not_active_2, desc='checking non-active clips (pass 2)'):
@@ -141,8 +141,8 @@ if not_active:
                 uuid_to_gfilename[unique] = name
                 reuploads.append((name, unique))
             
-            print(f"\nWaiting ten minutes then checking them.\n")
-            time.sleep(600)
+            print(f"\nWaiting thirty minutes then checking them.\n")
+            time.sleep(1800)
             errors = []
             for name, unique in tqdm(reuploads, desc='checking reuploaded clips (pass 3)'):
                 state = client.files.get(name=name).state
