@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, g
 import sqlite3, os, subprocess
-# import heval.hutils as hutils
-import hutils
+import heval.hutils as hutils
+# import hutils
 
 app = Flask(__name__)
 DATABASE = os.environ.get('DATABASE', '/persistent/data.db')

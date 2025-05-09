@@ -132,7 +132,7 @@ def log_classification(conn: Connection, question_id: str, assignment_uuid: str,
             res = conn.execute('SELECT finished, ground_truth FROM Questions WHERE id = ?', (question_id,)).fetchall()
             if len(res) != 1:
                 return "We were unable to locate the question you answered. Please message us on Prolific."
-            curr_assigned, curr_finished, ground_truth = int(res[0]['assigned']), int(res[0]['finished']), int(res[0]['ground_truth'])
+            curr_finished, ground_truth = int(res[0]['finished']), int(res[0]['ground_truth'])
             
             cursor = conn.execute('UPDATE Questions SET finished = ? WHERE id = ?', (curr_finished + 1, question_id))
             if cursor.rowcount != 1:
@@ -148,6 +148,7 @@ def log_classification(conn: Connection, question_id: str, assignment_uuid: str,
             conn.commit()
             return 0
         except Exception as e:
+            conn.rollback()
             print(f'EXCEPTION: unable to log classification for UUID {assignment_uuid}:', e)
             time.sleep(0.1 + 0.03 * i)
             i += 1
@@ -170,9 +171,9 @@ def add_feedback(conn: Connection, feedback: str, user_id: str, study_id: str, s
                 conn.commit()
                 return True
             else:
-                conn.rollback()
                 raise Exception
         except Exception:
+            conn.rollback()
             time.sleep(0.1 + 0.03 * i)
             i += 1
     return False
