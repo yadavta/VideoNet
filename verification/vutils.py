@@ -48,7 +48,7 @@ def get_action(conn: Connection, user_id: str, study_id: str, session_id: str) -
             
             # see if any of these 10 tasks work with our user (i.e., check for overlap)
             for a in actions:
-                overlap = conn.execute('SELECT * FROM Assignments WHERE action_id = ? AND user_id = ? AND study_id = ?', (a['id'], user_id, study_id)).fetchall()
+                overlap = conn.execute('SELECT * FROM Assignments WHERE action_id = ? AND user_id = ?', (a['id'], user_id)).fetchall()
                 if not overlap:
                     action_id, action_name, domain_name, subdomain, curr_assigned, defn = a['id'], a['name'], a['domain_name'], a['subdomain'], a['assigned'], a['definition']
                     matched = True

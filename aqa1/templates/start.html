@@ -1,0 +1,136 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="intro-container">
+        <h1 class="top-txt" id="top">Welcome!</h1>
+        <p class="para-txt">You will be provided with <b>{{videos | length}} videos</b> of <b>{{domain}}</b>.</p>
+        <p class="para-txt">For each video, we provide <b>start</b> and <b>end</b> timestamps that mark a segment <b>likely</b> to contain both the <b>referenced correct and incorrect ways</b> of performing the provided action. These segments and the references for correct and wrong methods have been automatically selected based on what the speaker says. We now need your assistance to <b>verify</b> the following:</p>
+        <ol>
+            <li class="para-txt"><b>Correct Method</b>: Check that the correct way of performing the action, as specified by the reference, is actually shown in or near the segment. The correct action should be <b>visibly performed</b>, not just described.</li>
+
+            <li class="para-txt"><b>Incorrect Method</b>: Confirm whether the incorrect way of performing the action--specified by the reference--is actually demonstrated within the segment or nearby. Please note: the person must physically perform the incorrect action in the video<b>—it's not enough if they only talk about it.</b></li>
+
+            <li class="para-txt"><b>Action Name Accuracy</b>: If you find that the action's name is inaccurate, please update the "Action Name" textbox as needed.</li>
+        </ol>
+        
+        <p class="para-txt"><b>Important</b>: the provided <b>timestamps may not be exact</b>. Please review the video from 10-15 seconds before the start time to 10-15 seconds after the end time to ensure nothing is missed.</p>
+
+        <!-- <p class="para-txt"><b>Hint</b>: we've asked LLMs to identify what about the action is being done correctly vs incorrectly. We've included those hints below the radio boxes (look for <i>LLM Hint</i>); we hope they are helpful.</p> -->
+
+    </div>
+
+    <div class="user-input">
+
+        <form name="annotations" action="/submit" onsubmit="return validateForm()" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <input type="hidden" name="study_id" value="{{ study_id }}">
+            <input type="hidden" name="session_id" value="{{ session_id }}">
+            <input type="hidden" name="batch_uuid" value="{{ batch_uuid }}">
+            <input type="hidden" name="video_count" value="{{ videos | length }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Video</th>
+                        <th>Annotations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for video in videos %}
+                    <tr>
+                        <td>
+                            <p class="para-txt">Segment lasts from <b>{{starts[loop.index - 1]}}</b> to <b>{{ends[loop.index - 1]}}</b></p>
+                            <iframe
+                                width="700" 
+                                height="400" 
+                                src="https://www.youtube.com/embed/{{video[1]}}?start={{video[2]|int}}&rel=0"
+                                title="YouTube Embed for Video # {{ loop.index }} with UUID {{ video[0] }}" 
+                                frameborder="0" 
+                                allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+                        </td>
+                        <td>
+                            <input hidden type="text" name="v{{ loop.index }}-uuid" value="{{ video[0] }}">
+                            <!-- <hr style="margin-bottom:1.2rem"> -->
+                            <label>Action Name:
+                                <input type="text" name="action-{{ loop.index }}" value="{{video[4]}}" class="action-name">
+                            </label>
+                            <br>
+                            <p style="font-size:medium">please update the textbox above if the provided name is inaccurate</p>
+                            <hr style="margin-top:2rem; margin-bottom:2rem;">
+                            <p style="font-size:large"><i>Reference for correct</i>: <span style="color:blue;">{{video[5]}}</span></p>
+                            <p >Segment contains <b>correct</b> instance of the desired action?</p>
+                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-yes" value="1"> <label for="c-{{ loop.index }}-yes" class="l1">Yes</label>
+                            <input type="radio" name="correct-{{ loop.index }}" id="c-{{ loop.index }}-no" value="0"> <label for="c-{{ loop.index }}-no" class="l3">No</label>
+                            <hr style="margin-top:2rem; margin-bottom:2rem;">
+                            <p style="font-size:large"><i>Reference for wrong</i>: <span style="color:blue;">{{video[6]}}</span></p>
+                            <p>Segment contains <b>wrong</b> instance of the desired action?</p>
+                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-yes" value="1"> <label for="w-{{ loop.index }}-yes" class="l1">Yes</label>
+                            <input type="radio" name="wrong-{{ loop.index }}" id="w-{{ loop.index }}-no" value="0"> <label for="w-{{ loop.index }}-no" class="l3">No</label>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p hidden id="errorMsg" class="error-txt"></p>
+
+            <div>
+                <p class="para-txt center-txt">We are currently piloting this study interface. Please provide any feedback on it below.</p>
+                <textarea type="text" class="feedback" name="feedback" id="feedback" rows="3" placeholder="Type your feedback here (optional)"></textarea>
+            </div>
+
+            <button type="submit" class="yes-btn bigg-btn">Submit</button>
+        </form>
+
+        <script>
+            function validateForm() {
+                error = document.getElementById('errorMsg');
+                error.hidden = true;
+                void error.offsetWidth; // force DOM update
+
+                form = document.forms['annotations']
+                for (let i = 1; i <= {{ videos | length}}; i++) {
+                    if (form[`correct-${i}`].value.length === 0) {
+                        error.innerHTML = `ERROR: you must denote if <b>video #${i}</b> contains a <b>correct</b> instance of the action.`;
+                        error.hidden = false;
+                        return false;
+                    }
+                    if (form[`wrong-${i}`].value.length === 0) {
+                        error.innerHTML = `ERROR: you must denote if <b>video #${i}</b> contains a <b>wrong</b> instance of the action.`;
+                        error.hidden = false;
+                        return false;
+                    }
+                    if (form[`action-${i}`].value.length === 0) {
+                        error.innerHTML = `ERROR: the action for <b> video #${i}</b> cannot be empty. If in doubt, please use the action name we originally provided.`
+                        error.hidden = false;
+                        return false;
+                    }
+                }
+
+                error.hidden = true;
+                return true;
+            }
+        </script>
+    </div>
+</body>
+
+<footer>
+    <div class="logos">
+        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo"
+                src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://allenai.org/" target="_blank"><img class="footer-logo"
+                src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
+    </div>
+</footer>
