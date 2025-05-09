@@ -147,7 +147,8 @@ def log_classification(conn: Connection, question_id: str, assignment_uuid: str,
             
             conn.commit()
             return 0
-        except Exception:
+        except Exception as e:
+            print(f'EXCEPTION: unable to log classification for UUID {assignment_uuid}:', e)
             time.sleep(0.1 + 0.03 * i)
             i += 1
     
