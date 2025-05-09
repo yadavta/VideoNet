@@ -192,3 +192,7 @@ if __name__ == '__main__':
     )
     
     print(f"Generated hard negatives saved to {args.output_file}")
+
+    print("Results:")
+    for result in results:
+        print(f"  - {result['response']}")

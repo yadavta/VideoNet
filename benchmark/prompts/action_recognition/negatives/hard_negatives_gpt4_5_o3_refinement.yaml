@@ -1,0 +1,120 @@
+# Universal prompt for creating genuinely challenging "hard negative" options
+system_prompt: |
+  You are creating challenging "hard negative" options for multimodal action classification datasets across various domains (sports, arts, crafts, cooking, etc.).
+
+  Each action requires 3 hard negative options that are genuinely difficult for a machine learning model to distinguish from the positive action.
+
+  A truly "hard" negative:
+  - Shares visual/motion similarities with the positive action that would be difficult to distinguish in brief clips
+  - Is fundamentally different in purpose or technique despite visual similarities
+  - Cannot reasonably co-occur with the positive action in the same short video
+  - Avoids obvious selection patterns that would make classification too easy
+
+  Note:
+    Negatives should only come from the action list provided (not definitions or other sources)
+      - Check that EXACT positive and negative action names are used in the actions list when generating csv.
+
+user_prompts:
+  - content: |
+      Below is my list of "{ACTION}" actions, along with their definitions:
+
+      {ACTION_DEFINITION}
+      ===
+
+      Your task is to create genuinely challenging "hard negative" options for each action that would confuse a computer vision model. Format your output as a clean CSV:
+
+      action,negative_1,negative_2,negative_3
+      (action_1),(hard negative_1),(hard negative_2),(hard negative_3)
+      ...
+
+      CRITICAL REQUIREMENTS FOR TRULY HARD NEGATIVES:
+
+      1. MAXIMIZE VISUAL CONFUSION WITHOUT OBVIOUS PATTERNS:
+         - Select actions that share visual features, body positions, or motion qualities with the positive action
+         - Avoid predictable selection patterns (e.g., don't always choose the "next level up/down" or "same family" actions)
+         - Mix selection criteria unpredictably to prevent the model from learning simple heuristics
+         
+      2. STRATEGIC AMBIGUITY:
+         - Include some negatives that differ in subtle ways (small variations in technique/position)
+         - Include some negatives that differ in more significant ways but still maintain visual similarity
+         - Vary the type of similarity (sometimes motion-based, sometimes position-based, sometimes tool/environment-based)
+         
+      3. AVOID FUNCTIONALLY RELATED ACTIONS FOR NEGATIVES:
+         - Never select actions that typically occur together with the positive action
+         - Avoid actions that are commonly performed in sequence or as part of the same technique
+         - Don't pair actions that would naturally appear in the same short video clip
+         - Don't pair action categories that are too similar or the same as the positive action
+
+      4. REASONABLE DISTRIBUTION:
+         - Each action should appear as a negative approximately 2-5 times across the dataset
+         - Avoid extreme over-representation or under-representation
+         - The overall pattern of selections should appear random and unpredictable
+
+      Please provide your hard negative choices for these actions in the same order as provided:
+
+      {ACTION_LIST}
+
+      ===
+      Negatives should only EXACTLY come from the action list provided (not definitions or made-up sources)
+      - Check that EXACT positive and negative action names are used in the actions list when generating csv.
+    api:
+      model: gpt-4.5-preview-2025-02-27
+      temperature: 0.5
+      max_tokens: 4096
+  - content: |
+      Please provide your analysis of negative selections for their effectiveness as genuinely "hard" negatives:
+
+      First, check for selection patterns that could make classification too easy:
+      * Are there predictable patterns in how negatives were selected?
+      * Is there too much consistency in how negatives relate to positives?
+      * Would these patterns potentially provide shortcuts for a classification model?
+
+      Second, examine the visual confusion potential:
+      * How visually similar are the negatives to their positive actions?
+      * Is there sufficient variety in the types of visual similarity?
+      * Are the differences appropriately subtle to create genuine challenges?
+
+      Third, check for functional relationships:
+      * Are there any positive-negative pairs that typically occur together?
+      * Are there pairs that represent sequential or component actions?
+      * Would any pairs likely appear together in a short video clip?
+
+      Finally, review the overall distribution:
+      * Is any action severely over-represented or under-represented as a negative?
+      * Does the selection appear sufficiently unpredictable and varied?
+      * Are there imbalances that should be addressed?
+
+      For any issues identified, suggest specific improvements to create more genuinely challenging hard negatives.
+      Provide a summary of the analysis and suggestions for improvement.
+    api: 
+      # model: o4-mini-2025-04-16
+      model: o3-2025-04-16
+      reasoning_effort: high
+  - content: |
+      Based on the analysis, provide a revised CSV with improved hard negatives. Focus on fixing:
+
+      1. The most problematic selection patterns identified
+      2. Any actions with co-occurring negatives
+      3. Distribution imbalances
+
+      Briefly explain the changes made to each action's negatives, ensuring that the new selections are genuinely challenging and visually confusing.
+      Then, provide the revised CSV with fixed negative selections, without detailed explanations for each change.
+    api: 
+      # model: o4-mini-2025-04-16
+      model: o3-2025-04-16
+      reasoning_effort: high
+  - content: |
+      Based on the comprehensive analysis and specific suggestions, synthesize a final CSV with truly challenging hard negatives for each action.
+
+      Incorporate all the suggested improvements while ensuring:
+      1. The final list follows the exact same order as the original action list
+      2. Each action has 3 negatives that create genuine visual confusion
+      3. The selection patterns remain unpredictable and varied
+      4. No functionally related actions are paired
+      5. The distribution is reasonably balanced (each action appears 2-5 times as a negative)
+
+      Provide the final clean CSV with optimized hard negatives:
+    api:
+      model: gpt-4.5-preview-2025-02-27
+      temperature: 0.5
+      max_tokens: 4096

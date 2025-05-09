@@ -1,65 +1,54 @@
-12 Men on the Field
-Block in the Back
-Blocked Field Goal
-Blocked Punt
+Pass Interference
+Holding
 Blocking Below the Waist
-Bootleg
-Challenge Flag
+Block in the Back
 Chop Block
 Clipping
-Counter
-Delay Of Game
-Draw
 Encroachment
-End-around
 Face Mask
-Fair Catch
 False Start
-Field Goal
-Flea Flicker
-Fumble
-Hail Mary
-Holding
 Horse-collar Tackle
-Hurdle
-ISO
 Illegal Batting
 Illegal Contact
 Illegal Formation
 Illegal Forward Pass
-Illegal Hands to the Face
+12 Men on the Field
 Illegal Shift
-Illegal Substitution
-Illegal Use of Hands
-Ineligble Receiver Downfield
+Ineligible Receiver Downfield
 Intentional Grounding
-Interception
-Jet Sweep
 Leverage
 Neutral Zone Infraction
-Offside
-Onside Kick
-Pass Interference
-Pitch
-Power
-Punt
-QB Sneak
-Quarterback Kneel
 Roughing the Kicker
-Roughing the Passer
 Running Into the Kicker
-Sack
-Safety
-Spike
-Spin Move
-Squib Kick
-Stiff Arm
-Stripping
-Sweep
-Tackle for Loss
 Targeting
-Toss
-Trap
-Tripping
-Unnecessary Roughness
 Unsportsmanlike Conduct
+Unnecessary Roughness
+ISO
+Power
+Toss
+Sweep
+Trap
+Counter
+Draw
+Bootleg
+QB Sneak
+End-around
+Jet Sweep
+Field Goal
+Punt
+Fumble
+Interception
+Sack
+Tackle for Loss
+Blocked Punt
+Blocked Field Goal
+Spike
+Fair Catch
+Safety
+Stiff Arm
+Spin Move
+Hurdle
+Challenge Flag
+Hail Mary
+Onside Kick
+Squib Kick

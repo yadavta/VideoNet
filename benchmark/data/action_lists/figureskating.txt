@@ -1,40 +1,40 @@
 Biellmann Spin
-Bracket Turn
 Camel Spin
-Cantilever
-Choctaw
 Combination Spin
 Crossovers
 Death Spiral
-Double Axel
+Layback Spin
+Scratch Spin
+Sit Spin
+Three-Turn
+Bracket Turn
+Mohawk
+Rocker
+Choctaw
+Hydroblade
+Spiral
+Stroking
+Twizzle
+Twist Lift
+Half-Flip Jump
+Mazurka Jump
+Split Jump
+Waltz Jump
+Double Salchow
+Double Toe Loop
 Double Flip
 Double Loop
 Double Lutz
-Double Salchow
-Double Toe Loop
-Half-Flip Jump
-Hydroblade
-Layback Spin
-Mazurka Jump
-Mohawk
-Quad Axel
-Quad Flip
-Quad Loop
-Quad Lutz
-Quad Salchow
-Quad Toe Loop
-Rocker
-Scratch Spin
-Sit Spin
-Spiral
-Split Jump
-Stroking
-Three-Turn
-Triple Axel
+Double Axel
+Triple Toe Loop
+Triple Salchow
 Triple Flip
 Triple Lutz
-Triple Salchow
-Triple Toe Loop
-Twist Lift
-Twizzle
-Waltz Jump
+Triple Axel
+Quad Toe Loop
+Quad Salchow
+Quad Loop
+Quad Flip
+Quad Lutz
+Quad Axel
+Cantilever

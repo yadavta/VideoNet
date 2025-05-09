@@ -39,6 +39,21 @@ Collaborators can extend the benchmark by adding new prompts for generating nega
      --output_file benchmark/output/action_recognition/your_prompt_name/domain_name.json
    ```
 
+4. **Generate Negatives for All Actions in Parallel**:
+   ```bash
+   # Use the parallel execution script to run for all domains
+   bash benchmark/action_recognition/create_negatives/gpt_parallel.sh
+   ```
+
+5. **Post-processing and Validation**:
+   ```bash
+   # Extract CSVs from the generated JSON files
+   python benchmark.action_recognition.create_negatives.parse_csv.py
+   
+   # Validate the generated negatives against action lists
+   python benchmark.action_recognition.create_negatives.dist_sanity_check.py
+   ```
+
 ## Prompt System
 
 The benchmark uses a structured prompt system:

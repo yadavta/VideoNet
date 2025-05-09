@@ -219,7 +219,9 @@ PROMPTS_DIR = Path(__file__).parent
 # Use relative paths from the prompts directory
 PROMPT_FILES = {
     # Action Recognition - Hard Negatives
-    "hard_negatives_gpt4_5_o4_refinement": PROMPTS_DIR / "action_recognition/negatives/hard_negatives_gpt4_5_o4_refinement.yaml",
+    # "hard_negatives_gpt4_5_o4_refinement": PROMPTS_DIR / "action_recognition/negatives/hard_negatives_gpt4_5_o4_refinement.yaml",
+    "hard_negatives_gpt4_5_o3_refinement": PROMPTS_DIR / "action_recognition/negatives/hard_negatives_gpt4_5_o3_refinement.yaml",
+    "hard_negatives_gpt4_5_o4_refinement": PROMPTS_DIR / "action_recognition/negatives/hard_negatives_gpt4_5_o4_refinement_v2.yaml",
     "random_negatives_gpt4_5_o4_refinement": PROMPTS_DIR / "action_recognition/negatives/random_negatives_gpt4_5_o4_refinement.yaml",
     
     # Add more prompts here as they are created
@@ -228,6 +230,7 @@ PROMPT_FILES = {
 # Dictionary mapping categories to prompt names
 PROMPT_CATEGORIES = {
     "action_recognition": [
+        "hard_negatives_gpt4_5_o3_refinement",
         "hard_negatives_gpt4_5_o4_refinement",
         "random_negatives_gpt4_5_o4_refinement",
     ],
