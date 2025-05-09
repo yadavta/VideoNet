@@ -4,3 +4,4 @@ data/originals/*
 *.egg-info
 tmp/
 *.DS_Store
+output
