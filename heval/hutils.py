@@ -106,7 +106,7 @@ def get_question_details(conn: Connection, question_id: int) -> dict[str] | str:
     
     a_aan = 'an' if a['name'][0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
     subdomain = a['subdomain'] if a['subdomain'] and a['subdomain'] != 'NULL' else 'action'
-    s_aan = 'an' if subdomain.lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
+    s_aan = 'an' if subdomain[0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
     
     return {
         'action_id': a['id'], 'name': a['name'], 'a_aan': a_aan, 'domain': a['domain'], 'subdomain': subdomain, 's_aan': s_aan, 'definition': a['definition'],
