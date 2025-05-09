@@ -109,7 +109,7 @@ def get_question_details(conn: Connection, question_id: int) -> dict[str] | str:
     s_aan = 'an' if subdomain.lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
     
     return {
-        'action_id': a['id'], 'name': a['name'], 'a_aan': a_aan, 'domain': a['domain'], 'subdomain': a['subdomain'], 's_aan': s_aan, 'definition': a['definition'],
+        'action_id': a['id'], 'name': a['name'], 'a_aan': a_aan, 'domain': a['domain'], 'subdomain': subdomain, 's_aan': s_aan, 'definition': a['definition'],
         'in_contexts': [a['in_context1'], a['in_context2'], a['in_context3']], 'question_id': q['id'], 'question_video': q['video_url']
     }
     
