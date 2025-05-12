@@ -4,7 +4,7 @@ from datetime import timedelta
 from google import genai
 from tqdm import tqdm
 
-NUM_ATTEMPTS, SLEEP_LENGTH = 5, 20
+NUM_ATTEMPTS, SLEEP_LENGTH = 6, 30
 
 program_start = time.time()
 parser = argparse.ArgumentParser()
@@ -14,10 +14,11 @@ parser.add_argument('-o', '--outdir', type=str, required=True, help='Local path 
 parser.add_argument('-n', '--batchname', type=str, required=True, help='Name of batch; will be printed in results to help organization between runs')
 parser.add_argument('-k', type=int, required=True, help='Number of in-context examples being provided. Must be 0, 1, 2, or 3.')
 parser.add_argument('-gfn', '--filenames', type=str, required=True, default=None, help='Optional local path to mapping from UUIDs to Gemini File API file names. Use this.')
+parser.add_argument('--threads', type=int, required=True, default=24, help='Number of threads used to call Gemini API. Do not worry about rate limits -- we have an upper bound for that.')
 parser.add_argument('-m', '--model', type=str, required=False, default='gemini-2.5-pro-preview-03-25', help='Name of Gemini model to use. See Google docs for the specific names. Defaults to Gemini 2.5 Pro')
 parser.add_argument('--delete', required=False, action='store_true', help='Cleans up any files it uploads to Gemini File API. Not recommended.')
 args = parser.parse_args()
-bfile, out_dir, tmp_dir, batch_name, k, model, cache, delete = args.benchmark, args.outdir, args.tmpdir, args.batchname, args.k, args.model, args.filenames, args.delete
+bfile, out_dir, tmp_dir, batch_name, k, model, cache, threads, delete = args.benchmark, args.outdir, args.tmpdir, args.batchname, args.k, args.model, args.filenames, args.threads, args.delete
 if not os.path.isfile(bfile):
     raise Exception('ERROR: provided benchmark file could not be located.')
 if not os.path.isdir(tmp_dir):
@@ -101,7 +102,7 @@ def upload_and_wait(uuids: list[str]):
         time.sleep(SLEEP_LENGTH)
 
 # rate limiting for benchmark logic
-rate_limiter = threading.BoundedSemaphore(80)
+rate_limiter = threading.BoundedSemaphore(100)
 def rate_limited_process_id(action_id: str):
     rate_limiter.acquire()
     timer = threading.Timer(1, rate_limiter.release)
@@ -112,7 +113,7 @@ def rate_limited_process_id(action_id: str):
 # core benchmark logic
 def process_id(action_id: str):
     tmp = benchmark[action_id]
-    action, domain, subdomain = tmp['action'], tmp['domain'], tmp['subdomain']
+    action, domain, subdomain, definition = tmp['action'], tmp['domain'], tmp['subdomain'], tmp['definition']
     subdomain = tmp['subdomain'] if tmp['subdomain'] and tmp['subdomain'] != 'NULL' else 'action'
     a_aan = 'an' if action[0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
     s_aan = 'an' if subdomain[0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
@@ -127,8 +128,10 @@ def process_id(action_id: str):
         in_context_gfiles = [uuid_to_gfile[u] for u in in_context]
     if k > 0:
         prompt = [f"The following {k_text} {a_aan} {action}, which is {s_aan} {subdomain} in {domain}.", *in_context_gfiles,
+                #   f"Recall that {a_aan} {action} is defined as follows: {definition}\n",
                   f"Now consider the following video. Is it also {a_aan} {action}? Please reason through your answer. It is critical that you output 'yes' or 'no' on the final line of your answer."]
     else:
+        # \n Further recall that {a_aan} {action} is defined as follows: {definition}\n 
         prompt = [f"Recall that {a_aan} {action} is {s_aan} {subdomain} in {domain}. Does the following video show {a_aan} {action}? Please reason through your answer. It is critical that you output 'yes' or 'no' on the final line of your answer."]
     
     def run_clip(clip_uuid, is_positive, i):
@@ -141,6 +144,8 @@ def process_id(action_id: str):
                     model=model, config=genai.types.GenerateContentConfig(temperature=0),
                     contents=curr_input
                 )
+                if res.text is None:
+                    raise Exception('Gemini returned a None object... Retrying')
                 prediction = res.text.splitlines()[-1].strip().lower()
                 if (prediction == 'yes' and is_positive) or (prediction == 'no' and not is_positive):
                     correct = 1
@@ -158,10 +163,8 @@ def process_id(action_id: str):
                     })
                 return key, entry
             except Exception as e:
-                print('EXCEPTION: ', e)
-                with errors_lock:
-                    print(f'ERROR: for action_id {action_id} got exception: ' + str(e))
-                time.sleep(SLEEP_LENGTH + 5 * attempt_idx)
+                print(f'ERROR: for action_id {action_id} got exception: ' + str(e))
+                time.sleep(SLEEP_LENGTH + 4 ** attempt_idx)
         # reaching here indicates none of the iterations were successful
         return None, f'On UUID {clip_uuid} as positive clip #{i+1} for action {action} (id: {action_id})'
     
@@ -196,7 +199,7 @@ def process_id(action_id: str):
         results[action_id] = out
 
 # parallelize the benchmark logic
-with ThreadPoolExecutor(max_workers=80) as executor:
+with ThreadPoolExecutor(max_workers=threads) as executor:
     futures = {executor.submit(rate_limited_process_id, action_id): action_id for action_id in action_ids}
     for _ in tqdm(as_completed(futures), total=len(futures), desc="running benchmark"):
         pass
