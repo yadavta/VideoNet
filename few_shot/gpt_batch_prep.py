@@ -147,7 +147,7 @@ def sample_relevant_frames(rel_uuid: str, vid_label: int, all_frames: list[str],
     return frames_to_inputs(vid_label, rel_urls)
 
 # given relevant info for this question, creates a proper prompt for it
-def prepare_prompts(in_context_content: list, clip_content: list, a_aan, action, s_aan, subdomain, domain, definition):
+def prepare_prompts(in_context_content: list, clip_content: list, a_aan, action, s_aan, subdomain, domain):
     if k > 0:
         prompt = {
             "role": "user",
@@ -196,7 +196,7 @@ errors_lock = threading.Lock()
 # core benchmark logic
 def process_id(action_id: str):
     tmp = benchmark[action_id]
-    action, domain, subdomain, definition = tmp['action'], tmp['domain'], tmp['subdomain'], tmp['definition']
+    action, domain, subdomain = tmp['action'], tmp['domain'], tmp['subdomain']
     subdomain = tmp['subdomain'] if tmp['subdomain'] and tmp['subdomain'] != 'NULL' else 'action'
     a_aan = 'an' if action[0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
     s_aan = 'an' if subdomain[0].lower() in set(['a', 'i', 'o', 'u', 'e']) else 'a'
@@ -233,7 +233,7 @@ def process_id(action_id: str):
                     content = sample_relevant_frames(in_context[j], j + 1, icf[0], ic_sample_rate)
                     in_context_content.extend(content)
             
-            prompt = prepare_prompts(in_context_content, clip_content, a_aan, action, s_aan, subdomain, domain, definition)
+            prompt = prepare_prompts(in_context_content, clip_content, a_aan, action, s_aan, subdomain, domain)
             out.append({
                 "custom_id": f"{action_id}-{'pos' if is_positive else 'neg'}-{i+1}",
                 "method": "POST",
