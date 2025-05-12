@@ -1,0 +1,81 @@
+# Example of a YAML-based prompt definition
+system_prompt: |
+  You are assisting in creating carefully-balanced "hard negative" options for multimodal action classification datasets.
+
+  Each action in the provided list will have exactly 3 "hard negative" options selected. 
+
+  A "hard negative" is defined as:
+  - An action that visually and semantically resembles the original action to the extent that multimodal classification models (vision-and-text combined) would potentially find it challenging to distinguish between the two actions.
+  - Different enough that it remains strictly incorrect compared to the correct label. (Never select identical actions as negatives.)
+
+  Critically: the distribution of negatives across the entire dataset must be balanced. This means if there are N total actions in your list:
+  - Each action must appear exactly 3 times in total across the entire set of negatives.  
+  - Therefore, the total number of negative action slots is exactly 3*N (each action has 3 negatives, N actions total), and each action appears as a negative exactly 3 times in total across the entire output set.
+
+  You must carefully track action occurrences and maintain perfect balance across negatives while keeping the selections appropriate (hard, challenging negatives).
+
+user_prompts:
+  - content: |
+      Below is my complete list of "{ACTION}" actions, along with detailed definitions and descriptions to help identify subtle differences:
+
+      {ACTION_DEFINITION}
+      ===
+
+      Your task is to first categorize each action into subcategories that group similar actions together with help of definition.
+      List ONLY your broad class category (that is not too specific/fine-grained) up to 4-6,  and explanation of how you came up with such categories (avoid explicitly listing all actions you see).
+      ====
+      Second, for now, instead of hard negatives, please provide random negatives that are not too similar to the action but still challenging for multimodal classification. 
+      Provide clearly formatted output in CSV, exactly matching the below format.
+
+      action,negative_1,negative_2,negative_3
+      (action_1),(negative_1),(negative_2),(negative_3)
+      (action_2),(negative_1),(negative_2),(negative_3)
+      (action_3),(negative_1),(negative_2),(negative_3)
+      ...(and so forth, for all N actions.)
+
+      IMPORTANT REMINDERS (follow strictly):
+      - You must NEVER choose an action as its own negative. The negatives must always differ from the 'action'.
+      - Maintain perfectly balanced distribution: Every action in the original list must appear exactly three (3) times as a negative over the entire dataset (no more, no fewer).
+      - Clearly verify your negatives distribution to avoid imbalance or repetitions. 
+      - CRITICALLY IMPORTANT: Ensure rich and intentional diversity in your negatives. Do NOT always pick negatives from narrowly similar subsets or strictly from the exact same fine-grained categories. Instead, explicitly select negatives that bridge subtle boundaries between categories, carefully considering visual or semantic similarities across adjacent or slightly broader categories.
+      - Aim for each action's negative set to include at least one clearly related action from an adjacent or slightly broader category (where appropriate) to ensure broader multimodal diversity.
+      - Avoid overly repetitive patterns of negative selection; vary the type and category of negatives to ensure maximum diversity and challenge.
+
+      Please make sure to remind and say to yourself to avoid selecting repetitive patterns of negative selection. Then, output the completed, carefully-balanced, high-quality negative CSV pairs according to these instructions.
+
+      Provide your action and negative choices for these action lists only, and in the same order:
+
+      {ACTION_LIST}
+    api:
+      model: gpt-4.5-preview-2025-02-27
+      # model: gpt-4o
+      temperature: 0.8
+      max_tokens: 4096
+  - content: |
+      Carefully review each action and its assigned three negatives from your CSV output (from Task 2). 
+      For every positive-negative combination, explicitly check if the negative action could realistically occur simultaneously within the same real-world video clip showing the positive-labeled action—thus creating ambiguity or unintentionally making negative labels partially correct. 
+      Clearly list all sets of positive-negative action pairs you identify as potentially ambiguous. 
+      For each pair you list, provide a brief but precise explanation describing exactly why the actions can plausibly co-occur in a single video clip and lead to labeling ambiguity.
+    api: 
+      model: o4-mini-2025-04-16
+      reasoning_effort: high
+  - content: |
+      Using only the ambiguous sets explicitly identified previously, carefully select new replacement negatives to resolve these ambiguities entirely. 
+      When choosing these replacement negatives, ensure they retain semantic and visual similarity and remain challenging for multimodal classification—but do not realistically co-occur with the positive label within the same video. 
+      Also ensure that negative selections remain balanced across the dataset (each action still appears exactly three times total as a negative). 
+      Explicitly verify and confirm that changes made to one action's negatives are consistently reflected in the other affected related actions, removing ambiguity reciprocally from both positive-to-negative and negative-to-positive perspectives.
+      Feel free to include additional actions (that weren't reallly ambiguous) but considered to ensure that the positive-negatives distribution is balanced.
+
+      Provide your final revised and carefully balanced negatives explicitly in CSV format, including only the updated negative triples for actions. 
+    api:
+      model: o4-mini-2025-04-16
+      reasoning_effort: high
+  - content: |
+      Could you give me the final list (with same sorting order requirement as initial action list) with these negatives.
+    api:
+      model: gpt-4.5-preview-2025-02-27
+      temperature: 0.8
+      max_tokens: 4096
+
+
+  

@@ -1,0 +1,54 @@
+Pass Interference
+Holding
+Blocking Below the Waist
+Block in the Back
+Chop Block
+Clipping
+Encroachment
+Face Mask
+False Start
+Horse-collar Tackle
+Illegal Batting
+Illegal Contact
+Illegal Formation
+Illegal Forward Pass
+12 Men on the Field
+Illegal Shift
+Ineligible Receiver Downfield
+Intentional Grounding
+Leverage
+Neutral Zone Infraction
+Roughing the Kicker
+Running Into the Kicker
+Targeting
+Unsportsmanlike Conduct
+Unnecessary Roughness
+ISO
+Power
+Toss
+Sweep
+Trap
+Counter
+Draw
+Bootleg
+QB Sneak
+End-around
+Jet Sweep
+Field Goal
+Punt
+Fumble
+Interception
+Sack
+Tackle for Loss
+Blocked Punt
+Blocked Field Goal
+Spike
+Fair Catch
+Safety
+Stiff Arm
+Spin Move
+Hurdle
+Challenge Flag
+Hail Mary
+Onside Kick
+Squib Kick
