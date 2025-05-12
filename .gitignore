@@ -5,3 +5,9 @@ data/originals/*
 tmp/
 *.DS_Store
 output
+few_shot/audible_videos
+few_shot/silent_videos
+few_shot/results
+few_shot/negatives/action_lists
+actions/*.md
+heval/annotators
