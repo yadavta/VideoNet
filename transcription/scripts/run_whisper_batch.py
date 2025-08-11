@@ -74,7 +74,7 @@ def transcribe_data(
             return None
 
         metadata = json.loads(content)
-        if metadata["language"] != "en":
+        if "language" in metadata and metadata["language"] != "en":
             if verbose:
                 logger.info(f"Skipping {uri} as it is not English.")
             return None
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     logger.info(f"Processing {len(input_data)} new URIs")
     logger.info(f"Will save transcriptions to {args.output_file}...")
 
-    res = transcribe(input_data[1], verbose=True)
+    res = transcribe(input_data[0], verbose=True)
     logger.info(f"Example Transcription result: {res}")
 
     # async callers automatically handles batching
