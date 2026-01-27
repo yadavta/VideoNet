@@ -1,0 +1,129 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div id="instructions">
+            <h1 class="top-txt">Welcome!</h1>
+            <p class="para-txt">We are a team of researchers evaluating the ability of AI models to recognize actions in videos.</p>
+            <p class="para-txt">We will provide you with one action recognition question. Please try your best to answer it correctly.</p>
+            <p class="para-txt"><b>Please do NOT use any external resources.</b> We understand that this task may be extremely difficult to answer correctly; we simply ask that you try your best. Selecting the wrong answer will NOT be counted against you.</p>
+        </div>
+
+        <hr>
+
+        <div class="user-input">
+            {% if num_ice %}
+            <p class="para-txt">
+                Examine the following <b>{{num_ice}}</b> videos. They show {{a_aan}} <b>{{name}}</b>, which is {{s_aan}} <b>{{subdomain}}</b> in <b>{{domain}}</b>.
+            </p>
+            {% else %}
+            <p class="para-txt">
+                <b>{{name}}</b> is {{s_aan}} <b>{{subdomain}}</b> in <b>{{domain}}</b>.
+            </p>
+            {% endif %}
+            {% for i in range(1, num_ice+1) %}
+                <media-controller>
+                    <video
+                        slot="media" muted
+                        src ="{{ in_contexts[i - 1] }}"
+                        style="max-height:600px;"
+                        id="in-context-{{i}}">
+                    </video>
+                    <media-control-bar>
+                        <media-play-button></media-play-button>
+                        <media-time-display></media-time-display>
+                        <media-time-range></media-time-range>
+                        <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
+                        <media-fullscreen-button id="btn-{{i}}"></media-fullscreen-button>
+                    </media-control-bar>
+                </media-controller>
+            {% endfor %}
+        </div>
+
+        <div class="user-input">
+            {% if definition %}
+            <hr>
+            <p class="para-txt">
+                A definition of the action is provided below. <b>Please reference it when answering the question.</b>
+            </p>
+            <p class="para-txt" style="color: black;"><b>{{name}}</b>: {{definition}}</p>
+            {% endif %}
+        </div>
+
+        <div class="user-input">
+            <hr>
+            <p class="para-txt">{% if num_ice%}Now consider{%else%}Consider{%endif%} the following image. (It is sourced from the middle of a video.)</p>
+
+            <div style="display:inline-block;">
+                <img src="{{ question_video }}" style="max-height:600px;" alt="Question image">
+            </div>
+
+            <p class="para-txt">Does {% if num_ice %} this image also {% else %} it {% endif %} show {{a_aan}} <b>{{name}}</b>?</p>
+            
+            <form action="/submit" method="POST">
+                <input type="hidden" name="user_id" value="{{ user_id }}">
+                <input type="hidden" name="study_id" value="{{ study_id }}">
+                <input type="hidden" name="session_id" value="{{ session_id }}">
+                <input type="hidden" name="assignment_uuid" value="{{ assignment_uuid }}">
+                <input type="hidden" name="question_id" value="{{ question_id }}">
+                <div class="binary-btns">
+                    <button class='big-btn yes-btn' type="submit" name="guess" value="yes">Yes</button>
+                    <button class='big-btn no-btn' type="submit" name="guess" value="no">No</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    /*
+    // enable full screen support for the question video
+    const fullScreen = document.getElementById(`question-btn`);
+    const video = document.getElementById(`question-video`);
+    fullScreen.addEventListener('click', () => {
+        video.style.maxHeight = 'none';
+        currentFullscreenVideo = video;
+    })
+    */
+
+    // enable full screen support for the in-context videos
+    for (let i = 1; i <= {{ num_ice }}; i++){
+        const fullScreen = document.getElementById(`btn-${i}`);
+        const video = document.getElementById(`in-context-${i}`);
+        fullScreen.addEventListener('click', () => {
+            video.style.maxHeight = 'none';
+            currentFullscreenVideo = video;
+        })
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE/Edge
+    
+    function handleFullscreenChange() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+            currentFullscreenVideo.style.maxHeight = '600px';
+            currentFullscreenVideo = null;
+        }
+    }
+</script>
+
+<footer>
+    <div class="logos">
+        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo"
+                src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://allenai.org/" target="_blank"><img class="footer-logo"
+                src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
+    </div>
+</footer>
