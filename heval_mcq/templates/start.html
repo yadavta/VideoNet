@@ -1,0 +1,130 @@
+<!-- WARNING: THIS FILE IS TEMPLATED WITH JINJA 3 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+    <title>Ai2 Prolific Survey</title>
+</head>
+
+<body>
+    <div class="main-container">
+        <div id="instructions">
+            <h1 class="top-txt">Welcome!</h1>
+            <p class="para-txt">We are a team of researchers evaluating the ability of AI models to recognize actions in videos.</p>
+            <p class="para-txt">We will provide you with one action recognition question. Please try your best to answer it correctly.</p>
+            <p class="para-txt"><b>Please do NOT use any external resources.</b></p>
+        </div>
+
+        <hr>
+
+        <div class="user-input">
+            <p class="para-txt">
+                The following video contains <b>one</b> of the four actions below.
+            </p>
+
+            <ul>
+                {% for i in range(num_options) %}
+                    <li><b>{{mcq_options[i].lower()}}</b>: {{mcq_definitions[i]}}</li>
+                {% endfor %}
+            </ul>
+
+
+            <p class="para-txt">
+                Watch the video closely. Using the provided definitions as aids, select the action that appears in the video.
+            </p>
+        </div>
+
+        <div class="user-input">
+            <media-controller>
+                <video
+                    slot="media" muted
+                    src="{{ question_video }}"
+                    style="max-height:600px;"
+                    id="question-video">
+                </video>
+                
+                <media-control-bar>
+                    <media-play-button></media-play-button>
+                    <media-time-display></media-time-display>
+                    <media-time-range></media-time-range>
+                    <media-playback-rate-button rates="0.25 0.5 0.75 1"></media-playback-rate-button>
+                    <media-fullscreen-button id="question-btn"></media-fullscreen-button>
+                </media-control-bar>
+            </media-controller>
+
+            <p class="para-txt">Which of the following {{domain}} actions is shown in the video?</p>
+            
+            <form action="/submit" method="POST">
+                <input type="hidden" name="user_id" value="{{ user_id }}">
+                <input type="hidden" name="study_id" value="{{ study_id }}">
+                <input type="hidden" name="session_id" value="{{ session_id }}">
+                <input type="hidden" name="assignment_uuid" value="{{ assignment_uuid }}">
+                <input type="hidden" name="question_id" value="{{ question_id }}">
+                <input type="hidden" name="ground_truth" value="{{ mcq_answer }}">
+                <input type="hidden" name="mcq_options" value="{{ mcq_options }}">
+
+                <div class="choice-btns">
+                    <label class="choice-option">
+                        <input type="radio" name="guess" value="A" required>
+                        <span class="choice-label">A.</span>
+                        <span class="choice-text">{{ mcq_options[0].lower() }}</span>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="guess" value="B">
+                        <span class="choice-label">B.</span>
+                        <span class="choice-text">{{ mcq_options[1].lower() }}</span>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="guess" value="C">
+                        <span class="choice-label">C.</span>
+                        <span class="choice-text">{{ mcq_options[2].lower() }}</span>
+                    </label>
+                    <label class="choice-option">
+                        <input type="radio" name="guess" value="D">
+                        <span class="choice-label">D.</span>
+                        <span class="choice-text">{{ mcq_options[3].lower() }}</span>
+                    </label>
+                </div>
+
+                <div class="binary-btns">
+                    <button class='big-btn act-btn' type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    // enable full screen support for the question video
+    const fullScreen = document.getElementById(`question-btn`);
+    const video = document.getElementById(`question-video`);
+    fullScreen.addEventListener('click', () => {
+        video.style.maxHeight = 'none';
+        currentFullscreenVideo = video;
+    })
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange); // Firefox
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange); // IE/Edge
+    
+    function handleFullscreenChange() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+            currentFullscreenVideo.style.maxHeight = '600px';
+            currentFullscreenVideo = null;
+        }
+    }
+</script>
+
+<footer>
+    <div class="logos">
+        <a href="https://raivn.cs.washington.edu/" target="_blank"> <img class="footer-logo"
+                src="{{url_for('static', filename='uw.png')}}" alt="UW CSE RAIVN Lab"> </a>
+        <a href="https://allenai.org/" target="_blank"><img class="footer-logo"
+                src="{{url_for('static', filename='ai2.png')}}" alt="Ai2"></a>
+    </div>
+</footer>
